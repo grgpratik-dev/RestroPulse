@@ -1,0 +1,162 @@
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/custom_container.dart';
+import '../../domain/models/expense.dart';
+
+class ExpenseTrendCard extends StatelessWidget {
+  const ExpenseTrendCard({
+    required this.period,
+    required this.points,
+    super.key,
+  });
+
+  final ExpensePeriod period;
+  final List<ExpenseTrendPoint> points;
+
+  @override
+  Widget build(BuildContext context) {
+    final highest = points.reduce((a, b) => a.amount >= b.amount ? a : b);
+    final maximum = highest.amount * 1.25;
+    final currency = NumberFormat.decimalPattern();
+    final highestLabel = switch (period) {
+      ExpensePeriod.week => 'Highest day',
+      ExpensePeriod.month => 'Highest week',
+      ExpensePeriod.sixMonths || ExpensePeriod.year => 'Highest month',
+    };
+
+    return CustomContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Expense Trend',
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: AppSpacing.spaceLg),
+          SizedBox(
+            height: 210,
+            child: BarChart(
+              BarChartData(
+                maxY: maximum,
+                alignment: BarChartAlignment.spaceAround,
+                gridData: FlGridData(
+                  drawVerticalLine: false,
+                  horizontalInterval: maximum / 4,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    strokeWidth: 0.7,
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index < 0 || index >= points.length) {
+                          return const SizedBox.shrink();
+                        }
+                        final show = points.length <= 7 || index.isEven;
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: Text(
+                            show ? points[index].label : '',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipColor: (_) => const Color(0xFF102037),
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      final point = points[group.x];
+                      final multiplier = period == ExpensePeriod.week
+                          ? 1000
+                          : 1000;
+                      return BarTooltipItem(
+                        '${point.tooltipLabel}\nRs ${currency.format(point.amount * multiplier)}',
+                        const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                barGroups: [
+                  for (var index = 0; index < points.length; index++)
+                    BarChartGroupData(
+                      x: index,
+                      barRods: [
+                        BarChartRodData(
+                          toY: points[index].amount,
+                          width: points.length > 7 ? 10 : 18,
+                          color: const Color(0xFFE38B2C),
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(5),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              duration: const Duration(milliseconds: 300),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.spaceSm),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.spaceSm),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.bar_chart_rounded, color: Color(0xFFB45309)),
+                const SizedBox(width: AppSpacing.spaceXs),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        highestLabel,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      Text(
+                        '${highest.tooltipLabel} · Rs ${currency.format(highest.amount * 1000)}',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

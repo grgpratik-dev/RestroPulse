@@ -5,11 +5,29 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:restropulse/src/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expenses_screen.dart';
+import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_category_details_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_categories_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_details_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_form_screen.dart';
+import 'package:restropulse/src/features/menu/domain/models/menu_item.dart';
+import 'package:restropulse/src/features/menu/presentation/screens/menu_categories_screen.dart';
+import 'package:restropulse/src/features/menu/presentation/screens/menu_item_details_screen.dart';
+import 'package:restropulse/src/features/menu/presentation/screens/menu_item_form_screen.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
+import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
+import 'package:restropulse/src/features/sales/presentation/screens/order_details_screen.dart';
+import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
+import 'package:restropulse/src/features/sales/presentation/screens/sales_history_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/sales_screen.dart';
+import 'package:restropulse/src/features/wastage/domain/models/wastage.dart';
+import 'package:restropulse/src/features/wastage/presentation/screens/wastage_details_screen.dart';
+import 'package:restropulse/src/features/wastage/presentation/screens/wastage_form_screen.dart';
+import 'package:restropulse/src/features/wastage/presentation/screens/wastage_screen.dart';
 
 import '../../features/auth/presentation/screens/register/register_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
@@ -21,7 +39,7 @@ class AppRouter {
   static final GoRouter goRouter = GoRouter(
     debugLogDiagnostics: kDebugMode,
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoute.dashboard.path,
+    initialLocation: AppRoute.splash.path,
     routes: [
       // Define your app routes here
       StatefulShellRoute.indexedStack(
@@ -102,6 +120,99 @@ class AppRouter {
         path: AppRoute.profile.path,
         name: AppRoute.profile.name,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.helpSupport.path,
+        name: AppRoute.helpSupport.name,
+        builder: (context, state) => const HelpAndSupportScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.addExpense.path,
+        name: AppRoute.addExpense.name,
+        builder: (context, state) =>
+            ExpenseFormScreen(expense: state.extra as Expense?),
+      ),
+      GoRoute(
+        path: AppRoute.expenseDetails.path,
+        name: AppRoute.expenseDetails.name,
+        builder: (context, state) => ExpenseDetailsScreen(
+          expense: state.extra as Expense? ?? ExpensesMockData.expenses.first,
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.expenseCategoryDetails.path,
+        name: AppRoute.expenseCategoryDetails.name,
+        builder: (context, state) => ExpenseCategoryDetailsScreen(
+          category:
+              state.extra as ExpenseCategorySummary? ??
+              ExpensesMockData.categorySummaries.first,
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.expenseCategories.path,
+        name: AppRoute.expenseCategories.name,
+        builder: (context, state) => const ExpenseCategoriesScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.wastage.path,
+        name: AppRoute.wastage.name,
+        builder: (context, state) => const WastageScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.recordWastage.path,
+        name: AppRoute.recordWastage.name,
+        builder: (context, state) =>
+            WastageFormScreen(entry: state.extra as WastageEntry?),
+      ),
+      GoRoute(
+        path: AppRoute.wastageDetails.path,
+        name: AppRoute.wastageDetails.name,
+        builder: (context, state) => WastageDetailsScreen(
+          entry: state.extra as WastageEntry? ?? WastageMockData.entries.first,
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.addMenuItem.path,
+        name: AppRoute.addMenuItem.name,
+        builder: (context, state) =>
+            MenuItemFormScreen(item: state.extra as MenuItem?),
+      ),
+      GoRoute(
+        path: AppRoute.menuItemDetails.path,
+        name: AppRoute.menuItemDetails.name,
+        builder: (context, state) => MenuItemDetailsScreen(
+          item: state.extra as MenuItem? ?? MenuMockData.items.first,
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.menuCategories.path,
+        name: AppRoute.menuCategories.name,
+        builder: (context, state) => const MenuCategoriesScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.addOrder.path,
+        name: AppRoute.addOrder.name,
+        builder: (context, state) => const OrderEntryScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.batchEntry.path,
+        name: AppRoute.batchEntry.name,
+        builder: (context, state) => const OrderEntryScreen(isBatchMode: true),
+      ),
+      GoRoute(
+        path: AppRoute.orderDetails.path,
+        name: AppRoute.orderDetails.name,
+        builder: (context, state) {
+          final order = state.extra as SalesOrder?;
+          return OrderDetailsScreen(
+            order: order ?? SalesMockData.todayOrders.first,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.salesHistory.path,
+        name: AppRoute.salesHistory.name,
+        builder: (context, state) => const SalesHistoryScreen(),
       ),
     ],
   );

@@ -13,10 +13,25 @@ enum AppRoute {
   screen3('/screen3'),
   dashboard('/dashboard'),
   profile('/profile'),
+  helpSupport('/help-support'),
   expenses('/expenses'),
+  addExpense('/expenses/add'),
+  expenseDetails('/expenses/details'),
+  expenseCategoryDetails('/expenses/category/details'),
+  expenseCategories('/expenses/categories'),
+  wastage('/wastage'),
+  recordWastage('/wastage/record'),
+  wastageDetails('/wastage/details'),
   menu('/menu'),
+  addMenuItem('/menu/item/add'),
+  menuItemDetails('/menu/item/details'),
+  menuCategories('/menu/categories'),
   reports('/reports'),
-  sales('/sales');
+  sales('/sales'),
+  addOrder('/sales/order/add'),
+  batchEntry('/sales/batch'),
+  orderDetails('/sales/order/details'),
+  salesHistory('/sales/history');
 
   const AppRoute(this.path);
 

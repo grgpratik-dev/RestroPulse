@@ -11,7 +11,7 @@ abstract final class AppTheme {
 
   static ThemeData _create() {
     final generatedScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.brandSeed,
+      seedColor: AppColors.primary,
       brightness: Brightness.light,
     );
     final colorScheme = generatedScheme.copyWith(

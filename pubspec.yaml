@@ -48,6 +48,7 @@ dependencies:
   stream_transform: ^2.1.1
   image_picker: ^1.2.3
   smooth_page_indicator: ^2.0.1
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

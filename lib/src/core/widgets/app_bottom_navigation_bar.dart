@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/src/app/theme/app_colors.dart';
 
 /// Describes a destination displayed by [AppBottomNavigationBar].
 ///
@@ -67,9 +68,10 @@ class AppBottomNavigationBar extends StatelessWidget {
       ],
       currentIndex: selectedIndex,
       onTap: onDestinationSelected,
-      selectedItemColor: Colors.black,
+      selectedItemColor: AppColors.primary,
       unselectedItemColor: Colors.grey,
       showUnselectedLabels: true,
+      type: BottomNavigationBarType.fixed,
     );
   }
 }
