@@ -10,7 +10,13 @@ enum AppRoute {
   main('/main'),
   screen1('/screen1'),
   screen2('/screen2'),
-  screen3('/screen3');
+  screen3('/screen3'),
+  dashboard('/dashboard'),
+  profile('/profile'),
+  expenses('/expenses'),
+  menu('/menu'),
+  reports('/reports'),
+  sales('/sales');
 
   const AppRoute(this.path);
 

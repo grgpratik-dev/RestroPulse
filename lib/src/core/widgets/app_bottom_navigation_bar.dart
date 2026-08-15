@@ -17,19 +17,29 @@ class AppBottomNavigationItem {
 
 final List<AppBottomNavigationItem> items = const [
   AppBottomNavigationItem(
-    label: 'Screen 1',
-    icon: Icons.home_outlined,
-    selectedIcon: Icons.home,
+    label: 'Dashboard',
+    icon: Icons.dashboard_outlined,
+    selectedIcon: Icons.dashboard,
   ),
   AppBottomNavigationItem(
-    label: 'Screen 2',
-    icon: Icons.settings_outlined,
-    selectedIcon: Icons.settings,
+    label: 'Sales',
+    icon: Icons.shopping_cart_outlined,
+    selectedIcon: Icons.shopping_cart,
   ),
   AppBottomNavigationItem(
-    label: 'Screen 3',
-    icon: Icons.info_outline,
-    selectedIcon: Icons.info,
+    label: 'Expenses',
+    icon: Icons.local_atm_outlined,
+    selectedIcon: Icons.local_atm,
+  ),
+  AppBottomNavigationItem(
+    label: 'Menu',
+    icon: Icons.menu,
+    selectedIcon: Icons.menu,
+  ),
+  AppBottomNavigationItem(
+    label: 'Reports',
+    icon: Icons.bar_chart_outlined,
+    selectedIcon: Icons.bar_chart,
   ),
 ];
 
@@ -46,17 +56,20 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: onDestinationSelected,
-      destinations: [
+    return BottomNavigationBar(
+      items: [
         for (final item in items)
-          NavigationDestination(
+          BottomNavigationBarItem(
             icon: Icon(item.icon),
-            selectedIcon: Icon(item.selectedIcon ?? item.icon),
+            activeIcon: Icon(item.selectedIcon ?? item.icon),
             label: item.label,
           ),
       ],
+      currentIndex: selectedIndex,
+      onTap: onDestinationSelected,
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.grey,
+      showUnselectedLabels: true,
     );
   }
 }

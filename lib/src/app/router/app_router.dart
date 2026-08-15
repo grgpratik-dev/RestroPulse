@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
-import 'package:restropulse/src/features/main/presentation/screens/screen1.dart';
+import 'package:restropulse/src/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expenses_screen.dart';
+import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
+import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
+import 'package:restropulse/src/features/sales/presentation/screens/sales_screen.dart';
 
 import '../../features/auth/presentation/screens/register/register_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
-import '../../features/main/presentation/screens/screen2.dart';
-import '../../features/main/presentation/screens/screen3.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -18,7 +21,7 @@ class AppRouter {
   static final GoRouter goRouter = GoRouter(
     debugLogDiagnostics: kDebugMode,
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoute.splash.path,
+    initialLocation: AppRoute.dashboard.path,
     routes: [
       // Define your app routes here
       StatefulShellRoute.indexedStack(
@@ -28,27 +31,45 @@ class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoute.screen1.path,
-                name: AppRoute.screen1.name,
-                builder: (context, state) => Screen1(),
+                path: AppRoute.dashboard.path,
+                name: AppRoute.dashboard.name,
+                builder: (context, state) => DashboardScreen(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoute.screen2.path,
-                name: AppRoute.screen2.name,
-                builder: (context, state) => Screen2(),
+                path: AppRoute.sales.path,
+                name: AppRoute.sales.name,
+                builder: (context, state) => SalesScreen(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoute.screen3.path,
-                name: AppRoute.screen3.name,
-                builder: (context, state) => Screen3(),
+                path: AppRoute.expenses.path,
+                name: AppRoute.expenses.name,
+                builder: (context, state) => ExpensesScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoute.menu.path,
+                name: AppRoute.menu.name,
+                builder: (context, state) => MenuScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoute.reports.path,
+                name: AppRoute.reports.name,
+                builder: (context, state) => ReportsScreen(),
               ),
             ],
           ),
@@ -75,6 +96,12 @@ class AppRouter {
         path: AppRoute.register.path,
         name: AppRoute.register.name,
         builder: (context, state) => const RegisterScreen(),
+      ),
+
+      GoRoute(
+        path: AppRoute.profile.path,
+        name: AppRoute.profile.name,
+        builder: (context, state) => const ProfileScreen(),
       ),
     ],
   );

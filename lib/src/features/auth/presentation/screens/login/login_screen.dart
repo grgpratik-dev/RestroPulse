@@ -4,6 +4,7 @@ import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/app/theme/app_typography.dart';
+import 'package:restropulse/src/core/widgets/app_name.dart';
 
 import '../../../../../app/router/app_route.dart';
 import '../widgets/ambient_glow_widget.dart';
@@ -143,7 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     width: double.infinity,
                                     height: 54,
                                     child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        context.goNamed(
+                                          AppRoute.dashboard.name,
+                                        );
+                                      },
                                       child: Text('Sign in'),
                                     ),
                                   ),
