@@ -25,8 +25,7 @@ class App extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Flutter Project Setup',
         theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.light,
         routerConfig: AppRouter.goRouter,
       ),
     );

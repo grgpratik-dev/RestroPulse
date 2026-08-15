@@ -7,17 +7,15 @@ import 'app_typography.dart';
 
 /// Application-wide Material theme configuration.
 abstract final class AppTheme {
-  static final ThemeData light = _create(Brightness.light);
-  static final ThemeData dark = _create(Brightness.dark);
+  static final ThemeData light = _create();
 
-  static ThemeData _create(Brightness brightness) {
+  static ThemeData _create() {
     final generatedScheme = ColorScheme.fromSeed(
       seedColor: AppColors.brandSeed,
-      brightness: brightness,
+      brightness: Brightness.light,
     );
-    final isDark = brightness == Brightness.dark;
     final colorScheme = generatedScheme.copyWith(
-      surface: isDark ? AppColors.darkSurface : AppColors.surface,
+      surface: AppColors.surface,
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       tertiary: AppColors.accent,
@@ -28,11 +26,9 @@ abstract final class AppTheme {
     return ThemeData(
       fontFamily: AppTypography.interFontFamily,
       useMaterial3: true,
-      brightness: brightness,
+      brightness: Brightness.light,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.background,
+      scaffoldBackgroundColor: AppColors.background,
       textTheme: AppTypography.textTheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       appBarTheme: AppBarTheme(
@@ -44,7 +40,7 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest,
+        fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.spaceMd,
           vertical: AppSpacing.spaceMd,

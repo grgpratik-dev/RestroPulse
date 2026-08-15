@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:restropulse/gen/assets.gen.dart';
+import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -112,9 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_isLastPageView.value) {
-                      // Navigate to the next screen after onboarding
-                      // For example, you can use Navigator.pushReplacement
-                      print("navigate to auth screen");
+                      context.goNamed(AppRoute.login.name);
                     } else {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 300),

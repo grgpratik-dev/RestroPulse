@@ -15,9 +15,6 @@ abstract final class AppColors {
   static const error = Color(0xFFBA1A1A);
   static const success = Color(0xFF2E7D32);
 
-  static const darkBackground = Color(0xFF101214);
-  static const darkSurface = Color(0xFF181A1E);
-
   /// Used to derive accessible container and on-color variants.
   static const brandSeed = primary;
 }

@@ -5,6 +5,8 @@
 enum AppRoute {
   onboarding('/onboarding'),
   splash('/splash'),
+  login('/login'),
+  register('/register'),
   main('/main'),
   screen1('/screen1'),
   screen2('/screen2'),

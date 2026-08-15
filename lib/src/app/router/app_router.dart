@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
+import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:restropulse/src/features/main/presentation/screens/screen1.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
 
+import '../../features/auth/presentation/screens/register/register_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/main/presentation/screens/screen2.dart';
 import '../../features/main/presentation/screens/screen3.dart';
@@ -58,11 +60,21 @@ class AppRouter {
         name: AppRoute.splash.name,
         builder: (context, state) => const SplashScreen(),
       ),
-      
+
       GoRoute(
         path: AppRoute.onboarding.path,
         name: AppRoute.onboarding.name,
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.login.path,
+        name: AppRoute.login.name,
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.register.path,
+        name: AppRoute.register.name,
+        builder: (context, state) => const RegisterScreen(),
       ),
     ],
   );

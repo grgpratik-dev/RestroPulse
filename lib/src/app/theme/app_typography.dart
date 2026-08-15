@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Framework-independent typography tokens used to build the Material theme.
 ///
 /// Widgets should normally use `Theme.of(context).textTheme` so text colors
-/// adapt automatically to the active light or dark theme.
+/// stay consistent with the active application theme.
 abstract final class AppTypography {
   static const interFontFamily = 'Inter';
   static const plusJakartaSansFontFamily = 'Plus Jakarta Sans';
