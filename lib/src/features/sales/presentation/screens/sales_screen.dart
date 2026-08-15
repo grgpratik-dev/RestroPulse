@@ -7,6 +7,7 @@ import 'package:restropulse/src/core/widgets/app_add_floating_action_button.dart
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_channel_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_loading_skeleton.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/sales_entry_type_sheet.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_orders_section.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_sales_summary_card.dart';
@@ -34,8 +35,8 @@ class _SalesScreenState extends State<SalesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: AppAddFloatingActionButton(
-        onPressed: _openAddOrder,
-        tooltip: 'Add order',
+        onPressed: _showEntryOptions,
+        tooltip: 'Record sales',
         heroTag: 'sales-add-order-fab',
       ),
       body: SafeArea(
@@ -58,22 +59,10 @@ class _SalesScreenState extends State<SalesScreen> {
               else if (widget.viewState == SalesViewState.error)
                 SalesErrorCard(onTryAgain: widget.onTryAgain ?? () {})
               else if (widget.viewState == SalesViewState.empty)
-                SalesOrdersEmptyState(
-                  onAddOrder: _openAddOrder,
-                  onBatchEntry: _openBatchEntry,
-                )
+                SalesOrdersEmptyState(onRecordSales: _showEntryOptions)
               else ...[
                 const TodaySalesSummaryCard(),
-                const SizedBox(height: AppSpacing.spaceSm),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: _openBatchEntry,
-                    icon: const Icon(Icons.playlist_add_rounded, size: 19),
-                    label: const Text('Batch Entry'),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.spaceSm),
+                const SizedBox(height: AppSpacing.spaceMd),
                 const SalesQuickMetrics(),
                 const SizedBox(height: AppSpacing.spaceLg),
                 TodayOrdersSection(
@@ -106,6 +95,17 @@ class _SalesScreenState extends State<SalesScreen> {
 
   void _openAddOrder() {
     context.pushNamed(AppRoute.addOrder.name);
+  }
+
+  Future<void> _showEntryOptions() async {
+    final type = await showSalesEntryTypeSheet(context);
+    if (!mounted || type == null) return;
+    switch (type) {
+      case SalesEntryType.singleOrder:
+        _openAddOrder();
+      case SalesEntryType.batchEntry:
+        _openBatchEntry();
+    }
   }
 
   void _openBatchEntry() {

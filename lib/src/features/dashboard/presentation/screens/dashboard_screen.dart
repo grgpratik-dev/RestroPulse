@@ -44,7 +44,7 @@ class DashboardScreen extends StatelessWidget {
               RestaurantPulseCard(
                 hasData: _hasData,
                 onAddOrder: () => _openAddOrder(context),
-                onAddExpense: () => _openExpenses(context),
+                onAddExpense: () => _openAddExpense(context),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               RevenueSummaryCard(hasData: _hasData),
@@ -59,12 +59,12 @@ class DashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spaceSm),
-                AttentionInsightCard(onAction: () => _openExpenses(context)),
+                AttentionInsightCard(onAction: () => _openMenu(context)),
               ],
               const SizedBox(height: AppSpacing.spaceLg),
               QuickActionsSection(
                 onAddOrder: () => _openAddOrder(context),
-                onAddExpense: () => _openExpenses(context),
+                onAddExpense: () => _openAddExpense(context),
                 onRecordWastage: () => _openWastage(context),
               ),
             ],
@@ -78,8 +78,12 @@ class DashboardScreen extends StatelessWidget {
     context.pushNamed(AppRoute.addOrder.name);
   }
 
-  void _openExpenses(BuildContext context) {
-    context.goNamed(AppRoute.expenses.name);
+  void _openAddExpense(BuildContext context) {
+    context.pushNamed(AppRoute.addExpense.name);
+  }
+
+  void _openMenu(BuildContext context) {
+    context.goNamed(AppRoute.menu.name);
   }
 
   void _openWastage(BuildContext context) {

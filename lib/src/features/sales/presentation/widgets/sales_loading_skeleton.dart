@@ -64,14 +64,9 @@ class SalesErrorCard extends StatelessWidget {
 }
 
 class SalesOrdersEmptyState extends StatelessWidget {
-  const SalesOrdersEmptyState({
-    required this.onAddOrder,
-    required this.onBatchEntry,
-    super.key,
-  });
+  const SalesOrdersEmptyState({required this.onRecordSales, super.key});
 
-  final VoidCallback onAddOrder;
-  final VoidCallback onBatchEntry;
+  final VoidCallback onRecordSales;
 
   @override
   Widget build(BuildContext context) {
@@ -114,18 +109,9 @@ class SalesOrdersEmptyState extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: onAddOrder,
+              onPressed: onRecordSales,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Add Order'),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceXs),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: onBatchEntry,
-              icon: const Icon(Icons.playlist_add_rounded),
-              label: const Text('Batch Entry'),
+              label: const Text('Record Sales'),
             ),
           ),
         ],

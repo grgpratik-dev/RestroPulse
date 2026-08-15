@@ -76,7 +76,7 @@ class ExpenseSummaryCard extends StatelessWidget {
                   height: 38,
                   color: Colors.white.withValues(alpha: 0.12),
                 ),
-                Expanded(
+                const Expanded(
                   flex: 2,
                   child: _SummaryMetric(
                     label: 'Largest category',
