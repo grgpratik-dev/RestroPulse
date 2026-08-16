@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/di/dependency_injection.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_form_widgets.dart';
 
@@ -304,21 +305,13 @@ class _MenuItemFormState extends State<_MenuItemForm> {
     if (duplicate) {
       final proceed = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Similar item already exists'),
-          content: const Text(
-            'An item with this name is already on your menu. Save it anyway?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Review'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Save Anyway'),
-            ),
-          ],
+        builder: (context) => const AppConfirmationDialog(
+          title: 'Similar item already exists',
+          message:
+              'An item with this name is already on your menu. Save it anyway?',
+          confirmLabel: 'Save Anyway',
+          cancelLabel: 'Review',
+          icon: Icons.content_copy_outlined,
         ),
       );
       if (proceed != true || !mounted) return;

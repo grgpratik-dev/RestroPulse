@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/report_data.dart';
 
@@ -92,7 +93,7 @@ class PerformanceOverviewCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.spaceLg),
-          Divider(color: Colors.white.withValues(alpha: .18), height: 1),
+          AppDivider(color: Colors.white.withValues(alpha: .18), height: 1),
           const SizedBox(height: AppSpacing.spaceMd),
           Row(
             children: [

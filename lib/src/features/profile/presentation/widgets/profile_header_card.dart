@@ -92,7 +92,7 @@ class ProfileHeaderCard extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.edit_outlined, size: 17),
-                  label: const Text('Edit Profile'),
+                  label: const Text('Edit Restaurant'),
                 ),
               ],
             ),

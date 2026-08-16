@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,6 +6,7 @@ import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/menu_item.dart';
+import 'menu_image_provider.dart';
 
 class MenuItemCard extends StatelessWidget {
   const MenuItemCard({
@@ -83,7 +82,7 @@ class MenuItemCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _Metric(
-                              label: 'UNITS · THIS MONTH',
+                              label: 'UNITS',
                               value: NumberFormat.decimalPattern().format(
                                 item.unitsSold,
                               ),
@@ -91,7 +90,7 @@ class MenuItemCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: _Metric(
-                              label: 'REVENUE · THIS MONTH',
+                              label: 'REVENUE',
                               value: 'Rs ${currency.format(item.revenue)}',
                               positive: item.revenue > 0,
                             ),
@@ -154,7 +153,7 @@ class _MenuImage extends StatelessWidget {
                   size: 30,
                 ),
               )
-            : Image.file(File(path!), fit: BoxFit.cover),
+            : Image(image: menuImageProvider(path!), fit: BoxFit.cover),
       ),
     );
   }

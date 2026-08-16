@@ -1,7 +1,7 @@
 part of '../login/login_screen.dart';
 
 class SectionDivider extends StatelessWidget {
-  const SectionDivider();
+  const SectionDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +9,9 @@ class SectionDivider extends StatelessWidget {
 
     return Row(
       children: [
-        Expanded(child: Divider(color: colorScheme.outlineVariant)),
+        Expanded(
+          child: AppDivider(height: 1, color: colorScheme.outlineVariant),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spaceSm),
           child: Text(
@@ -20,7 +22,9 @@ class SectionDivider extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(child: Divider(color: colorScheme.outlineVariant)),
+        Expanded(
+          child: AppDivider(height: 1, color: colorScheme.outlineVariant),
+        ),
       ],
     );
   }

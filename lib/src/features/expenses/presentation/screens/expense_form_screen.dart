@@ -150,7 +150,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   const Text(
                     'This is a large expense. Please confirm the amount.',
                     style: TextStyle(
-                      color: AppColors.warning,
+                      color: AppColors.expenseForeground,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

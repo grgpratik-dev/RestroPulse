@@ -8,6 +8,8 @@ import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_info_row.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
@@ -68,7 +70,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                   Text(
                     'Rs ${currency.format(_expense.amount)}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.warning,
+                      color: AppColors.expenseForeground,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -88,10 +90,10 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                     label: 'Date',
                     value: DateFormat('MMM d, yyyy').format(_expense.date),
                   ),
-                  const Divider(height: 24),
+                  const AppDivider(),
                   AppInfoRow(label: 'Expense type', value: _expense.type.label),
                   if (_expense.notes?.isNotEmpty == true) ...[
-                    const Divider(height: 24),
+                    const AppDivider(),
                     AppInfoRow(label: 'Notes', value: _expense.notes!),
                   ],
                 ],
@@ -147,29 +149,13 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
   Future<void> _confirmDelete() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        icon: Icon(
-          Icons.delete_outline_rounded,
-          color: Theme.of(context).colorScheme.error,
-        ),
-        title: const Text('Delete expense?'),
-        content: const Text(
-          "This expense will be removed from your restaurant's spending data.",
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
+      builder: (context) => const AppConfirmationDialog(
+        title: 'Delete expense?',
+        message:
+            "This expense will be removed from your restaurant's spending data.",
+        confirmLabel: 'Delete',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
       ),
     );
     if (!mounted || confirmed != true) return;

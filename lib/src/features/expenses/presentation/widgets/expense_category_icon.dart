@@ -32,12 +32,12 @@ class ExpenseCategoryIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.warningMuted,
+        color: AppColors.expenseSurface,
         borderRadius: BorderRadius.circular(size * 0.27),
       ),
       child: Icon(
         expenseCategoryIcon(category),
-        color: AppColors.warning,
+        color: AppColors.expenseForeground,
         size: size * 0.5,
       ),
     );

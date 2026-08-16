@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../domain/models/expense.dart';
-import '../widgets/expense_category_icon.dart';
+import '../widgets/expense_category_widgets.dart';
 
 class ExpenseCategoriesScreen extends StatefulWidget {
   const ExpenseCategoriesScreen({super.key});
@@ -23,155 +27,169 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
       )
       .toList();
 
+  int get _fixedCount => _categories
+      .where((category) => category.type == ExpenseType.fixed)
+      .length;
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Expense Categories')),
-      floatingActionButton: FloatingActionButton.extended(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'Expense Categories',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        backgroundColor: AppColors.background,
+        scrolledUnderElevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        key: const ValueKey('expense-category-add-button'),
+        tooltip: 'Add category',
+        backgroundColor: AppColors.expenseAccent,
+        foregroundColor: AppColors.surface,
         onPressed: _addCategory,
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('Add Category'),
+        child: const Icon(Icons.add_rounded),
       ),
       body: SafeArea(
         top: false,
-        child: ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-          itemCount: _categories.length + 1,
-          separatorBuilder: (_, _) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Rename categories or remove custom categories you no longer use.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.spaceMd,
+            AppSpacing.spaceSm,
+            AppSpacing.spaceMd,
+            AppSpacing.space6xl,
+          ),
+          children: [
+            ExpenseCategorySummaryCard(
+              categoryCount: _categories.length,
+              fixedCount: _fixedCount,
+            ),
+            const SizedBox(height: AppSpacing.spaceLg),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Categories',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppColors.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              );
-            }
-            final itemIndex = index - 1;
-            final category = _categories[itemIndex];
-            return Card(
-              margin: EdgeInsets.zero,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spaceMd,
-                  vertical: 5,
+                Text(
+                  '${_categories.length}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.neutral600,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                leading: ExpenseCategoryIcon(category: category.name),
-                title: Text(
-                  category.name,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                subtitle: Text(category.type.label),
-                trailing: PopupMenuButton<String>(
-                  onSelected: (action) => _handleAction(action, itemIndex),
-                  itemBuilder: (_) => [
-                    const PopupMenuItem(value: 'rename', child: Text('Rename')),
-                    if (!category.isDefault)
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      ),
-                  ],
-                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.spaceSm),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+                border: Border.all(color: AppColors.neutral300),
               ),
-            );
-          },
+              child: Column(
+                children: [
+                  for (var index = 0; index < _categories.length; index++) ...[
+                    ExpenseCategoryTile(
+                      name: _categories[index].name,
+                      type: _categories[index].type,
+                      onRename: () => _editCategory(index),
+                      onDelete: _categories[index].isDefault
+                          ? null
+                          : () => _confirmDelete(index),
+                    ),
+                    if (index != _categories.length - 1)
+                      const AppDivider(height: 1, indent: AppSpacing.spaceMd),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.spaceSm),
+            Text(
+              'Built-in categories can be renamed. Custom categories can also be deleted when no expenses use them.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppColors.neutral600,
+                height: 1.4,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _handleAction(String action, int index) async {
-    if (action == 'rename') {
-      final name = await _askForName(initial: _categories[index].name);
-      if (!mounted || name == null) return;
-      setState(
-        () => _categories[index] = _categories[index].copyWith(name: name),
-      );
-    } else if (action == 'delete') {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Delete this category?'),
-          content: const Text(
-            'Only unused custom categories should be deleted.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Delete Category'),
-            ),
-          ],
-        ),
-      );
-      if (confirmed == true && mounted) {
-        setState(() => _categories.removeAt(index));
-      }
-    }
-  }
-
   Future<void> _addCategory() async {
-    final name = await _askForName();
-    if (!mounted || name == null) return;
+    final result = await _showEditor();
+    if (!mounted || result == null) return;
     setState(
       () => _categories.add(
         _CategorySetting(
-          name: name,
-          type: ExpenseType.variable,
+          name: result.name,
+          type: result.type,
           isDefault: false,
         ),
       ),
     );
   }
 
-  Future<String?> _askForName({String initial = ''}) async {
-    final controller = TextEditingController(text: initial);
-    final result = await showModalBottomSheet<String>(
+  Future<void> _editCategory(int index) async {
+    final category = _categories[index];
+    final result = await _showEditor(category: category);
+    if (!mounted || result == null) return;
+    setState(
+      () => _categories[index] = category.copyWith(
+        name: result.name,
+        type: result.type,
+      ),
+    );
+  }
+
+  Future<ExpenseCategoryEditorResult?> _showEditor({
+    _CategorySetting? category,
+  }) {
+    return showModalBottomSheet<ExpenseCategoryEditorResult>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          24,
-          0,
-          24,
-          MediaQuery.viewInsetsOf(context).bottom + 24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              initial.isEmpty ? 'Add category' : 'Rename category',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: 'Category name'),
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, controller.text.trim()),
-              child: const Text('Save Category'),
-            ),
-          ],
+      backgroundColor: AppColors.surface,
+      builder: (context) => ExpenseCategoryEditorSheet(
+        initialName: category?.name,
+        initialType: category?.type ?? ExpenseType.variable,
+        existingNames: _categories
+            .map((item) => item.name.toLowerCase())
+            .toSet(),
+      ),
+    );
+  }
+
+  Future<void> _confirmDelete(int index) async {
+    final category = _categories[index];
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AppConfirmationDialog(
+        title: 'Delete ${category.name}?',
+        message:
+            'This custom category will be removed from your expense organization.',
+        confirmLabel: 'Delete',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
+        confirmButtonKey: const ValueKey(
+          'confirm-delete-expense-category-button',
         ),
       ),
     );
-    controller.dispose();
-    return result == null || result.isEmpty ? null : result;
+    if (confirmed != true || !mounted) return;
+    setState(() => _categories.removeAt(index));
   }
 }
 
@@ -186,9 +204,10 @@ class _CategorySetting {
   final ExpenseType type;
   final bool isDefault;
 
-  _CategorySetting copyWith({String? name}) => _CategorySetting(
-    name: name ?? this.name,
-    type: type,
-    isDefault: isDefault,
-  );
+  _CategorySetting copyWith({String? name, ExpenseType? type}) =>
+      _CategorySetting(
+        name: name ?? this.name,
+        type: type ?? this.type,
+        isDefault: isDefault,
+      );
 }

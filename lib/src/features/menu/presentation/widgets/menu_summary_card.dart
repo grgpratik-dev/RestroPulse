@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/menu_item.dart';
 
@@ -33,14 +34,14 @@ class MenuSummaryCard extends StatelessWidget {
                 value: '${items.length}',
               ),
             ),
-            const VerticalDivider(indent: 4, endIndent: 4),
+            const AppDivider.vertical(width: 1, indent: 4, endIndent: 4),
             Expanded(
               child: _SummaryValue(
                 label: 'Avg. food cost',
                 value: '${avgCost.toStringAsFixed(1)}%',
               ),
             ),
-            const VerticalDivider(indent: 4, endIndent: 4),
+            const AppDivider.vertical(width: 1, indent: 4, endIndent: 4),
             Expanded(
               flex: 2,
               child: _SummaryValue(

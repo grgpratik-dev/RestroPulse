@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:restropulse/src/features/auth/presentation/screens/forgot_password_screen.dart';
+import 'package:restropulse/src/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:restropulse/src/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_categories_screen.dart';
@@ -17,7 +19,10 @@ import 'package:restropulse/src/features/menu/presentation/screens/menu_item_for
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/change_password_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/members_access_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/personal_information_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
@@ -115,6 +120,17 @@ class AppRouter {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
+        path: AppRoute.forgotPassword.path,
+        name: AppRoute.forgotPassword.name,
+        builder: (context, state) =>
+            ForgotPasswordScreen(initialEmail: state.extra as String?),
+      ),
+      GoRoute(
+        path: AppRoute.resetPassword.path,
+        name: AppRoute.resetPassword.name,
+        builder: (context, state) => const ResetPasswordScreen(),
+      ),
+      GoRoute(
         path: AppRoute.register.path,
         name: AppRoute.register.name,
         builder: (context, state) => const RegisterScreen(),
@@ -144,6 +160,21 @@ class AppRouter {
         path: AppRoute.profile.path,
         name: AppRoute.profile.name,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.editRestaurant.path,
+        name: AppRoute.editRestaurant.name,
+        builder: (context, state) => const EditRestaurantScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.personalInformation.path,
+        name: AppRoute.personalInformation.name,
+        builder: (context, state) => const PersonalInformationScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.changePassword.path,
+        name: AppRoute.changePassword.name,
+        builder: (context, state) => const ChangePasswordScreen(),
       ),
       GoRoute(
         path: AppRoute.membersAccess.path,

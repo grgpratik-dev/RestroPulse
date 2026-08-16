@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
@@ -54,7 +55,8 @@ class SettingsSection extends StatelessWidget {
               for (var index = 0; index < children.length; index++) ...[
                 children[index],
                 if (index != children.length - 1)
-                  Divider(
+                  AppDivider(
+                    height: 1,
                     indent: 68,
                     endIndent: AppSpacing.spaceMd,
                     color: colorScheme.outlineVariant.withValues(alpha: 0.52),

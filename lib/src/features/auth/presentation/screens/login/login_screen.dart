@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_name.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 
 import '../../../../../app/router/app_route.dart';
 import '../widgets/ambient_glow_widget.dart';
@@ -19,7 +20,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
   bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const FieldLabel('Email address'),
                                   const SizedBox(height: AppSpacing.spaceXs),
                                   TextFormField(
+                                    key: const ValueKey('login-email-field'),
+                                    controller: _emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     textInputAction: TextInputAction.next,
                                     autofillHints: const [AutofillHints.email],
@@ -99,6 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const FieldLabel('Password'),
                                   const SizedBox(height: AppSpacing.spaceXs),
                                   TextFormField(
+                                    key: const ValueKey(
+                                      'login-password-field',
+                                    ),
                                     obscureText: _obscurePassword,
                                     textInputAction: TextInputAction.done,
                                     autofillHints: const [
@@ -112,6 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         Icons.lock_outline_rounded,
                                       ),
                                       suffixIcon: IconButton(
+                                        key: const ValueKey(
+                                          'login-password-visibility',
+                                        ),
                                         tooltip: _obscurePassword
                                             ? 'Show password'
                                             : 'Hide password',
@@ -133,12 +149,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: TextButton(
-                                      onPressed: () {},
+                                      onPressed: () => context.pushNamed(
+                                        AppRoute.forgotPassword.name,
+                                        extra: _emailController.text.trim(),
+                                      ),
                                       child: const Text('Forgot password?'),
                                     ),
                                   ),
                                   const SizedBox(height: AppSpacing.spaceMd),
                                   SizedBox(
+                                    key: const ValueKey(
+                                      'login-submit-button',
+                                    ),
                                     width: double.infinity,
                                     height: 54,
                                     child: ElevatedButton(
@@ -158,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child: OutlinedButton(
                                       onPressed: () {},
                                       child: Row(
+                                        mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
@@ -171,13 +194,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   BorderRadius.circular(999),
                                             ),
                                             child: Image.asset(
+                                              key: const ValueKey(
+                                                'login-google-mark',
+                                              ),
                                               Assets.images.googleLogo.path,
                                               fit: BoxFit.contain,
                                               filterQuality: FilterQuality.high,
                                             ),
                                           ),
                                           SizedBox(width: AppSpacing.spaceSm),
-                                          Text('Continue with Google'),
+                                          Flexible(
+                                            child: Text(
+                                              'Continue with Google',
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -185,8 +216,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                               const SizedBox(height: AppSpacing.spaceLg),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Text(
                                     'New to RestroPulse?',

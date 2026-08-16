@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import 'expense_category_icon.dart';
@@ -42,7 +43,7 @@ class RecentExpensesList extends StatelessWidget {
                 minimumSize: const Size(0, 40),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 backgroundColor: hasActiveFilter
-                    ? AppColors.warningMuted
+                    ? AppColors.expenseSurface
                     : null,
               ),
               icon: Icon(
@@ -78,7 +79,7 @@ class RecentExpensesList extends StatelessWidget {
                     expense: expenses[index],
                     onTap: () => onExpenseTap(expenses[index]),
                   ),
-                  if (index != expenses.length - 1) const Divider(),
+                  if (index != expenses.length - 1) const AppDivider(height: 1),
                 ],
               ],
             ),
@@ -129,7 +130,7 @@ class _ExpenseRow extends StatelessWidget {
                   Text(
                     expense.type.label,
                     style: const TextStyle(
-                      color: AppColors.primary,
+                      color: AppColors.expenseForeground,
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                     ),

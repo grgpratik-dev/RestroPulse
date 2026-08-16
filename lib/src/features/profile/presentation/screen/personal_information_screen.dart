@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_spacing.dart';
+import '../widgets/profile_form_widgets.dart';
+
+class PersonalInformationScreen extends StatefulWidget {
+  const PersonalInformationScreen({this.onSaved, super.key});
+
+  final VoidCallback? onSaved;
+
+  @override
+  State<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
+}
+
+class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: 'Pratik Gurung');
+    _emailController = TextEditingController(text: 'pratik@example.com');
+    _phoneController = TextEditingController(text: '+977 9800000000');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'Personal Information',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        backgroundColor: AppColors.background,
+        scrolledUnderElevation: 0,
+      ),
+      body: SafeArea(
+        top: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.spaceMd,
+              AppSpacing.spaceSm,
+              AppSpacing.spaceMd,
+              AppSpacing.space2xl,
+            ),
+            children: [
+              ProfileImageEditor(
+                label: 'Change profile photo',
+                onTap: () => showProfileImageOptions(
+                  context,
+                  title: 'Change profile photo',
+                ),
+              ),
+              const SizedBox(height: AppSpacing.spaceXl),
+              ProfileFormSection(
+                title: 'Account holder',
+                description:
+                    'Your personal details are separate from the restaurant profile.',
+                children: [
+                  TextFormField(
+                    key: const ValueKey('personal-name-field'),
+                    controller: _nameController,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.name],
+                    decoration: const InputDecoration(labelText: 'Full name'),
+                    validator: _required('Enter your full name'),
+                  ),
+                  const SizedBox(height: AppSpacing.spaceMd),
+                  TextFormField(
+                    key: const ValueKey('personal-email-field'),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.email],
+                    decoration: const InputDecoration(
+                      labelText: 'Email address',
+                      helperText: 'This email is used to sign in.',
+                    ),
+                    validator: _emailValidator,
+                  ),
+                  const SizedBox(height: AppSpacing.spaceMd),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.telephoneNumber],
+                    decoration: const InputDecoration(
+                      labelText: 'Phone number',
+                    ),
+                    validator: _required('Enter your phone number'),
+                    onFieldSubmitted: (_) => _save(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.spaceXl),
+              ProfileFormSection(
+                title: 'Restaurant access',
+                description:
+                    'Access is managed by the restaurant owner from Members & Access.',
+                children: [
+                  TextFormField(
+                    initialValue: 'Owner · Boys to Serve',
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Current role',
+                      suffixIcon: Icon(Icons.lock_outline_rounded, size: 19),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.spaceXl),
+              SizedBox(
+                height: 52,
+                child: FilledButton(
+                  key: const ValueKey('save-personal-information-button'),
+                  onPressed: _save,
+                  child: const Text('Save personal information'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  FormFieldValidator<String> _required(String message) => (value) {
+    if (value == null || value.trim().isEmpty) return message;
+    return null;
+  };
+
+  String? _emailValidator(String? value) {
+    final email = value?.trim() ?? '';
+    if (email.isEmpty) return 'Enter your email address';
+    if (!email.contains('@') || !email.contains('.')) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  void _save() {
+    if (!_formKey.currentState!.validate()) return;
+    widget.onSaved?.call();
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(content: Text('Personal information updated.')),
+      );
+  }
+}

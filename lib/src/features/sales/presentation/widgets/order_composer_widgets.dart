@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 
@@ -197,7 +198,7 @@ class CurrentOrderItems extends StatelessWidget {
                 onRemove: () => onRemove(item),
               ),
               if (item != selected.last)
-                Divider(color: theme.colorScheme.outlineVariant),
+                AppDivider(height: 1, color: theme.colorScheme.outlineVariant),
             ],
         ],
       ),
@@ -238,10 +239,7 @@ class OrderTotalsCard extends StatelessWidget {
             label: 'Discount',
             value: 'Rs ${currency.format(discount)}',
           ),
-          Divider(
-            height: AppSpacing.spaceLg,
-            color: theme.colorScheme.outlineVariant,
-          ),
+          AppDivider(color: theme.colorScheme.outlineVariant),
           _TotalRow(
             label: 'Total',
             value: 'Rs ${currency.format(total)}',

@@ -139,12 +139,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         Container(
           padding: const EdgeInsets.all(AppSpacing.spaceSm),
           decoration: BoxDecoration(
-            color: AppColors.warningSurface,
+            color: AppColors.expenseSurface,
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
             children: [
-              const Icon(Icons.insights_outlined, color: AppColors.warning),
+              const Icon(
+                Icons.insights_outlined,
+                color: AppColors.expenseForeground,
+              ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(
                 child: Text(

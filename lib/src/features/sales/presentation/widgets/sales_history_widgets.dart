@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 
 class SelectedDateSummaryCard extends StatelessWidget {
@@ -95,10 +96,7 @@ class _MetricsSurface extends StatelessWidget {
           Expanded(
             child: _HistoryMetric(label: 'Orders', value: '$orders'),
           ),
-          const SizedBox(
-            height: 34,
-            child: VerticalDivider(width: AppSpacing.spaceLg),
-          ),
+          const SizedBox(height: 34, child: AppDivider.vertical()),
           Expanded(
             child: _HistoryMetric(
               label: 'Average Order',

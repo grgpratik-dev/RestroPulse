@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
+import '../../../../core/widgets/app_divider.dart';
+import '../widgets/menu_category_widgets.dart';
 
 class MenuCategoriesScreen extends StatefulWidget {
   const MenuCategoriesScreen({super.key});
@@ -19,129 +23,119 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
     const _MenuCategory('Snacks', 4),
   ];
 
+  int get _totalItems =>
+      _categories.fold(0, (total, category) => total + category.itemCount);
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Menu Categories')),
-      floatingActionButton: FloatingActionButton.extended(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          'Menu Categories',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        backgroundColor: AppColors.background,
+        scrolledUnderElevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        key: const ValueKey('menu-category-add-button'),
+        tooltip: 'Add category',
         onPressed: _editCategory,
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('Add Category'),
+        child: const Icon(Icons.add_rounded),
       ),
       body: SafeArea(
         top: false,
-        child: ListView.separated(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-          itemCount: _categories.length + 1,
-          separatorBuilder: (_, _) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Organize items for faster menu management and order entry.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              );
-            }
-            final itemIndex = index - 1;
-            final category = _categories[itemIndex];
-            return Card(
-              margin: EdgeInsets.zero,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spaceMd,
-                  vertical: 6,
-                ),
-                leading: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: AppColors.mintSoft,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.category_outlined,
-                    color: AppColors.primary,
-                  ),
-                ),
-                title: Text(
-                  category.name,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                subtitle: Text('${category.itemCount} items'),
-                trailing: PopupMenuButton<String>(
-                  onSelected: (action) => _handleAction(action, itemIndex),
-                  itemBuilder: (_) => [
-                    const PopupMenuItem(value: 'rename', child: Text('Rename')),
-                    if (category.itemCount == 0)
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<void> _handleAction(String action, int index) async {
-    if (action == 'rename') {
-      await _editCategory(index: index);
-    } else if (action == 'delete') {
-      setState(() => _categories.removeAt(index));
-    }
-  }
-
-  Future<void> _editCategory({int? index}) async {
-    final controller = TextEditingController(
-      text: index == null ? '' : _categories[index].name,
-    );
-    final name = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          24,
-          0,
-          24,
-          MediaQuery.viewInsetsOf(context).bottom + 24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.spaceMd,
+            AppSpacing.spaceSm,
+            AppSpacing.spaceMd,
+            AppSpacing.space6xl,
+          ),
           children: [
+            MenuCategorySummaryCard(
+              categoryCount: _categories.length,
+              itemCount: _totalItems,
+            ),
+            const SizedBox(height: AppSpacing.spaceLg),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Categories',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppColors.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${_categories.length}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.neutral600,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.spaceSm),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+                border: Border.all(color: AppColors.neutral300),
+              ),
+              child: Column(
+                children: [
+                  for (var index = 0; index < _categories.length; index++) ...[
+                    MenuCategoryTile(
+                      name: _categories[index].name,
+                      onRename: () => _editCategory(index: index),
+                      onDelete: _categories[index].itemCount == 0
+                          ? () => _confirmDelete(index)
+                          : null,
+                    ),
+                    if (index != _categories.length - 1)
+                      const AppDivider(height: 1, indent: AppSpacing.spaceMd),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.spaceSm),
             Text(
-              index == null ? 'Add category' : 'Rename category',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: 'Category name'),
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, controller.text.trim()),
-              child: Text(index == null ? 'Add Category' : 'Save Name'),
+              'A category can be deleted after all of its menu items are moved or removed.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppColors.neutral600,
+                height: 1.4,
+              ),
             ),
           ],
         ),
       ),
     );
-    controller.dispose();
-    if (!mounted || name == null || name.isEmpty) return;
+  }
+
+  Future<void> _editCategory({int? index}) async {
+    final existingNames = _categories
+        .map((category) => category.name.toLowerCase())
+        .toSet();
+    final name = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: AppColors.surface,
+      builder: (context) => MenuCategoryEditorSheet(
+        initialName: index == null ? null : _categories[index].name,
+        existingNames: existingNames,
+      ),
+    );
+    if (!mounted || name == null) return;
+
     setState(() {
       if (index == null) {
         _categories.add(_MenuCategory(name, 0));
@@ -149,6 +143,23 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
         _categories[index] = _categories[index].copyWith(name: name);
       }
     });
+  }
+
+  Future<void> _confirmDelete(int index) async {
+    final category = _categories[index];
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AppConfirmationDialog(
+        title: 'Delete ${category.name}?',
+        message: 'This category will be removed from your menu organization.',
+        confirmLabel: 'Delete',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
+        confirmButtonKey: const ValueKey('confirm-delete-category-button'),
+      ),
+    );
+    if (confirmed != true) return;
+    setState(() => _categories.removeAt(index));
   }
 }
 

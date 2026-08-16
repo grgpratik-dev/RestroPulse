@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/features/profile/presentation/widgets/members_access_widgets.dart';
 
 class MembersAccessScreen extends StatefulWidget {
@@ -119,7 +121,8 @@ class _MembersAccessScreenState extends State<MembersAccessScreen> {
                           ? () => _removeMember(_members[index])
                           : null,
                     ),
-                    if (index != _members.length - 1) const Divider(indent: 72),
+                    if (index != _members.length - 1)
+                      const AppDivider(height: 1, indent: 72),
                   ],
                 ],
               ),
@@ -143,22 +146,13 @@ class _MembersAccessScreenState extends State<MembersAccessScreen> {
   Future<void> _confirmRegenerateCode() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Regenerate join code?'),
-        content: const Text(
-          'The current code will stop working immediately. Existing pending requests will not be affected.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            key: const ValueKey('confirm-regenerate-code-button'),
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Regenerate'),
-          ),
-        ],
+      builder: (dialogContext) => const AppConfirmationDialog(
+        title: 'Regenerate join code?',
+        message:
+            'The current code will stop working immediately. Existing pending requests will not be affected.',
+        confirmLabel: 'Regenerate',
+        icon: Icons.refresh_rounded,
+        confirmButtonKey: ValueKey('confirm-regenerate-code-button'),
       ),
     );
     if (confirmed != true) return;

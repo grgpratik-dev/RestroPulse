@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_detail_widgets.dart';
 
@@ -65,31 +65,13 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
   Future<void> _confirmDelete() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        icon: const Icon(
-          Icons.delete_outline_rounded,
-          color: AppColors.error,
-          size: 34,
-        ),
-        title: const Text('Delete this menu item?'),
-        content: const Text(
-          'This removes the item from your current menu. Its historical sales will remain available in reports.',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete Item'),
-          ),
-        ],
+      builder: (context) => const AppConfirmationDialog(
+        title: 'Delete this menu item?',
+        message:
+            'This removes the item from your current menu. Its historical sales will remain available in reports.',
+        confirmLabel: 'Delete Item',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
       ),
     );
     if (confirmed == true && mounted) {

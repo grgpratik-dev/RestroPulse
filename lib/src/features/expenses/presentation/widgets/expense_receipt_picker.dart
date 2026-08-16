@@ -20,9 +20,9 @@ class ExpenseReceiptPicker extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(AppSpacing.spaceSm),
           decoration: BoxDecoration(
-            color: AppColors.warningSurface,
+            color: AppColors.expenseSurface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.warningBorder),
+            border: Border.all(color: AppColors.expenseBorder),
           ),
           child: Row(
             children: [
@@ -35,7 +35,7 @@ class ExpenseReceiptPicker extends StatelessWidget {
                           color: Colors.white,
                           child: Icon(
                             Icons.receipt_long_outlined,
-                            color: AppColors.warning,
+                            color: AppColors.expenseForeground,
                           ),
                         )
                       : Image.file(File(path), fit: BoxFit.cover),

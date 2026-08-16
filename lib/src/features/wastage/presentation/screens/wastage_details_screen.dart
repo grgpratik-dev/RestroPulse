@@ -6,6 +6,8 @@ import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_info_row.dart';
+import '../../../../core/widgets/app_confirmation_dialog.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
 
@@ -85,21 +87,21 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                 children: [
                   AppInfoRow(label: 'Reason', value: _entry.reason.label),
                   if (_entry.quantityLabel != null) ...[
-                    const Divider(height: 24),
+                    const AppDivider(),
                     AppInfoRow(label: 'Quantity', value: _entry.quantityLabel!),
                   ],
-                  const Divider(height: 24),
+                  const AppDivider(),
                   AppInfoRow(
                     label: 'Date',
                     value: DateFormat('MMM d, yyyy').format(_entry.date),
                   ),
-                  const Divider(height: 24),
+                  const AppDivider(),
                   AppInfoRow(
                     label: 'Time',
                     value: DateFormat.jm().format(_entry.date),
                   ),
                   if (_entry.notes?.isNotEmpty == true) ...[
-                    const Divider(height: 24),
+                    const AppDivider(),
                     AppInfoRow(label: 'Notes', value: _entry.notes!),
                   ],
                 ],
@@ -133,24 +135,13 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
   Future<void> _delete() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete wastage entry?'),
-        content: const Text(
-          "This entry will be removed from your restaurant's wastage analytics.",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
+      builder: (context) => const AppConfirmationDialog(
+        title: 'Delete wastage entry?',
+        message:
+            "This entry will be removed from your restaurant's wastage analytics.",
+        confirmLabel: 'Delete',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
       ),
     );
     if (!mounted || confirmed != true) return;

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 
@@ -18,11 +19,11 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
   final ValueChanged<ExpenseCategorySummary> onCategoryTap;
 
   static const _colors = [
-    AppColors.warningChart,
+    AppColors.expenseAccent,
     AppColors.primaryStrong,
     AppColors.secondary,
     AppColors.accent,
-    AppColors.amberDark,
+    AppColors.expenseForeground,
     AppColors.neutral500,
   ];
 
@@ -49,13 +50,13 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: 168,
+                height: 200,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     PieChart(
                       PieChartData(
-                        centerSpaceRadius: 46,
+                        centerSpaceRadius: 62,
                         sectionsSpace: 3,
                         startDegreeOffset: -90,
                         pieTouchData: PieTouchData(enabled: false),
@@ -68,7 +69,7 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
                             PieChartSectionData(
                               value: categories[index].amount,
                               color: _colors[index % _colors.length],
-                              radius: 32,
+                              radius: 34,
                               showTitle: false,
                             ),
                         ],
@@ -88,17 +89,24 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
                               ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          'Rs ${currency.format(total)}',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                        SizedBox(
+                          width: 108,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'Rs ${currency.format(total)}',
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              const Divider(height: AppSpacing.spaceLg),
+              const AppDivider(),
               for (var index = 0; index < categories.length; index++) ...[
                 _CategoryRow(
                   category: categories[index],
@@ -107,7 +115,7 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
                       'Rs ${currency.format(categories[index].amount)}',
                   onTap: () => onCategoryTap(categories[index]),
                 ),
-                if (index != categories.length - 1) const Divider(height: 1),
+                if (index != categories.length - 1) const AppDivider(height: 1),
               ],
             ],
           ),

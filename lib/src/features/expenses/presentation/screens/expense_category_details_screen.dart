@@ -152,7 +152,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                                 BarChartRodData(
                                   toY: trend[index].amount,
                                   width: trend.length > 7 ? 10 : 18,
-                                  color: AppColors.warningChart,
+                                  color: AppColors.expenseAccent,
                                   borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(5),
                                   ),

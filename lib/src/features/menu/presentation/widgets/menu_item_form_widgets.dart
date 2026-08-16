@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +7,7 @@ import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import '../../../../core/widgets/custom_container.dart';
+import 'menu_image_provider.dart';
 
 class MenuPhotoPicker extends StatelessWidget {
   const MenuPhotoPicker({this.initialPath, super.key});
@@ -35,7 +34,7 @@ class MenuPhotoPicker extends StatelessWidget {
                           size: 34,
                         ),
                       )
-                    : Image.file(File(path), fit: BoxFit.cover),
+                    : Image(image: menuImageProvider(path), fit: BoxFit.cover),
               ),
             ),
             const SizedBox(width: AppSpacing.spaceMd),

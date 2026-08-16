@@ -19,7 +19,12 @@ class BrandHeader extends StatelessWidget {
               child: Image.asset(Assets.logo.applogo.path, fit: BoxFit.contain),
             ),
             const SizedBox(width: AppSpacing.spaceSm),
-            appName(context: context),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: appName(context: context),
+              ),
+            ),
           ],
         ),
       ),

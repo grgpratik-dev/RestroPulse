@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 
 class RestaurantInvitationPreviewCard extends StatelessWidget {
   const RestaurantInvitationPreviewCard({required this.onRequest, super.key});
@@ -75,7 +76,7 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.spaceMd),
-          const Divider(),
+          const AppDivider(height: 1),
           const SizedBox(height: AppSpacing.spaceMd),
           Align(
             alignment: Alignment.centerLeft,

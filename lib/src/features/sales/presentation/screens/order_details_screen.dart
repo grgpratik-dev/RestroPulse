@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
@@ -79,9 +81,12 @@ class OrderDetailsScreen extends StatelessWidget {
                   for (final item in order.items) ...[
                     OrderDetailItemRow(item: item),
                     if (item != order.items.last)
-                      Divider(color: theme.colorScheme.outlineVariant),
+                      AppDivider(
+                        height: 1,
+                        color: theme.colorScheme.outlineVariant,
+                      ),
                   ],
-                  const Divider(height: AppSpacing.spaceLg),
+                  const AppDivider(),
                   OrderDetailInfoRow(
                     label: 'Subtotal',
                     value: 'Rs ${currency.format(order.subtotal)}',
@@ -136,42 +141,21 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context) {
+  Future<void> _confirmDelete(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
-
-    return showDialog<void>(
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          icon: Icon(
-            Icons.delete_outline_rounded,
-            color: Theme.of(context).colorScheme.error,
-          ),
-          title: const Text('Delete this order?'),
-          content: const Text(
+      builder: (dialogContext) => const AppConfirmationDialog(
+        title: 'Delete this order?',
+        message:
             "This order and its items will be removed from today's sales data.",
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                Navigator.of(context).pop();
-                messenger.showSnackBar(
-                  const SnackBar(content: Text('Order deleted')),
-                );
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
+        confirmLabel: 'Delete',
+        icon: Icons.delete_outline_rounded,
+        isDestructive: true,
+      ),
     );
+    if (confirmed != true || !context.mounted) return;
+    Navigator.of(context).pop();
+    messenger.showSnackBar(const SnackBar(content: Text('Order deleted')));
   }
 }

@@ -143,7 +143,7 @@ class ExpenseTrendCard extends StatelessWidget {
                         BarChartRodData(
                           toY: points[index].amount,
                           width: points.length > 7 ? 10 : 18,
-                          color: AppColors.warningChart,
+                          color: AppColors.expenseAccent,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(5),
                           ),
@@ -159,12 +159,15 @@ class ExpenseTrendCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.spaceSm),
             decoration: BoxDecoration(
-              color: AppColors.warningSurface,
+              color: AppColors.expenseSurface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                const Icon(Icons.bar_chart_rounded, color: AppColors.warning),
+                const Icon(
+                  Icons.bar_chart_rounded,
+                  color: AppColors.expenseForeground,
+                ),
                 const SizedBox(width: AppSpacing.spaceXs),
                 Expanded(
                   child: Column(

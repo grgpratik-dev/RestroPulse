@@ -16,8 +16,8 @@ class ExpensesEmptyState extends StatelessWidget {
     title: 'No expenses recorded yet',
     message:
         "Add your restaurant's expenses to understand costs and estimate profitability.",
-    iconBackgroundColor: AppColors.warningMuted,
-    iconColor: AppColors.warning,
+    iconBackgroundColor: AppColors.expenseSurface,
+    iconColor: AppColors.expenseForeground,
     actions: [
       FilledButton(onPressed: onAddExpense, child: const Text('Add Expense')),
     ],
@@ -34,8 +34,8 @@ class ExpensesNoPeriodState extends StatelessWidget {
     icon: Icons.event_busy_outlined,
     title: 'No expenses in this period',
     message: 'Try another time range or add a new expense.',
-    iconBackgroundColor: AppColors.warningMuted,
-    iconColor: AppColors.warning,
+    iconBackgroundColor: AppColors.expenseSurface,
+    iconColor: AppColors.expenseForeground,
     actions: [
       FilledButton(onPressed: onAddExpense, child: const Text('Add Expense')),
     ],
@@ -52,8 +52,8 @@ class ExpensesErrorState extends StatelessWidget {
     icon: Icons.cloud_off_rounded,
     title: "Couldn't load expenses",
     message: 'Check your connection and try again.',
-    iconBackgroundColor: AppColors.warningMuted,
-    iconColor: AppColors.warning,
+    iconBackgroundColor: AppColors.expenseSurface,
+    iconColor: AppColors.expenseForeground,
     actions: [FilledButton(onPressed: onRetry, child: const Text('Try Again'))],
   );
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/report_data.dart';
 
@@ -35,7 +36,7 @@ class ProfitabilityReportCard extends StatelessWidget {
                   label: '− Estimated food cost',
                   value: 'Rs ${currency.format(report.estimatedFoodCost)}',
                 ),
-                const Divider(height: AppSpacing.spaceLg),
+                const AppDivider(),
                 _ProfitStep(
                   label: '= Gross profit',
                   value: 'Rs ${currency.format(report.grossProfit)}',
@@ -46,7 +47,7 @@ class ProfitabilityReportCard extends StatelessWidget {
                   label: '− Operating expenses',
                   value: 'Rs ${currency.format(report.expenses)}',
                 ),
-                const Divider(height: AppSpacing.spaceLg),
+                const AppDivider(),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -266,19 +267,19 @@ class MenuPerformanceReportCard extends StatelessWidget {
             value: 'Chicken Burger',
             detail: data.$1,
           ),
-          Divider(height: 24),
+          AppDivider(),
           _ValueRow(
             label: 'Best margin item',
             value: 'Lemonade',
             detail: '68% margin',
           ),
-          Divider(height: 24),
+          AppDivider(),
           _ValueRow(
             label: 'Most sold item',
             value: 'Chicken Momo',
             detail: data.$2,
           ),
-          Divider(height: 24),
+          AppDivider(),
           _ValueRow(
             label: 'Needs review',
             value: 'Chicken Pizza',
@@ -432,7 +433,7 @@ class OperationalHighlightsCard extends StatelessWidget {
             detailIsGood: report.foodCostChange <= 0,
             onTap: onViewMenu,
           ),
-          const Divider(height: 1),
+          const AppDivider(height: 1),
           _OperationalHighlightRow(
             icon: Icons.storefront_outlined,
             label: 'Leading sales channel',
@@ -440,7 +441,7 @@ class OperationalHighlightsCard extends StatelessWidget {
             detail: '${(leadingChannel.$3 * 100).round()}% of revenue',
             onTap: onViewSales,
           ),
-          const Divider(height: 1),
+          const AppDivider(height: 1),
           _OperationalHighlightRow(
             icon: Icons.restaurant_menu_rounded,
             label: 'Top revenue menu item',
@@ -448,7 +449,7 @@ class OperationalHighlightsCard extends StatelessWidget {
             detail: menu.$1,
             onTap: onViewMenu,
           ),
-          const Divider(height: 1),
+          const AppDivider(height: 1),
           _OperationalHighlightRow(
             icon: Icons.delete_sweep_outlined,
             label: 'Wastage loss',
@@ -457,7 +458,7 @@ class OperationalHighlightsCard extends StatelessWidget {
             detailIsGood: false,
             onTap: onViewWastage,
           ),
-          const Divider(height: 1),
+          const AppDivider(height: 1),
           _OperationalHighlightRow(
             icon: Icons.receipt_long_outlined,
             label: 'Average order value',
@@ -816,7 +817,7 @@ class _ReportCard extends StatelessWidget {
           child,
           if (footer != null) ...[
             const SizedBox(height: AppSpacing.spaceSm),
-            const Divider(),
+            const AppDivider(height: 1),
             footer!,
           ],
         ],

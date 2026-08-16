@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_section_heading.dart';
+import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
 
@@ -298,7 +299,7 @@ class MostWastedItemsSection extends StatelessWidget {
                 ),
               ],
             ),
-            if (index != items.length - 1) const Divider(height: 24),
+            if (index != items.length - 1) const AppDivider(),
           ],
         ],
       ),
@@ -370,7 +371,7 @@ class RecentWastageSection extends StatelessWidget {
                 ),
               ),
             ),
-            if (index != entries.length - 1) const Divider(height: 20),
+            if (index != entries.length - 1) const AppDivider(height: 20),
           ],
         ],
       ),

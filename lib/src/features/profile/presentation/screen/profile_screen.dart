@@ -4,6 +4,7 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
 
 import '../widgets/logout_confirmation_dialog.dart';
 import '../widgets/logout_tile.dart';
@@ -41,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           children: [
             ProfileHeaderCard(
-              onEdit: () => _showPlaceholder(context, 'Edit profile'),
+              onEdit: () => context.pushNamed(AppRoute.editRestaurant.name),
             ),
             const SizedBox(height: AppSpacing.spaceXl),
             SettingsSection(
@@ -83,12 +84,12 @@ class ProfileScreen extends StatelessWidget {
                   title: 'Personal Information',
                   subtitle: 'Name and account details',
                   onTap: () =>
-                      _showPlaceholder(context, 'Personal information'),
+                      context.pushNamed(AppRoute.personalInformation.name),
                 ),
                 SettingsTile(
                   icon: Icons.lock_outline_rounded,
                   title: 'Change Password',
-                  onTap: () => _showPlaceholder(context, 'Change password'),
+                  onTap: () => context.pushNamed(AppRoute.changePassword.name),
                 ),
               ],
             ),
@@ -219,20 +220,14 @@ class ProfileScreen extends StatelessWidget {
   Future<void> _showAboutDialog(BuildContext context) {
     return showDialog<void>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          icon: const Icon(
-            Icons.storefront_rounded,
-            color: AppColors.primary,
-            size: 36,
-          ),
-          title: const Text('RestroPulse'),
-          content: const Text(
+      builder: (dialogContext) => const AppConfirmationDialog(
+        title: 'RestroPulse',
+        message:
             'A simple restaurant performance and analytics companion.\n\nVersion 1.0.0',
-            textAlign: TextAlign.center,
-          ),
-        );
-      },
+        confirmLabel: 'Close',
+        icon: Icons.storefront_rounded,
+        showCancelButton: false,
+      ),
     );
   }
 
@@ -241,12 +236,17 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return LogoutConfirmationDialog(
-          onCancel: () => dialogContext.pop(),
-          onConfirm: () => context.goNamed(AppRoute.login.name),
+          onCancel: () => Navigator.of(dialogContext).pop(false),
+          onConfirm: () => Navigator.of(dialogContext).pop(true),
         );
       },
     );
 
-    if (confirmed == true) onLogout?.call();
+    if (confirmed != true || !context.mounted) return;
+    if (onLogout != null) {
+      onLogout!();
+    } else {
+      context.goNamed(AppRoute.login.name);
+    }
   }
 }

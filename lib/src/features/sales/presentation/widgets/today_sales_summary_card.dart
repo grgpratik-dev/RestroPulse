@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 
 class TodaySalesSummaryCard extends StatelessWidget {
@@ -58,10 +59,7 @@ class TodaySalesSummaryCard extends StatelessWidget {
                   Expanded(
                     child: _SummaryMetric(label: 'Orders', value: '42'),
                   ),
-                  VerticalDivider(
-                    width: AppSpacing.spaceLg,
-                    color: AppColors.splashAccent,
-                  ),
+                  AppDivider.vertical(color: AppColors.splashAccent),
                   Expanded(
                     child: _SummaryMetric(
                       label: 'Average Order',

@@ -15,6 +15,7 @@ void main() {
     expect(find.text('Boys to Serve'), findsOneWidget);
     expect(find.text('Pratik Gurung'), findsOneWidget);
     expect(find.text('Pokhara, Nepal'), findsOneWidget);
+    expect(find.text('Edit Restaurant'), findsOneWidget);
     expect(find.text('Restaurant'), findsOneWidget);
     expect(find.text('Members & Access'), findsOneWidget);
 

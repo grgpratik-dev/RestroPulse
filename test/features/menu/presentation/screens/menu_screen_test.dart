@@ -16,8 +16,14 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(theme: AppTheme.light, home: const MenuScreen()),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('Chicken Burger'), findsOneWidget);
+    final imageAssets = tester
+        .widgetList<Image>(find.byType(Image))
+        .map((image) => (image.image as AssetImage).assetName);
+    expect(imageAssets, contains('assets/images/menu_chicken_momo.jpg'));
+    expect(imageAssets, contains('assets/images/menu_chicken_burger.jpg'));
     expect(find.text('Active'), findsNothing);
     expect(find.text('Inactive'), findsNothing);
 
