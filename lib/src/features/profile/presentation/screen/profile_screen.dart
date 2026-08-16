@@ -48,6 +48,12 @@ class ProfileScreen extends StatelessWidget {
               title: 'Restaurant',
               children: [
                 SettingsTile(
+                  icon: Icons.group_outlined,
+                  title: 'Members & Access',
+                  subtitle: '2 members · 1 pending request',
+                  onTap: () => context.pushNamed(AppRoute.membersAccess.name),
+                ),
+                SettingsTile(
                   icon: Icons.account_balance_wallet_outlined,
                   title: 'Currency',
                   subtitle: 'NPR (Rs)',

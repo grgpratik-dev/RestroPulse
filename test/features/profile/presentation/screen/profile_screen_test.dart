@@ -16,6 +16,7 @@ void main() {
     expect(find.text('Pratik Gurung'), findsOneWidget);
     expect(find.text('Pokhara, Nepal'), findsOneWidget);
     expect(find.text('Restaurant'), findsOneWidget);
+    expect(find.text('Members & Access'), findsOneWidget);
 
     final currencyTile = find.text('Currency');
     await tester.ensureVisible(currencyTile);

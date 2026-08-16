@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/app_name.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_option_card.dart';
 
 class RestaurantAccessScreen extends StatelessWidget {
@@ -21,16 +20,7 @@ class RestaurantAccessScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.authBackground,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 76,
-        centerTitle: true,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: AppColors.authBackground,
-        surfaceTintColor: Colors.transparent,
-        title: const _BrandLockup(),
-      ),
+      appBar: const RestaurantAccessAppBar(),
       body: SafeArea(
         top: false,
         child: SingleChildScrollView(
@@ -97,33 +87,6 @@ class RestaurantAccessScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BrandLockup extends StatelessWidget {
-  const _BrandLockup();
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: 'RestroPulse',
-      header: true,
-      child: ExcludeSemantics(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              Assets.logo.applogo.path,
-              width: 42,
-              height: 42,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: AppSpacing.spaceXs),
-            appName(context: context, fontSize: 22),
-          ],
         ),
       ),
     );
