@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
@@ -16,10 +17,10 @@ class AttentionInsightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isHealthy ? const Color(0xFF2E7D32) : const Color(0xFFB45309);
+    final color = isHealthy ? AppColors.success : AppColors.warning;
     final background = isHealthy
-        ? const Color(0xFFEAF7EF)
-        : const Color(0xFFFFF4E5);
+        ? AppColors.successSurface
+        : AppColors.warningSoft;
 
     return CustomContainer(
       color: background,

@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 
 class ExpenseSummaryCard extends StatelessWidget {
-  const ExpenseSummaryCard({required this.snapshot, super.key});
+  const ExpenseSummaryCard({
+    required this.snapshot,
+    required this.largestCategory,
+    super.key,
+  });
 
   final ExpensePeriodSnapshot snapshot;
+  final ExpenseCategorySummary largestCategory;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     return CustomContainer(
-      color: const Color(0xFF102037),
-      borderColor: const Color(0xFF102037),
+      color: AppColors.expenseForeground,
+      borderColor: AppColors.expenseForeground,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,7 +29,7 @@ class ExpenseSummaryCard extends StatelessWidget {
           Text(
             'TOTAL EXPENSES',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: AppColors.surface.withValues(alpha: 0.72),
               letterSpacing: 0.7,
             ),
           ),
@@ -34,7 +40,7 @@ class ExpenseSummaryCard extends StatelessWidget {
             child: Text(
               'Rs ${currency.format(snapshot.total)}',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.white,
+                color: AppColors.surface,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -46,13 +52,15 @@ class ExpenseSummaryCard extends StatelessWidget {
               Text(
                 '↑ ${snapshot.change.toStringAsFixed(1)}%',
                 style: const TextStyle(
-                  color: Color(0xFFFFC7A5),
+                  color: AppColors.expenseBorder,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
                 snapshot.comparisonLabel,
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.65)),
+                style: TextStyle(
+                  color: AppColors.surface.withValues(alpha: 0.68),
+                ),
               ),
             ],
           ),
@@ -60,10 +68,15 @@ class ExpenseSummaryCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.spaceSm),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.07),
+              color: AppColors.surface.withValues(alpha: 0.1),
+              border: Border.all(
+                color: AppColors.surface.withValues(alpha: 0.12),
+              ),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: _SummaryMetric(
@@ -73,39 +86,66 @@ class ExpenseSummaryCard extends StatelessWidget {
                 ),
                 Container(
                   width: 1,
-                  height: 38,
-                  color: Colors.white.withValues(alpha: 0.12),
+                  height: 52,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.spaceMd,
+                  ),
+                  color: AppColors.surface.withValues(alpha: 0.18),
                 ),
-                const Expanded(
-                  flex: 2,
-                  child: _SummaryMetric(
-                    label: 'Largest category',
-                    value: 'Ingredients · Rs 210,000',
+                Expanded(
+                  child: _LargestCategoryMetric(
+                    name: largestCategory.name,
+                    amount: 'Rs ${currency.format(largestCategory.amount)}',
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(
-                Icons.trending_up_rounded,
-                size: 19,
-                color: Color(0xFFFFC7A5),
-              ),
-              const SizedBox(width: AppSpacing.spaceXs),
-              Expanded(
-                child: Text(
-                  'Expenses are rising. Spending increased ${snapshot.change.toStringAsFixed(1)}% compared with the previous period.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.8),
-                    height: 1.4,
-                  ),
-                ),
-              ),
-            ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LargestCategoryMetric extends StatelessWidget {
+  const _LargestCategoryMetric({required this.name, required this.amount});
+
+  final String name;
+  final String amount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            'Largest category',
+            textAlign: TextAlign.end,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: AppColors.surface.withValues(alpha: 0.68),
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            name,
+            softWrap: true,
+            textAlign: TextAlign.end,
+            style: const TextStyle(
+              color: AppColors.surface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            amount,
+            softWrap: true,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: AppColors.surface.withValues(alpha: 0.82),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -129,7 +169,7 @@ class _SummaryMetric extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: AppColors.surface.withValues(alpha: 0.68),
             ),
           ),
           const SizedBox(height: 3),
@@ -138,7 +178,7 @@ class _SummaryMetric extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.surface,
               fontWeight: FontWeight.w700,
             ),
           ),

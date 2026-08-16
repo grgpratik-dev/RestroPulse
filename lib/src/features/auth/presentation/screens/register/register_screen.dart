@@ -24,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F8F6),
+      backgroundColor: AppColors.authBackground,
       body: Stack(
         children: [
           const Positioned(

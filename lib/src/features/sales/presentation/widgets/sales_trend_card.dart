@@ -9,19 +9,12 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
-class SalesTrendCard extends StatefulWidget {
+class SalesTrendCard extends StatelessWidget {
   const SalesTrendCard({super.key});
-
-  @override
-  State<SalesTrendCard> createState() => _SalesTrendCardState();
-}
-
-class _SalesTrendCardState extends State<SalesTrendCard> {
-  SalesTrendPeriod _period = SalesTrendPeriod.week;
 
   SalesTrendDataset get _dataset => SalesTrendAggregator.prepare(
     orders: SalesTrendMockOrders.values,
-    period: _period,
+    period: SalesTrendPeriod.week,
     now: SalesTrendMockOrders.currentDate,
   );
 
@@ -38,16 +31,41 @@ class _SalesTrendCardState extends State<SalesTrendCard> {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  'Sales Trend',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sales Trend',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Last 7 days',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              _PeriodSelector(
-                selected: _period,
-                onSelected: (period) => setState(() => _period = period),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spaceSm,
+                  vertical: AppSpacing.spaceXs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
+                ),
+                child: Text(
+                  'Sun–Sat',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ],
           ),
@@ -56,7 +74,7 @@ class _SalesTrendCardState extends State<SalesTrendCard> {
             alignment: Alignment.centerRight,
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 180),
-              child: _TrendSummary(key: ValueKey(_period), dataset: dataset),
+              child: _TrendSummary(dataset: dataset),
             ),
           ),
           const SizedBox(height: AppSpacing.spaceSm),
@@ -248,63 +266,12 @@ class _SalesTrendCardState extends State<SalesTrendCard> {
           return '${point.tooltipLabel}: Rs ${currency.format(point.value)}';
         })
         .join(', ');
-    return 'Sales trend for ${_period.label}. $values';
-  }
-}
-
-class _PeriodSelector extends StatelessWidget {
-  const _PeriodSelector({required this.selected, required this.onSelected});
-
-  final SalesTrendPeriod selected;
-  final ValueChanged<SalesTrendPeriod> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final period in SalesTrendPeriod.values)
-            Material(
-              color: period == selected
-                  ? AppColors.primary
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              child: InkWell(
-                onTap: () => onSelected(period),
-                borderRadius: BorderRadius.circular(AppRadius.full),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 40,
-                    minHeight: 40,
-                  ),
-                  child: Center(
-                    child: Text(
-                      period.label,
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: period == selected
-                            ? Colors.white
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
+    return 'Sales trend for the last 7 days, Sunday through Saturday. $values';
   }
 }
 
 class _TrendSummary extends StatelessWidget {
-  const _TrendSummary({required this.dataset, super.key});
+  const _TrendSummary({required this.dataset});
 
   final SalesTrendDataset dataset;
 

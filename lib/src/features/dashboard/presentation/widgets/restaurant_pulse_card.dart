@@ -21,8 +21,10 @@ class RestaurantPulseCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return CustomContainer(
-      color: AppColors.splashAccent.withValues(alpha: 0.3),
-      borderColor: AppColors.primary.withValues(alpha: 0.12),
+      color: hasData ? AppColors.primaryStrong : AppColors.surface,
+      borderColor: hasData
+          ? AppColors.primaryStrong
+          : AppColors.primary.withValues(alpha: 0.12),
       borderRadius: AppRadius.lg,
       child: hasData ? _buildScore(theme) : _buildEmpty(theme),
     );
@@ -35,6 +37,7 @@ class RestaurantPulseCard extends StatelessWidget {
         Text(
           'Restaurant Pulse',
           style: theme.textTheme.titleLarge?.copyWith(
+            color: AppColors.surface,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -42,7 +45,7 @@ class RestaurantPulseCard extends StatelessWidget {
         Text(
           'Overall restaurant health',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+            color: AppColors.surface.withValues(alpha: 0.72),
           ),
         ),
         const SizedBox(height: AppSpacing.spaceMd),
@@ -62,10 +65,10 @@ class RestaurantPulseCard extends StatelessWidget {
                           value: 0.84,
                           strokeWidth: 9,
                           strokeCap: StrokeCap.round,
-                          backgroundColor: AppColors.primary.withValues(
-                            alpha: 0.1,
+                          backgroundColor: AppColors.surface.withValues(
+                            alpha: 0.18,
                           ),
-                          color: AppColors.primary,
+                          color: AppColors.mintBright,
                         ),
                       ),
                       const FittedBox(
@@ -76,7 +79,7 @@ class RestaurantPulseCard extends StatelessWidget {
                             Text(
                               '84',
                               style: TextStyle(
-                                color: AppColors.primary,
+                                color: AppColors.surface,
                                 fontSize: 34,
                                 height: 1,
                                 fontWeight: FontWeight.w800,
@@ -87,7 +90,7 @@ class RestaurantPulseCard extends StatelessWidget {
                               child: Text(
                                 '/100',
                                 style: TextStyle(
-                                  color: AppColors.primary,
+                                  color: AppColors.splashAccent,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -141,7 +144,7 @@ class RestaurantPulseCard extends StatelessWidget {
                   Text(
                     '↑ 4 points vs last week',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.success,
+                      color: AppColors.splashAccent,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -229,7 +232,7 @@ class _HealthFactor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const warning = Color(0xFFB45309);
+    const warning = AppColors.warning;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -238,7 +241,7 @@ class _HealthFactor extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isWarning
-            ? const Color(0xFFFFF4E5)
+            ? AppColors.warningSoft
             : AppColors.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),

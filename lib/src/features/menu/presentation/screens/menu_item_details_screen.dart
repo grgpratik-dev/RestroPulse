@@ -17,9 +17,7 @@ class MenuItemDetailsScreen extends StatefulWidget {
 }
 
 class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
-  MenuPerformancePeriod _period = MenuPerformancePeriod.month;
   late MenuItem _item = widget.item;
-  bool get _isActive => _item.isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -41,26 +39,22 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
             AppSpacing.space2xl,
           ),
           children: [
-            _ItemHeader(item: _item, isActive: _isActive),
+            MenuItemHeader(item: _item),
             const SizedBox(height: AppSpacing.spaceMd),
             MenuPricingCard(item: _item),
             const SizedBox(height: AppSpacing.spaceMd),
-            MenuPerformanceCard(
-              item: _item,
-              period: _period,
-              onPeriodChanged: (value) => setState(() => _period = value),
-            ),
+            MenuPerformanceCard(item: _item),
             const SizedBox(height: AppSpacing.spaceMd),
             MenuClassificationCard(item: _item),
             const SizedBox(height: AppSpacing.spaceLg),
             OutlinedButton.icon(
-              onPressed: _confirmStatusChange,
-              icon: Icon(
-                _isActive
-                    ? Icons.pause_circle_outline_rounded
-                    : Icons.play_circle_outline_rounded,
+              onPressed: _confirmDelete,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+                side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              label: Text(_isActive ? 'Deactivate Item' : 'Reactivate Item'),
+              icon: const Icon(Icons.delete_outline_rounded),
+              label: const Text('Delete Menu Item'),
             ),
           ],
         ),
@@ -68,26 +62,18 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
     );
   }
 
-  Future<void> _confirmStatusChange() async {
-    if (!_isActive) {
-      setState(() => _item = _item.copyWith(isActive: true));
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Item reactivated')));
-      return;
-    }
-
+  Future<void> _confirmDelete() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         icon: const Icon(
-          Icons.pause_circle_outline_rounded,
-          color: AppColors.primary,
+          Icons.delete_outline_rounded,
+          color: AppColors.error,
           size: 34,
         ),
-        title: const Text('Deactivate this item?'),
+        title: const Text('Delete this menu item?'),
         content: const Text(
-          'It will no longer appear when recording new orders, but historical sales data will remain available.',
+          'This removes the item from your current menu. Its historical sales will remain available in reports.',
           textAlign: TextAlign.center,
         ),
         actions: [
@@ -95,18 +81,19 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
-          FilledButton.tonal(
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Deactivate'),
+            child: const Text('Delete Item'),
           ),
         ],
       ),
     );
     if (confirmed == true && mounted) {
-      setState(() => _item = _item.copyWith(isActive: false));
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Item deactivated')));
+      context.pop(true);
     }
   }
 
@@ -120,77 +107,5 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Menu item updated')));
-  }
-}
-
-class _ItemHeader extends StatelessWidget {
-  const _ItemHeader({required this.item, required this.isActive});
-
-  final MenuItem item;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 84,
-          height: 84,
-          decoration: BoxDecoration(
-            color: const Color(0xFFE4F5EF),
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: const Icon(
-            Icons.restaurant_menu_rounded,
-            color: AppColors.primary,
-            size: 36,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.spaceMd),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.name,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                item.category,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.spaceXs),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? const Color(0xFFDDF7EC)
-                      : const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  isActive ? 'Active' : 'Inactive',
-                  style: TextStyle(
-                    color: isActive
-                        ? AppColors.primary
-                        : const Color(0xFF475569),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }

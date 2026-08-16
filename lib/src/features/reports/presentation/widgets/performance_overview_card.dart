@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/report_data.dart';
@@ -19,8 +20,8 @@ class PerformanceOverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     return CustomContainer(
-      color: const Color(0xFF047857),
-      borderColor: const Color(0xFF047857),
+      color: AppColors.primaryStrong,
+      borderColor: AppColors.primaryStrong,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +35,7 @@ class PerformanceOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Compared with previous period',
+            report.period.comparisonLabel,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.75),
             ),
@@ -47,7 +48,7 @@ class PerformanceOverviewCard extends StatelessWidget {
                   label: 'Revenue',
                   value: 'Rs ${currency.format(report.revenue)}',
                   change: report.revenueChange,
-                  changeIsGood: true,
+                  positiveIsGood: true,
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceMd),
@@ -58,7 +59,7 @@ class PerformanceOverviewCard extends StatelessWidget {
                       ? 'Rs ${currency.format(report.expenses)}'
                       : 'Unavailable',
                   change: hasExpenseData ? report.expenseChange : null,
-                  changeIsGood: false,
+                  positiveIsGood: false,
                 ),
               ),
             ],
@@ -73,7 +74,7 @@ class PerformanceOverviewCard extends StatelessWidget {
                       ? 'Rs ${currency.format(report.profit)}'
                       : 'Unavailable',
                   change: hasExpenseData ? report.profitChange : null,
-                  changeIsGood: report.profitChange >= 0,
+                  positiveIsGood: true,
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceMd),
@@ -84,8 +85,45 @@ class PerformanceOverviewCard extends StatelessWidget {
                       ? '${report.profitMargin.toStringAsFixed(1)}%'
                       : 'Unavailable',
                   change: hasExpenseData ? report.marginChange : null,
-                  changeIsGood: report.marginChange >= 0,
+                  positiveIsGood: true,
                   isPoints: true,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.spaceLg),
+          Divider(color: Colors.white.withValues(alpha: .18), height: 1),
+          const SizedBox(height: AppSpacing.spaceMd),
+          Row(
+            children: [
+              Expanded(
+                child: _ContextMetric(
+                  label: 'Orders',
+                  value: NumberFormat.decimalPattern().format(report.orders),
+                ),
+              ),
+              Expanded(
+                child: _ContextMetric(
+                  label: 'Avg. Order',
+                  value:
+                      'Rs ${currency.format(report.averageOrderValue.round())}',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.spaceMd),
+          Row(
+            children: [
+              Expanded(
+                child: _ContextMetric(
+                  label: 'Food Cost',
+                  value: '${report.foodCost.toStringAsFixed(1)}%',
+                ),
+              ),
+              Expanded(
+                child: _ContextMetric(
+                  label: 'Wastage',
+                  value: 'Rs ${currency.format(report.wastage)}',
                 ),
               ),
             ],
@@ -96,27 +134,58 @@ class PerformanceOverviewCard extends StatelessWidget {
   }
 }
 
+class _ContextMetric extends StatelessWidget {
+  const _ContextMetric({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Colors.white.withValues(alpha: .7),
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _OverviewMetric extends StatelessWidget {
   const _OverviewMetric({
     required this.label,
     required this.value,
     required this.change,
-    required this.changeIsGood,
+    required this.positiveIsGood,
     this.isPoints = false,
   });
 
   final String label;
   final String value;
   final double? change;
-  final bool changeIsGood;
+  final bool positiveIsGood;
   final bool isPoints;
 
   @override
   Widget build(BuildContext context) {
     final isUp = (change ?? 0) >= 0;
-    final color = changeIsGood
-        ? const Color(0xFFB7F7DF)
-        : const Color(0xFFFFD5C7);
+    final isGood = isUp == positiveIsGood;
+    final color = isGood ? AppColors.splashAccent : AppColors.expenseSoft;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

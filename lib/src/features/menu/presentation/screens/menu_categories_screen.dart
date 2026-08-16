@@ -59,7 +59,7 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE4F5EF),
+                    color: AppColors.mintSoft,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
@@ -71,19 +71,11 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
                   category.name,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text(
-                  '${category.itemCount} items${category.isActive ? '' : ' · Inactive'}',
-                ),
+                subtitle: Text('${category.itemCount} items'),
                 trailing: PopupMenuButton<String>(
                   onSelected: (action) => _handleAction(action, itemIndex),
                   itemBuilder: (_) => [
                     const PopupMenuItem(value: 'rename', child: Text('Rename')),
-                    PopupMenuItem(
-                      value: 'status',
-                      child: Text(
-                        category.isActive ? 'Deactivate' : 'Reactivate',
-                      ),
-                    ),
                     if (category.itemCount == 0)
                       const PopupMenuItem(
                         value: 'delete',
@@ -102,11 +94,6 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
   Future<void> _handleAction(String action, int index) async {
     if (action == 'rename') {
       await _editCategory(index: index);
-    } else if (action == 'status') {
-      setState(() {
-        final category = _categories[index];
-        _categories[index] = category.copyWith(isActive: !category.isActive);
-      });
     } else if (action == 'delete') {
       setState(() => _categories.removeAt(index));
     }
@@ -166,15 +153,11 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
 }
 
 class _MenuCategory {
-  const _MenuCategory(this.name, this.itemCount, {this.isActive = true});
+  const _MenuCategory(this.name, this.itemCount);
 
   final String name;
   final int itemCount;
-  final bool isActive;
 
-  _MenuCategory copyWith({String? name, bool? isActive}) => _MenuCategory(
-    name ?? this.name,
-    itemCount,
-    isActive: isActive ?? this.isActive,
-  );
+  _MenuCategory copyWith({String? name}) =>
+      _MenuCategory(name ?? this.name, itemCount);
 }

@@ -1,13 +1,35 @@
 enum ReportPeriod {
-  week('1W', 'Weekly Report'),
-  month('1M', 'Monthly Report'),
-  sixMonths('6M', 'Six Month Report'),
-  year('1Y', 'Annual Report');
+  month('1M', 'Monthly Report', 'Compared with last month', 'August 2026'),
+  quarter(
+    '3M',
+    'Three Month Report',
+    'Compared with the previous 3 months',
+    'June–August 2026',
+  ),
+  sixMonths(
+    '6M',
+    'Six Month Report',
+    'Compared with the previous 6 months',
+    'March–August 2026',
+  ),
+  year(
+    '1Y',
+    'Annual Report',
+    'Compared with the previous year',
+    'September 2025–August 2026',
+  );
 
-  const ReportPeriod(this.label, this.exportLabel);
+  const ReportPeriod(
+    this.label,
+    this.exportLabel,
+    this.comparisonLabel,
+    this.dateLabel,
+  );
 
   final String label;
   final String exportLabel;
+  final String comparisonLabel;
+  final String dateLabel;
 }
 
 class ReportChartPoint {
@@ -23,8 +45,6 @@ class ReportSnapshot {
     required this.period,
     required this.revenue,
     required this.expenses,
-    required this.profit,
-    required this.profitMargin,
     required this.revenueChange,
     required this.expenseChange,
     required this.profitChange,
@@ -33,13 +53,13 @@ class ReportSnapshot {
     required this.foodCostChange,
     required this.chartPoints,
     required this.orders,
+    required this.wastage,
+    required this.wastageChange,
   });
 
   final ReportPeriod period;
   final double revenue;
   final double expenses;
-  final double profit;
-  final double profitMargin;
   final double revenueChange;
   final double expenseChange;
   final double profitChange;
@@ -48,39 +68,22 @@ class ReportSnapshot {
   final double foodCostChange;
   final List<ReportChartPoint> chartPoints;
   final int orders;
+  final double wastage;
+  final double wastageChange;
+
+  double get estimatedFoodCost => revenue * foodCost / 100;
+  double get grossProfit => revenue - estimatedFoodCost;
+  double get profit => grossProfit - expenses;
+  double get profitMargin => revenue == 0 ? 0 : profit / revenue * 100;
+  double get averageOrderValue => orders == 0 ? 0 : revenue / orders;
 }
 
 abstract final class ReportsMockData {
   static ReportSnapshot forPeriod(ReportPeriod period) => switch (period) {
-    ReportPeriod.week => const ReportSnapshot(
-      period: ReportPeriod.week,
-      revenue: 198500,
-      expenses: 112800,
-      profit: 36100,
-      profitMargin: 18.2,
-      revenueChange: 8.6,
-      expenseChange: 11.4,
-      profitChange: -1.3,
-      marginChange: -0.8,
-      foodCost: 27.8,
-      foodCostChange: -0.6,
-      orders: 298,
-      chartPoints: [
-        ReportChartPoint('Sun', 22, 14),
-        ReportChartPoint('Mon', 24, 15),
-        ReportChartPoint('Tue', 26, 16),
-        ReportChartPoint('Wed', 25, 15),
-        ReportChartPoint('Thu', 29, 16),
-        ReportChartPoint('Fri', 34, 18),
-        ReportChartPoint('Sat', 39, 19),
-      ],
-    ),
     ReportPeriod.month => const ReportSnapshot(
       period: ReportPeriod.month,
       revenue: 842500,
       expenses: 478300,
-      profit: 146200,
-      profitMargin: 17.4,
       revenueChange: 12.4,
       expenseChange: 18.6,
       profitChange: -2.1,
@@ -88,6 +91,8 @@ abstract final class ReportsMockData {
       foodCost: 28.4,
       foodCostChange: -1.2,
       orders: 1244,
+      wastage: 12450,
+      wastageChange: 14,
       chartPoints: [
         ReportChartPoint('W1', 178, 96),
         ReportChartPoint('W2', 196, 108),
@@ -95,54 +100,73 @@ abstract final class ReportsMockData {
         ReportChartPoint('W4', 250, 146),
       ],
     ),
+    ReportPeriod.quarter => const ReportSnapshot(
+      period: ReportPeriod.quarter,
+      revenue: 2482500,
+      expenses: 1408300,
+      revenueChange: 14.6,
+      expenseChange: 12.8,
+      profitChange: 5.1,
+      marginChange: 0.4,
+      foodCost: 27.9,
+      foodCostChange: -0.5,
+      orders: 3684,
+      wastage: 34800,
+      wastageChange: 9.2,
+      chartPoints: [
+        ReportChartPoint('Jun', 784, 438),
+        ReportChartPoint('Jul', 856, 492),
+        ReportChartPoint('Aug', 842.5, 478.3),
+      ],
+    ),
     ReportPeriod.sixMonths => const ReportSnapshot(
       period: ReportPeriod.sixMonths,
-      revenue: 4682000,
-      expenses: 2576000,
-      profit: 852400,
-      profitMargin: 18.2,
+      revenue: 4772500,
+      expenses: 2699300,
       revenueChange: 16.8,
-      expenseChange: 14.1,
-      profitChange: 4.8,
-      marginChange: 0.6,
-      foodCost: 27.9,
-      foodCostChange: -0.4,
-      orders: 7168,
+      expenseChange: 13.2,
+      profitChange: 9.4,
+      marginChange: 1.1,
+      foodCost: 27.6,
+      foodCostChange: -0.9,
+      orders: 7082,
+      wastage: 68100,
+      wastageChange: 4.8,
       chartPoints: [
-        ReportChartPoint('Mar', 680, 382),
-        ReportChartPoint('Apr', 712, 401),
-        ReportChartPoint('May', 748, 416),
-        ReportChartPoint('Jun', 804, 438),
-        ReportChartPoint('Jul', 826, 457),
-        ReportChartPoint('Aug', 912, 482),
+        ReportChartPoint('Mar', 718, 399),
+        ReportChartPoint('Apr', 742, 414),
+        ReportChartPoint('May', 830, 468),
+        ReportChartPoint('Jun', 784, 438),
+        ReportChartPoint('Jul', 856, 502),
+        ReportChartPoint('Aug', 842.5, 478.3),
       ],
     ),
     ReportPeriod.year => const ReportSnapshot(
       period: ReportPeriod.year,
-      revenue: 9245000,
-      expenses: 5168000,
-      profit: 1698000,
-      profitMargin: 18.4,
-      revenueChange: 21.2,
-      expenseChange: 17.5,
-      profitChange: 8.7,
-      marginChange: 1.1,
-      foodCost: 28.1,
-      foodCostChange: -0.9,
-      orders: 14382,
+      revenue: 8812500,
+      expenses: 4958300,
+      revenueChange: 21.4,
+      expenseChange: 15.7,
+      profitChange: 13.8,
+      marginChange: 1.9,
+      foodCost: 27.2,
+      foodCostChange: -1.4,
+      orders: 13140,
+      wastage: 128400,
+      wastageChange: -3.2,
       chartPoints: [
-        ReportChartPoint('Sep', 654, 378),
-        ReportChartPoint('Oct', 682, 390),
-        ReportChartPoint('Nov', 714, 404),
-        ReportChartPoint('Dec', 782, 438),
-        ReportChartPoint('Jan', 698, 402),
-        ReportChartPoint('Feb', 724, 415),
-        ReportChartPoint('Mar', 741, 421),
-        ReportChartPoint('Apr', 756, 428),
-        ReportChartPoint('May', 778, 436),
-        ReportChartPoint('Jun', 812, 448),
-        ReportChartPoint('Jul', 846, 461),
-        ReportChartPoint('Aug', 858, 507),
+        ReportChartPoint('Sep', 618, 348),
+        ReportChartPoint('Oct', 646, 361),
+        ReportChartPoint('Nov', 675, 378),
+        ReportChartPoint('Dec', 702, 392),
+        ReportChartPoint('Jan', 724, 406),
+        ReportChartPoint('Feb', 675, 392),
+        ReportChartPoint('Mar', 718, 399),
+        ReportChartPoint('Apr', 742, 414),
+        ReportChartPoint('May', 830, 468),
+        ReportChartPoint('Jun', 784, 438),
+        ReportChartPoint('Jul', 856, 484),
+        ReportChartPoint('Aug', 842.5, 478.3),
       ],
     ),
   };

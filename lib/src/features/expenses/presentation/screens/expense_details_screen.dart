@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/router/app_route.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_info_row.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
@@ -66,7 +68,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                   Text(
                     'Rs ${currency.format(_expense.amount)}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: const Color(0xFFB45309),
+                      color: AppColors.warning,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -82,17 +84,15 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
             CustomContainer(
               child: Column(
                 children: [
-                  _InfoRow(
+                  AppInfoRow(
                     label: 'Date',
-                    value: DateFormat(
-                      'MMM d, yyyy · h:mm a',
-                    ).format(_expense.date),
+                    value: DateFormat('MMM d, yyyy').format(_expense.date),
                   ),
                   const Divider(height: 24),
-                  _InfoRow(label: 'Expense type', value: _expense.type.label),
+                  AppInfoRow(label: 'Expense type', value: _expense.type.label),
                   if (_expense.notes?.isNotEmpty == true) ...[
                     const Divider(height: 24),
-                    _InfoRow(label: 'Notes', value: _expense.notes!),
+                    AppInfoRow(label: 'Notes', value: _expense.notes!),
                   ],
                 ],
               ),
@@ -174,36 +174,5 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
     );
     if (!mounted || confirmed != true) return;
     Navigator.pop(context, const ExpenseDetailsResult.deleted());
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 104,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
-    );
   }
 }

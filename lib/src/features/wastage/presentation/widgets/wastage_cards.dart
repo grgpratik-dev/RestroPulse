@@ -2,7 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_section_heading.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
 
@@ -16,8 +18,8 @@ class WastageSummaryCard extends StatelessWidget {
     final currency = NumberFormat.decimalPattern();
     final improving = snapshot.change < 0;
     return CustomContainer(
-      color: const Color(0xFF102037),
-      borderColor: const Color(0xFF102037),
+      color: AppColors.ink,
+      borderColor: AppColors.ink,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,9 +46,7 @@ class WastageSummaryCard extends StatelessWidget {
           Text(
             '${snapshot.change >= 0 ? '↑' : '↓'} ${snapshot.change.abs().toStringAsFixed(0)}% ${snapshot.comparisonLabel}',
             style: TextStyle(
-              color: improving
-                  ? const Color(0xFFB7F7DF)
-                  : const Color(0xFFFFC7A5),
+              color: improving ? AppColors.splashAccent : AppColors.expenseWarm,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -104,7 +104,7 @@ class WastageTrendCard extends StatelessWidget {
     final label = switch (period) {
       WastagePeriod.week => 'Highest wastage day',
       WastagePeriod.month => 'Highest wastage week',
-      WastagePeriod.sixMonths || WastagePeriod.year => 'Highest wastage month',
+      WastagePeriod.quarter => 'Highest wastage month',
     };
     return CustomContainer(
       child: Column(
@@ -166,7 +166,7 @@ class WastageTrendCard extends StatelessWidget {
                 ),
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => const Color(0xFF102037),
+                    getTooltipColor: (_) => AppColors.ink,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) =>
                         BarTooltipItem(
                           '${points[group.x].tooltipLabel}\nRs ${currency.format(points[group.x].amount * 1000)}',
@@ -186,7 +186,7 @@ class WastageTrendCard extends StatelessWidget {
                         BarChartRodData(
                           toY: points[index].amount,
                           width: points.length > 7 ? 10 : 18,
-                          color: const Color(0xFFE38B2C),
+                          color: AppColors.warningChart,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(5),
                           ),
@@ -244,8 +244,8 @@ class WastageReasonsSection extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: reasons[index].share,
                 minHeight: 7,
-                color: const Color(0xFFE38B2C),
-                backgroundColor: const Color(0xFFFFF2DF),
+                color: AppColors.warningChart,
+                backgroundColor: AppColors.warningMuted,
               ),
             ),
             if (index != reasons.length - 1)
@@ -273,10 +273,10 @@ class MostWastedItemsSection extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: const Color(0xFFFFF2DF),
+                  backgroundColor: AppColors.warningMuted,
                   child: Icon(
                     index == 0 ? Icons.set_meal_outlined : Icons.eco_outlined,
-                    color: const Color(0xFFB45309),
+                    color: AppColors.warning,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
@@ -332,10 +332,10 @@ class RecentWastageSection extends StatelessWidget {
                 child: Row(
                   children: [
                     const CircleAvatar(
-                      backgroundColor: Color(0xFFFFF2DF),
+                      backgroundColor: AppColors.warningMuted,
                       child: Icon(
                         Icons.delete_sweep_outlined,
-                        color: Color(0xFFB45309),
+                        color: AppColors.warning,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
@@ -395,12 +395,7 @@ class _Section extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
-        title,
-        style: Theme.of(
-          context,
-        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-      ),
+      AppSectionHeading(title: title),
       const SizedBox(height: AppSpacing.spaceSm),
       CustomContainer(child: child),
     ],

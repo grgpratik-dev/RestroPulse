@@ -39,7 +39,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
   late final TextEditingController _notesController;
   final _categories = <String>['Momo', 'Burgers', 'Pizza', 'Drinks', 'Snacks'];
   String? _category;
-  bool _isActive = true;
   bool _isSaving = false;
 
   bool get _isEditing => widget.item != null;
@@ -59,7 +58,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
     );
     _notesController = TextEditingController(text: item?.notes);
     _category = item?.category;
-    _isActive = item?.isActive ?? true;
     if (_category != null && !_categories.contains(_category)) {
       _categories.add(_category!);
     }
@@ -222,16 +220,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                 ],
                 MenuCostPreview(sellingPrice: _price, estimatedCost: _cost),
                 const SizedBox(height: AppSpacing.spaceMd),
-                SwitchListTile.adaptive(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Active'),
-                  subtitle: const Text(
-                    'Active items are available when recording new orders.',
-                  ),
-                  value: _isActive,
-                  onChanged: (value) => setState(() => _isActive = value),
-                ),
-                const SizedBox(height: AppSpacing.spaceSm),
                 TextFormField(
                   controller: _notesController,
                   minLines: 3,
@@ -346,7 +334,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
           category: _category,
           sellingPrice: _price,
           estimatedCost: _cost,
-          isActive: _isActive,
           notes: _notesController.text.trim(),
           imagePath: imagePath,
         ) ??
@@ -360,7 +347,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
           revenue: 0,
           historicalCost: 0,
           ordersContainingItem: 0,
-          isActive: _isActive,
           notes: _notesController.text.trim(),
           imagePath: imagePath,
         );

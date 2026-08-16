@@ -8,14 +8,52 @@ import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/menu_item.dart';
 import 'menu_performance_chip.dart';
 
-enum MenuPerformancePeriod {
-  week('1W'),
-  month('1M'),
-  sixMonths('6M'),
-  year('1Y');
+class MenuItemHeader extends StatelessWidget {
+  const MenuItemHeader({required this.item, super.key});
 
-  const MenuPerformancePeriod(this.label);
-  final String label;
+  final MenuItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 84,
+          height: 84,
+          decoration: BoxDecoration(
+            color: AppColors.mintSoft,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: const Icon(
+            Icons.restaurant_menu_rounded,
+            color: AppColors.primary,
+            size: 36,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.spaceMd),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.name,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                item.category,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class MenuPricingCard extends StatelessWidget {
@@ -78,16 +116,9 @@ class MenuPricingCard extends StatelessWidget {
 }
 
 class MenuPerformanceCard extends StatelessWidget {
-  const MenuPerformanceCard({
-    required this.item,
-    required this.period,
-    required this.onPeriodChanged,
-    super.key,
-  });
+  const MenuPerformanceCard({required this.item, super.key});
 
   final MenuItem item;
-  final MenuPerformancePeriod period;
-  final ValueChanged<MenuPerformancePeriod> onPeriodChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -122,30 +153,34 @@ class MenuPerformanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Performance',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpacing.spaceSm),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<MenuPerformancePeriod>(
-              segments: MenuPerformancePeriod.values
-                  .map(
-                    (value) =>
-                        ButtonSegment(value: value, label: Text(value.label)),
-                  )
-                  .toList(),
-              selected: {period},
-              showSelectedIcon: false,
-              style: const ButtonStyle(
-                visualDensity: VisualDensity.compact,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Performance',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-              onSelectionChanged: (values) => onPeriodChanged(values.first),
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spaceSm,
+                  vertical: AppSpacing.spaceXs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: .1),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: const Text(
+                  'This Month',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.spaceLg),
           Row(
@@ -189,8 +224,16 @@ class MenuPerformanceCard extends StatelessWidget {
             value: '${item.ordersContainingItem}',
           ),
           const SizedBox(height: AppSpacing.spaceLg),
-          SizedBox(height: 150, child: _PerformanceChart(period: period)),
+          const SizedBox(height: 150, child: _PerformanceChart()),
           const SizedBox(height: AppSpacing.spaceSm),
+          const Text(
+            '↑ 8.4% units sold compared with last month',
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
             'Calculated from prices and costs saved on each order item.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -236,7 +279,7 @@ class MenuClassificationCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.spaceSm),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0FBF7),
+              color: AppColors.mintSurface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -295,29 +338,9 @@ class DetailMetric extends StatelessWidget {
 }
 
 class _PerformanceChart extends StatelessWidget {
-  const _PerformanceChart({required this.period});
+  const _PerformanceChart();
 
-  final MenuPerformancePeriod period;
-
-  List<double> get _values => switch (period) {
-    MenuPerformancePeriod.week => [12, 18, 15, 22, 17, 24, 18],
-    MenuPerformancePeriod.month => [24, 31, 28, 43],
-    MenuPerformancePeriod.sixMonths => [52, 64, 71, 68, 84, 96],
-    MenuPerformancePeriod.year => [
-      42,
-      51,
-      58,
-      62,
-      67,
-      72,
-      76,
-      81,
-      85,
-      90,
-      94,
-      102,
-    ],
-  };
+  static const _values = [24.0, 31.0, 28.0, 43.0];
 
   @override
   Widget build(BuildContext context) {

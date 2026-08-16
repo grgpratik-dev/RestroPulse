@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
-import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
+
+import 'sales_order_card.dart';
 
 class TodayOrdersSection extends StatelessWidget {
   const TodayOrdersSection({
@@ -74,27 +73,17 @@ class TodayOrdersSection extends StatelessWidget {
         if (visibleOrders.isEmpty)
           const _NoFilteredOrders()
         else
-          CustomContainer(
-            padding: EdgeInsets.zero,
-            borderRadius: AppRadius.lg,
-            child: Column(
-              children: [
-                for (var index = 0; index < visibleOrders.length; index++) ...[
-                  _OrderRow(
-                    order: visibleOrders[index],
-                    onTap: () => onOrderTap(visibleOrders[index]),
-                  ),
-                  if (index != visibleOrders.length - 1)
-                    Divider(
-                      indent: AppSpacing.spaceMd,
-                      endIndent: AppSpacing.spaceMd,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant.withValues(alpha: .55),
-                    ),
-                ],
+          Column(
+            children: [
+              for (var index = 0; index < visibleOrders.length; index++) ...[
+                SalesOrderCard(
+                  order: visibleOrders[index],
+                  onTap: () => onOrderTap(visibleOrders[index]),
+                ),
+                if (index != visibleOrders.length - 1)
+                  const SizedBox(height: AppSpacing.spaceXs),
               ],
-            ),
+            ],
           ),
         Align(
           alignment: Alignment.centerLeft,
@@ -133,102 +122,6 @@ class _FilterChip extends StatelessWidget {
       ),
     );
   }
-}
-
-class _OrderRow extends StatelessWidget {
-  const _OrderRow({required this.order, required this.onTap});
-
-  final SalesOrder order;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final currency = NumberFormat.decimalPattern();
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.spaceMd),
-          child: Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: _channelColor(order.channel).withValues(alpha: .1),
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
-                child: Icon(
-                  _channelIcon(order.channel),
-                  color: _channelColor(order.channel),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Order ${order.orderNumber}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.spaceXs),
-                        Text(
-                          DateFormat.jm().format(order.orderedAt),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.space2xs),
-                    Text(
-                      '${order.channel.label} · ${order.itemCount} items',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                'Rs ${currency.format(order.total)}',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _channelColor(OrderChannel channel) => switch (channel) {
-    OrderChannel.dineIn => AppColors.primary,
-    OrderChannel.takeaway => const Color(0xFF2563EB),
-    OrderChannel.delivery => const Color(0xFFB45309),
-  };
-
-  IconData _channelIcon(OrderChannel channel) => switch (channel) {
-    OrderChannel.dineIn => Icons.restaurant_outlined,
-    OrderChannel.takeaway => Icons.shopping_bag_outlined,
-    OrderChannel.delivery => Icons.delivery_dining_outlined,
-  };
 }
 
 class _NoFilteredOrders extends StatelessWidget {

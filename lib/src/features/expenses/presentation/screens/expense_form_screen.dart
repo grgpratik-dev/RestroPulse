@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/di/dependency_injection.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import '../../domain/models/expense.dart';
@@ -149,7 +150,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   const Text(
                     'This is a large expense. Please confirm the amount.',
                     style: TextStyle(
-                      color: Color(0xFFB45309),
+                      color: AppColors.warning,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -227,6 +228,13 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spaceMd),
+                Text(
+                  'Expense type',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: AppSpacing.spaceXs),
                 SegmentedButton<ExpenseType>(
                   segments: ExpenseType.values
                       .map(

@@ -11,11 +11,10 @@ class MenuSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final active = items.where((item) => item.isActive).toList();
-    final avgCost = active.isEmpty
+    final avgCost = items.isEmpty
         ? 0.0
-        : active.fold<double>(0, (sum, item) => sum + item.foodCostPercentage) /
-              active.length;
+        : items.fold<double>(0, (sum, item) => sum + item.foodCostPercentage) /
+              items.length;
     final topSeller = items.isEmpty
         ? null
         : items.reduce((a, b) => a.unitsSold >= b.unitsSold ? a : b);
@@ -30,8 +29,8 @@ class MenuSummaryCard extends StatelessWidget {
           children: [
             Expanded(
               child: _SummaryValue(
-                label: 'Active items',
-                value: '${active.length}',
+                label: 'Menu items',
+                value: '${items.length}',
               ),
             ),
             const VerticalDivider(indent: 4, endIndent: 4),

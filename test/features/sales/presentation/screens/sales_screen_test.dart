@@ -25,9 +25,19 @@ void main() {
     expect(find.text('Today · Aug 16'), findsOneWidget);
     expect(find.text('Rs 28,450'), findsOneWidget);
     expect(find.text('42'), findsOneWidget);
-    expect(find.text('Rs 677'), findsWidgets);
-    expect(find.text('Add Order'), findsOneWidget);
-    expect(find.text('Batch Entry'), findsOneWidget);
+    expect(find.text('Average Order'), findsOneWidget);
+    expect(find.text('Rs 677'), findsOneWidget);
+    expect(find.text('55%'), findsOneWidget);
+    expect(find.text('25%'), findsOneWidget);
+    expect(find.text('20%'), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.text('Sales by Channel')).dy,
+      lessThan(tester.getTopLeft(find.text('Sales Trend')).dy),
+    );
+    expect(
+      tester.getTopLeft(find.text('Sales Trend')).dy,
+      lessThan(tester.getTopLeft(find.text("Today's Orders")).dy),
+    );
     expect(find.textContaining('₹'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -54,40 +64,27 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('sales trend switches between 1W, 1M, 6M and 1Y datasets', (
-    tester,
-  ) async {
-    await pumpAtMobileSize(
-      tester,
-      const Scaffold(
-        body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: SalesTrendCard(),
+  testWidgets(
+    'sales trend stays focused on the recent Sunday to Saturday week',
+    (tester) async {
+      await pumpAtMobileSize(
+        tester,
+        const Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: SalesTrendCard(),
+          ),
         ),
-      ),
-    );
+      );
 
-    expect(find.text('Best day'), findsOneWidget);
-    expect(find.text('Sunday'), findsOneWidget);
-    expect(find.text('Rs 31,200'), findsOneWidget);
-
-    await tester.tap(find.text('1M'));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Best week'), findsOneWidget);
-    expect(find.text('Aug 8–14'), findsOneWidget);
-    expect(find.text('Rs 186,500'), findsOneWidget);
-
-    await tester.tap(find.text('6M'));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Best month'), findsOneWidget);
-    expect(find.text('July'), findsOneWidget);
-    expect(find.text('Rs 742,500'), findsOneWidget);
-
-    await tester.tap(find.text('1Y'));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Best month'), findsOneWidget);
-    expect(find.text('July'), findsOneWidget);
-    expect(find.text('Rs 742,500'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.text('Best day'), findsOneWidget);
+      expect(find.text('Sunday'), findsOneWidget);
+      expect(find.text('Rs 31,200'), findsOneWidget);
+      expect(find.text('Last 7 days'), findsOneWidget);
+      expect(find.text('Sun–Sat'), findsOneWidget);
+      expect(find.text('1M'), findsNothing);
+      expect(find.text('3M'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

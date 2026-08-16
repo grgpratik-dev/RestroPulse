@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
+import '../../../../core/widgets/app_feature_header.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_breakdown.dart';
 import '../widgets/expense_filter_sheet.dart';
@@ -35,7 +37,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   late final List<Expense> _expenses = [
     ...(widget.initialExpenses ?? ExpensesMockData.expenses),
   ];
-  ExpensePeriod _period = ExpensePeriod.month;
+  static const _period = ExpensePeriod.month;
   ExpenseFilterSelection _filters = const ExpenseFilterSelection();
   double _totalAdjustment = 0;
   int _transactionAdjustment = 0;
@@ -76,14 +78,13 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             AppSpacing.spaceMd,
             AppSpacing.spaceXs,
             AppSpacing.spaceMd,
-            AppSpacing.space6xl,
+            AppSpacing.space6xl + AppSpacing.space3xl,
           ),
           children: [
-            const _ExpensesHeader(),
-            const SizedBox(height: AppSpacing.spaceMd),
-            _ExpensePeriodSelector(
-              selected: _period,
-              onChanged: (value) => setState(() => _period = value),
+            const AppFeatureHeader(
+              title: 'Expenses',
+              subtitle: "Track where your restaurant's money goes.",
+              contextLabel: 'This Month · August 2026',
             ),
             const SizedBox(height: AppSpacing.spaceLg),
             _buildContent(),
@@ -108,6 +109,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     }
 
     final baseSnapshot = ExpensesMockData.snapshot(_period);
+    final categories = ExpensesMockData.categorySummaries(_period);
     final snapshot = ExpensePeriodSnapshot(
       total: baseSnapshot.total + _totalAdjustment,
       change: baseSnapshot.change,
@@ -118,30 +120,36 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
     return Column(
       children: [
-        ExpenseSummaryCard(snapshot: snapshot),
+        ExpenseSummaryCard(
+          snapshot: snapshot,
+          largestCategory: categories.first,
+        ),
         const SizedBox(height: AppSpacing.spaceLg),
         ExpenseCategoryBreakdown(
-          categories: ExpensesMockData.categorySummaries,
+          categories: categories,
           onCategoryTap: (category) => context.pushNamed(
             AppRoute.expenseCategoryDetails.name,
-            extra: category,
+            extra: ExpenseCategoryDetailsData(
+              category: category,
+              period: _period,
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.spaceMd),
         Container(
           padding: const EdgeInsets.all(AppSpacing.spaceSm),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF7ED),
+            color: AppColors.warningSurface,
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(Icons.insights_outlined, color: Color(0xFFB45309)),
-              SizedBox(width: AppSpacing.spaceXs),
+              const Icon(Icons.insights_outlined, color: AppColors.warning),
+              const SizedBox(width: AppSpacing.spaceXs),
               Expanded(
                 child: Text(
-                  'Ingredient spending is 14% higher than last month.',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  ExpensesMockData.categoryInsight(_period),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -206,63 +214,5 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
     if (!mounted || selected == null) return;
     setState(() => _filters = selected);
-  }
-}
-
-class _ExpensesHeader extends StatelessWidget {
-  const _ExpensesHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Expenses',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          "Track where your restaurant's money goes.",
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ExpensePeriodSelector extends StatelessWidget {
-  const _ExpensePeriodSelector({
-    required this.selected,
-    required this.onChanged,
-  });
-
-  final ExpensePeriod selected;
-  final ValueChanged<ExpensePeriod> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: SegmentedButton<ExpensePeriod>(
-        segments: ExpensePeriod.values
-            .map(
-              (period) =>
-                  ButtonSegment(value: period, label: Text(period.label)),
-            )
-            .toList(),
-        selected: {selected},
-        showSelectedIcon: false,
-        onSelectionChanged: (values) => onChanged(values.first),
-        style: const ButtonStyle(
-          visualDensity: VisualDensity.compact,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-      ),
-    );
   }
 }

@@ -8,6 +8,8 @@ enum SalesEntryType { singleOrder, batchEntry }
 Future<SalesEntryType?> showSalesEntryTypeSheet(BuildContext context) {
   return showModalBottomSheet<SalesEntryType>(
     context: context,
+    useRootNavigator: true,
+    isScrollControlled: true,
     showDragHandle: true,
     builder: (context) => const _SalesEntryTypeSheet(),
   );
@@ -19,7 +21,8 @@ class _SalesEntryTypeSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
+      top: false,
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.spaceLg,
           0,
@@ -86,7 +89,7 @@ class _EntryOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: emphasized ? const Color(0xFFF0FBF7) : Colors.white,
+      color: emphasized ? AppColors.mintSurface : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
         side: BorderSide(
@@ -106,9 +109,7 @@ class _EntryOption extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: emphasized
-                      ? AppColors.primary
-                      : const Color(0xFFE4F5EF),
+                  color: emphasized ? AppColors.primary : AppColors.mintSoft,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
@@ -138,7 +139,7 @@ class _EntryOption extends StatelessWidget {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFDDF7EC),
+                              color: AppColors.mintChip,
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(

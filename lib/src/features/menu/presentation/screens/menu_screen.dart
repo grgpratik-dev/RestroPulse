@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
+import '../../../../core/widgets/app_feature_header.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_card.dart';
 import '../widgets/menu_performance_highlights.dart';
@@ -47,7 +48,6 @@ class _MenuScreenState extends State<MenuScreen> {
 
   List<MenuItem> get _visibleItems {
     final items = _items.where((item) {
-      if (!item.isActive) return false;
       if (_category != 'All' && item.category != _category) return false;
       if (_profitability == _ProfitabilityFilter.needsReview) {
         final status = MenuPerformanceClassifier.classify(item);
@@ -87,8 +87,12 @@ class _MenuScreenState extends State<MenuScreen> {
             AppSpacing.space6xl,
           ),
           children: [
-            const _Header(),
-            const SizedBox(height: AppSpacing.spaceMd),
+            const AppFeatureHeader(
+              title: 'Menu Performance',
+              subtitle: 'Track menu profitability and popularity.',
+              contextLabel: 'This Month · August 2026',
+            ),
+            const SizedBox(height: AppSpacing.spaceLg),
             _FilterBar(
               categories: _categories,
               selectedCategory: _category,
@@ -159,7 +163,15 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Future<void> _openDetails(MenuItem item) async {
-    await context.pushNamed(AppRoute.menuItemDetails.name, extra: item);
+    final deleted = await context.pushNamed<bool>(
+      AppRoute.menuItemDetails.name,
+      extra: item,
+    );
+    if (!mounted || deleted != true) return;
+    setState(() => _items.removeWhere((entry) => entry.id == item.id));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Menu item deleted')));
   }
 
   Future<void> _handleItemAction(MenuItem item, String action) async {
@@ -180,57 +192,42 @@ class _MenuScreenState extends State<MenuScreen> {
       return;
     }
 
+    if (action != 'delete') return;
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Deactivate this item?'),
+        icon: Icon(
+          Icons.delete_outline_rounded,
+          color: Theme.of(context).colorScheme.error,
+          size: 34,
+        ),
+        title: const Text('Delete this menu item?'),
         content: const Text(
-          'It will no longer appear when recording new orders. Historical sales will remain available.',
+          'This removes the item from your current menu. Its historical sales will remain available in reports.',
+          textAlign: TextAlign.center,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
-          FilledButton.tonal(
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Deactivate'),
+            child: const Text('Delete Item'),
           ),
         ],
       ),
     );
     if (!mounted || confirmed != true) return;
-    setState(() {
-      final index = _items.indexWhere((entry) => entry.id == item.id);
-      if (index >= 0) _items[index] = item.copyWith(isActive: false);
-    });
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Menu Performance',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: const Color(0xFF102037),
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          'Track profitability and popularity',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
+    setState(() => _items.removeWhere((entry) => entry.id == item.id));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Menu item deleted')));
   }
 }
 

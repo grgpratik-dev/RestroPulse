@@ -42,7 +42,7 @@ class RecentExpensesList extends StatelessWidget {
                 minimumSize: const Size(0, 40),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 backgroundColor: hasActiveFilter
-                    ? const Color(0xFFFFF2DF)
+                    ? AppColors.warningMuted
                     : null,
               ),
               icon: Icon(

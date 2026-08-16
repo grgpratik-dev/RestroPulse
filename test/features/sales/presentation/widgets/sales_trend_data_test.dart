@@ -38,21 +38,12 @@ void main() {
     expect(result.bestPoint.value, 186500);
   });
 
-  test('uses six and twelve monthly buckets', () {
-    final sixMonths = dataset(SalesTrendPeriod.sixMonths);
-    final year = dataset(SalesTrendPeriod.year);
+  test('uses three monthly buckets for the quarter', () {
+    final quarter = dataset(SalesTrendPeriod.quarter);
 
-    expect(sixMonths.points, hasLength(6));
-    expect(year.points, hasLength(12));
-    expect(sixMonths.points.map((point) => point.label), [
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-    ]);
-    expect(year.bestPoint.summaryLabel, 'July');
-    expect(year.bestPoint.value, 742500);
+    expect(quarter.points, hasLength(3));
+    expect(quarter.points.map((point) => point.label), ['Jun', 'Jul', 'Aug']);
+    expect(quarter.bestPoint.summaryLabel, 'July');
+    expect(quarter.bestPoint.value, 742500);
   });
 }

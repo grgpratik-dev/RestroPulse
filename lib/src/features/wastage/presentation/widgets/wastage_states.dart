@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_skeleton.dart';
+import '../../../../core/widgets/app_state_message.dart';
 
 class WastageStateMessage extends StatelessWidget {
   const WastageStateMessage({
@@ -19,31 +22,13 @@ class WastageStateMessage extends StatelessWidget {
   final IconData icon;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3xl),
-    child: Center(
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 32,
-            backgroundColor: const Color(0xFFFFF2DF),
-            child: Icon(icon, color: const Color(0xFFB45309), size: 32),
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpacing.spaceXs),
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: AppSpacing.spaceLg),
-          FilledButton(onPressed: onAction, child: Text(actionLabel)),
-        ],
-      ),
-    ),
+  Widget build(BuildContext context) => AppStateMessage(
+    icon: icon,
+    title: title,
+    message: message,
+    iconBackgroundColor: AppColors.warningMuted,
+    iconColor: AppColors.warning,
+    actions: [FilledButton(onPressed: onAction, child: Text(actionLabel))],
   );
 }
 
@@ -52,17 +37,10 @@ class WastageLoadingSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.surfaceContainerHighest;
     return Column(
       children: [
         for (final height in [230.0, 270.0, 320.0, 220.0]) ...[
-          Container(
-            height: height,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
+          AppSkeleton(height: height),
           const SizedBox(height: AppSpacing.spaceMd),
         ],
       ],

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
-import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_add_floating_action_button.dart';
+import 'package:restropulse/src/core/widgets/app_feature_header.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_channel_card.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_loading_skeleton.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_entry_type_sheet.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/sales_loading_skeleton.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_orders_section.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_sales_summary_card.dart';
@@ -52,8 +52,12 @@ class _SalesScreenState extends State<SalesScreen> {
               AppSpacing.space6xl,
             ),
             children: [
-              const _SalesHeader(),
-              const SizedBox(height: AppSpacing.spaceMd),
+              const AppFeatureHeader(
+                title: 'Sales',
+                subtitle: 'Track orders and sales performance.',
+                contextLabel: 'Today · Aug 16',
+              ),
+              const SizedBox(height: AppSpacing.spaceLg),
               if (widget.viewState == SalesViewState.loading)
                 const SalesLoadingSkeleton()
               else if (widget.viewState == SalesViewState.error)
@@ -63,7 +67,12 @@ class _SalesScreenState extends State<SalesScreen> {
               else ...[
                 const TodaySalesSummaryCard(),
                 const SizedBox(height: AppSpacing.spaceMd),
-                const SalesQuickMetrics(),
+                if (widget.viewState == SalesViewState.partial)
+                  SalesChannelEmptyCard(onUpdateSales: _openAddOrder)
+                else
+                  const SalesChannelCard(),
+                const SizedBox(height: AppSpacing.spaceMd),
+                const SalesTrendCard(),
                 const SizedBox(height: AppSpacing.spaceLg),
                 TodayOrdersSection(
                   orders: SalesMockData.todayOrders,
@@ -74,13 +83,6 @@ class _SalesScreenState extends State<SalesScreen> {
                   onOrderTap: _openOrderDetails,
                   onViewHistory: _openSalesHistory,
                 ),
-                const SizedBox(height: AppSpacing.spaceMd),
-                const SalesTrendCard(),
-                const SizedBox(height: AppSpacing.spaceMd),
-                if (widget.viewState == SalesViewState.partial)
-                  SalesChannelEmptyCard(onUpdateSales: _openAddOrder)
-                else
-                  const SalesChannelCard(),
               ],
             ],
           ),
@@ -118,48 +120,5 @@ class _SalesScreenState extends State<SalesScreen> {
 
   void _openSalesHistory() {
     context.pushNamed(AppRoute.salesHistory.name);
-  }
-}
-
-class _SalesHeader extends StatelessWidget {
-  const _SalesHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Sales',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.space2xs),
-        Text(
-          'Track orders and sales performance.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.spaceXs),
-        const Row(
-          children: [
-            Icon(Icons.today_outlined, size: 17, color: AppColors.primary),
-            SizedBox(width: AppSpacing.spaceXs),
-            Text(
-              'Today · Aug 16',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }

@@ -1,8 +1,7 @@
 enum WastagePeriod {
   week('1W'),
   month('1M'),
-  sixMonths('6M'),
-  year('1Y');
+  quarter('3M');
 
   const WastagePeriod(this.label);
   final String label;
@@ -168,13 +167,13 @@ abstract final class WastageMockData {
       entries: 8,
       comparisonLabel: 'vs previous 7 days',
       trend: [
+        WastageTrendPoint('Sun', 'Sunday', 0.50),
         WastageTrendPoint('Mon', 'Monday', 0.32),
         WastageTrendPoint('Tue', 'Tuesday', 0.28),
         WastageTrendPoint('Wed', 'Wednesday', 0.41),
         WastageTrendPoint('Thu', 'Thursday', 0.36),
         WastageTrendPoint('Fri', 'Friday', 0.52),
         WastageTrendPoint('Sat', 'Saturday', 1.85),
-        WastageTrendPoint('Sun', 'Sunday', 0.50),
       ],
     ),
     WastagePeriod.month => const WastageSnapshot(
@@ -190,38 +189,15 @@ abstract final class WastageMockData {
         WastageTrendPoint('W5', 'Aug 29–31', 1.05),
       ],
     ),
-    WastagePeriod.sixMonths => const WastageSnapshot(
-      total: 68400,
-      change: 5.2,
-      entries: 144,
-      comparisonLabel: 'vs previous 6 months',
+    WastagePeriod.quarter => const WastageSnapshot(
+      total: 38750,
+      change: 6.4,
+      entries: 78,
+      comparisonLabel: 'vs previous 3 months',
       trend: [
-        WastageTrendPoint('Mar', 'March 2026', 8.4),
-        WastageTrendPoint('Apr', 'April 2026', 9.1),
-        WastageTrendPoint('May', 'May 2026', 10.2),
         WastageTrendPoint('Jun', 'June 2026', 11.5),
         WastageTrendPoint('Jul', 'July 2026', 14.8),
-        WastageTrendPoint('Aug', 'August 2026', 14.4),
-      ],
-    ),
-    WastagePeriod.year => const WastageSnapshot(
-      total: 132600,
-      change: -3.8,
-      entries: 286,
-      comparisonLabel: 'vs previous 12 months',
-      trend: [
-        WastageTrendPoint('Sep', 'September 2025', 9.2),
-        WastageTrendPoint('Oct', 'October 2025', 9.8),
-        WastageTrendPoint('Nov', 'November 2025', 10.1),
-        WastageTrendPoint('Dec', 'December 2025', 12.4),
-        WastageTrendPoint('Jan', 'January 2026', 9.4),
-        WastageTrendPoint('Feb', 'February 2026', 8.9),
-        WastageTrendPoint('Mar', 'March 2026', 10.2),
-        WastageTrendPoint('Apr', 'April 2026', 10.7),
-        WastageTrendPoint('May', 'May 2026', 11.1),
-        WastageTrendPoint('Jun', 'June 2026', 11.8),
-        WastageTrendPoint('Jul', 'July 2026', 14.8),
-        WastageTrendPoint('Aug', 'August 2026', 14.2),
+        WastageTrendPoint('Aug', 'August 2026', 12.45),
       ],
     ),
   };

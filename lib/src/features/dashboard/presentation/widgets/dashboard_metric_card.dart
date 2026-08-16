@@ -30,7 +30,7 @@ class DashboardMetricCard extends StatelessWidget {
     final statusColor = switch (status) {
       MetricStatus.positive => AppColors.success,
       MetricStatus.negative => theme.colorScheme.error,
-      MetricStatus.warning => const Color(0xFFB45309),
+      MetricStatus.warning => AppColors.warning,
       MetricStatus.neutral => theme.colorScheme.onSurfaceVariant,
     };
 
@@ -45,7 +45,7 @@ class DashboardMetricCard extends StatelessWidget {
                 height: 34,
                 decoration: BoxDecoration(
                   color: status == MetricStatus.warning
-                      ? const Color(0xFFFFF4E5)
+                      ? AppColors.warningSoft
                       : AppColors.splashAccent.withValues(alpha: 0.36),
                   borderRadius: BorderRadius.circular(AppRadius.xs),
                 ),

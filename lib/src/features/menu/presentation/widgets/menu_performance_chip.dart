@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_colors.dart';
+
 import '../../domain/models/menu_item.dart';
 
 class MenuPerformanceChip extends StatelessWidget {
@@ -11,24 +13,24 @@ class MenuPerformanceChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final (background, foreground) = switch (status) {
       MenuPerformanceStatus.star => (
-        const Color(0xFFDDF7EC),
-        const Color(0xFF047857),
+        AppColors.mintChip,
+        AppColors.primaryStrong,
       ),
       MenuPerformanceStatus.reviewCost => (
-        const Color(0xFFFFEDD5),
-        const Color(0xFF9A3412),
+        AppColors.warningChipAlt,
+        AppColors.warningStrong,
       ),
       MenuPerformanceStatus.promote => (
-        const Color(0xFFDBEAFE),
-        const Color(0xFF1D4ED8),
+        AppColors.infoSurface,
+        AppColors.infoStrong,
       ),
       MenuPerformanceStatus.lowPerformer => (
-        const Color(0xFFF3F4F6),
-        const Color(0xFF6B3C34),
+        AppColors.neutral75,
+        AppColors.mutedStatus,
       ),
       MenuPerformanceStatus.notEnoughData => (
-        const Color(0xFFF1F5F9),
-        const Color(0xFF475569),
+        AppColors.neutral100,
+        AppColors.neutral700,
       ),
     };
 

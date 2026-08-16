@@ -69,16 +69,16 @@ class _HighlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foreground = isPrimary ? Colors.white : const Color(0xFF102037);
-    final accent = isPrimary ? const Color(0xFF7DE2B8) : AppColors.primary;
+    final foreground = isPrimary ? Colors.white : AppColors.ink;
+    final accent = isPrimary ? AppColors.mintBright : AppColors.primary;
 
     return Container(
       constraints: const BoxConstraints(minHeight: 158),
       padding: const EdgeInsets.all(AppSpacing.spaceMd),
       decoration: BoxDecoration(
-        color: isPrimary ? const Color(0xFF047857) : Colors.white,
+        color: isPrimary ? AppColors.primaryStrong : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: isPrimary ? null : Border.all(color: const Color(0xFFE5E7EB)),
+        border: isPrimary ? null : Border.all(color: AppColors.neutral200),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.06),

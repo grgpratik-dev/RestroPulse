@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:restropulse/src/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:restropulse/src/features/expenses/presentation/screens/expenses_screen.dart';
 import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
-import 'package:restropulse/src/features/expenses/presentation/screens/expense_category_details_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_categories_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_category_details_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_details_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_form_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expenses_screen.dart';
 import 'package:restropulse/src/features/menu/domain/models/menu_item.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_categories_screen.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_item_details_screen.dart';
@@ -142,11 +142,15 @@ class AppRouter {
       GoRoute(
         path: AppRoute.expenseCategoryDetails.path,
         name: AppRoute.expenseCategoryDetails.name,
-        builder: (context, state) => ExpenseCategoryDetailsScreen(
-          category:
-              state.extra as ExpenseCategorySummary? ??
-              ExpensesMockData.categorySummaries.first,
-        ),
+        builder: (context, state) {
+          final data = state.extra as ExpenseCategoryDetailsData?;
+          return ExpenseCategoryDetailsScreen(
+            category:
+                data?.category ??
+                ExpensesMockData.categorySummaries(ExpensePeriod.month).first,
+            period: data?.period ?? ExpensePeriod.month,
+          );
+        },
       ),
       GoRoute(
         path: AppRoute.expenseCategories.path,

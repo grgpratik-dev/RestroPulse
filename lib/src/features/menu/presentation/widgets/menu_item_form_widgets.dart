@@ -28,7 +28,7 @@ class MenuPhotoPicker extends StatelessWidget {
                 dimension: 88,
                 child: path == null
                     ? const ColoredBox(
-                        color: Color(0xFFE4F5EF),
+                        color: AppColors.mintSoft,
                         child: Icon(
                           Icons.restaurant_menu_rounded,
                           color: AppColors.primary,
@@ -110,7 +110,7 @@ class MenuCostPreview extends StatelessWidget {
     final contribution = sellingPrice - estimatedCost;
 
     return CustomContainer(
-      color: const Color(0xFFF0FBF7),
+      color: AppColors.mintSurface,
       borderColor: AppColors.primary.withValues(alpha: 0.15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,19 +181,19 @@ class MenuCostWarning extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.spaceSm),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: AppColors.warningSurface,
         borderRadius: BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: const Color(0xFFFDBA74)),
+        border: Border.all(color: AppColors.warningBorderStrong),
       ),
       child: const Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: Color(0xFF9A3412)),
+          Icon(Icons.warning_amber_rounded, color: AppColors.warningStrong),
           SizedBox(width: AppSpacing.spaceXs),
           Expanded(
             child: Text(
               'Estimated cost is higher than the selling price.',
               style: TextStyle(
-                color: Color(0xFF9A3412),
+                color: AppColors.warningStrong,
                 fontWeight: FontWeight.w600,
               ),
             ),

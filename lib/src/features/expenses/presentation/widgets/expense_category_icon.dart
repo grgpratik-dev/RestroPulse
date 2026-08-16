@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_colors.dart';
+
 IconData expenseCategoryIcon(String category) => switch (category) {
   'Ingredients' => Icons.shopping_basket_outlined,
   'Salaries' => Icons.groups_outlined,
@@ -30,12 +32,12 @@ class ExpenseCategoryIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF2DF),
+        color: AppColors.warningMuted,
         borderRadius: BorderRadius.circular(size * 0.27),
       ),
       child: Icon(
         expenseCategoryIcon(category),
-        color: const Color(0xFFB45309),
+        color: AppColors.warning,
         size: size * 0.5,
       ),
     );

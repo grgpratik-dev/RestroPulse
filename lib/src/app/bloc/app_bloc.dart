@@ -8,7 +8,6 @@ import '../../core/services/session/session_service.dart';
 part 'app_event.dart';
 part 'app_state.dart';
 
-
 /// Holds authentication state that affects the entire application.
 final class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc(this._sessionService) : super(const AppState()) {

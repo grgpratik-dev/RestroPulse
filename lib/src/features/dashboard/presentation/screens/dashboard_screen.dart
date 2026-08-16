@@ -4,7 +4,7 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/dashboard/presentation/widgets/attention_insight_card.dart';
 import 'package:restropulse/src/features/dashboard/presentation/widgets/dashboard_loading_skeleton.dart';
-import 'package:restropulse/src/features/dashboard/presentation/widgets/dashboard_metric_card.dart';
+import 'package:restropulse/src/features/dashboard/presentation/widgets/dashboard_metrics_grid.dart';
 import 'package:restropulse/src/features/dashboard/presentation/widgets/quick_actions_section.dart';
 import 'package:restropulse/src/features/dashboard/presentation/widgets/restaurant_pulse_card.dart';
 import 'package:restropulse/src/features/dashboard/presentation/widgets/revenue_summary_card.dart';
@@ -49,7 +49,10 @@ class DashboardScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.spaceMd),
               RevenueSummaryCard(hasData: _hasData),
               const SizedBox(height: AppSpacing.spaceMd),
-              _MetricsGrid(viewState: viewState),
+              DashboardMetricsGrid(
+                isEmpty: viewState == DashboardViewState.empty,
+                isPartial: viewState == DashboardViewState.partial,
+              ),
               if (_hasData) ...[
                 const SizedBox(height: AppSpacing.spaceLg),
                 Text(
@@ -88,80 +91,5 @@ class DashboardScreen extends StatelessWidget {
 
   void _openWastage(BuildContext context) {
     context.pushNamed(AppRoute.recordWastage.name);
-  }
-}
-
-class _MetricsGrid extends StatelessWidget {
-  const _MetricsGrid({required this.viewState});
-
-  final DashboardViewState viewState;
-
-  @override
-  Widget build(BuildContext context) {
-    final isEmpty = viewState == DashboardViewState.empty;
-    final isPartial = viewState == DashboardViewState.partial;
-
-    return Column(
-      children: [
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: DashboardMetricCard(
-                  icon: Icons.receipt_long_outlined,
-                  title: 'Orders',
-                  value: isEmpty ? '—' : '142',
-                  comparison: isEmpty ? null : '↑ 7.2%',
-                  status: MetricStatus.positive,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              Expanded(
-                child: DashboardMetricCard(
-                  icon: Icons.payments_outlined,
-                  title: 'Avg. Order',
-                  value: isEmpty ? '—' : 'Rs 201',
-                  comparison: isEmpty ? null : '↑ 4.8%',
-                  status: MetricStatus.positive,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.spaceSm),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: DashboardMetricCard(
-                  icon: Icons.trending_up_rounded,
-                  title: 'Est. Profit',
-                  value: isEmpty
-                      ? '—'
-                      : isPartial
-                      ? 'Not enough data'
-                      : 'Rs 7,650',
-                  comparison: isEmpty || isPartial ? null : '↓ 2.1%',
-                  subtitle: isPartial ? 'Add Expenses' : null,
-                  status: MetricStatus.negative,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              Expanded(
-                child: DashboardMetricCard(
-                  icon: Icons.restaurant_outlined,
-                  title: 'Food Cost',
-                  value: isEmpty || isPartial ? '—' : '28.4%',
-                  subtitle: isEmpty || isPartial ? null : 'Target < 30%',
-                  status: MetricStatus.warning,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }

@@ -59,7 +59,6 @@ class MenuItem {
     required this.revenue,
     required this.historicalCost,
     required this.ordersContainingItem,
-    required this.isActive,
     this.notes,
     this.imagePath,
   });
@@ -75,7 +74,6 @@ class MenuItem {
   final double revenue;
   final double historicalCost;
   final int ordersContainingItem;
-  final bool isActive;
   final String? notes;
   final String? imagePath;
 
@@ -92,7 +90,6 @@ class MenuItem {
     String? category,
     double? sellingPrice,
     double? estimatedCost,
-    bool? isActive,
     String? notes,
     String? imagePath,
   }) {
@@ -106,7 +103,6 @@ class MenuItem {
       revenue: revenue,
       historicalCost: historicalCost,
       ordersContainingItem: ordersContainingItem,
-      isActive: isActive ?? this.isActive,
       notes: notes ?? this.notes,
       imagePath: imagePath ?? this.imagePath,
     );
@@ -141,7 +137,6 @@ abstract final class MenuMockData {
       revenue: 22680,
       historicalCost: 7812,
       ordersContainingItem: 94,
-      isActive: true,
       notes: 'House special served with tomato achar.',
     ),
     MenuItem(
@@ -154,7 +149,6 @@ abstract final class MenuMockData {
       revenue: 28700,
       historicalCost: 13776,
       ordersContainingItem: 71,
-      isActive: true,
     ),
     MenuItem(
       id: 'lemonade',
@@ -166,7 +160,6 @@ abstract final class MenuMockData {
       revenue: 3600,
       historicalCost: 720,
       ordersContainingItem: 22,
-      isActive: true,
     ),
     MenuItem(
       id: 'veg-pizza',
@@ -178,7 +171,6 @@ abstract final class MenuMockData {
       revenue: 8640,
       historicalCost: 4752,
       ordersContainingItem: 17,
-      isActive: true,
     ),
     MenuItem(
       id: 'buff-momo',
@@ -190,7 +182,6 @@ abstract final class MenuMockData {
       revenue: 20160,
       historicalCost: 7296,
       ordersContainingItem: 80,
-      isActive: true,
     ),
     MenuItem(
       id: 'crispy-fries',
@@ -202,7 +193,6 @@ abstract final class MenuMockData {
       revenue: 0,
       historicalCost: 0,
       ordersContainingItem: 0,
-      isActive: false,
     ),
   ];
 }

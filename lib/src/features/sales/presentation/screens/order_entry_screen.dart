@@ -37,9 +37,8 @@ class _OrderEntryScreenState extends State<OrderEntryScreen> {
 
   bool get _isEditing => widget.initialOrder != null;
 
-  List<MenuItemSnapshot> get _activeMenuItems {
+  List<MenuItemSnapshot> get _visibleMenuItems {
     return SalesMockData.menuItems.where((item) {
-      if (!item.isActive) return false;
       final matchesCategory = _category == 'Popular'
           ? item.isPopular
           : item.category == _category;
@@ -145,7 +144,7 @@ class _OrderEntryScreenState extends State<OrderEntryScreen> {
             OrderMenuBrowser(
               searchController: _searchController,
               selectedCategory: _category,
-              items: _activeMenuItems,
+              items: _visibleMenuItems,
               quantities: _quantities,
               onSearchChanged: (query) => setState(() => _searchQuery = query),
               onCategorySelected: (category) {

@@ -30,7 +30,7 @@ class _WastageScreenState extends State<WastageScreen> {
   late final List<WastageEntry> _entries = [
     ...(widget.initialEntries ?? WastageMockData.entries),
   ];
-  WastagePeriod _period = WastagePeriod.month;
+  static const _period = WastagePeriod.month;
   double _lossAdjustment = 0;
   int _entryAdjustment = 0;
 
@@ -49,25 +49,24 @@ class _WastageScreenState extends State<WastageScreen> {
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: AppSpacing.spaceMd),
-            SizedBox(
-              width: double.infinity,
-              child: SegmentedButton<WastagePeriod>(
-                segments: WastagePeriod.values
-                    .map(
-                      (period) => ButtonSegment(
-                        value: period,
-                        label: Text(period.label),
-                      ),
-                    )
-                    .toList(),
-                selected: {_period},
-                showSelectedIcon: false,
-                onSelectionChanged: (values) =>
-                    setState(() => _period = values.first),
-                style: const ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            const SizedBox(height: AppSpacing.spaceSm),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  'This Month · August 2026',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),

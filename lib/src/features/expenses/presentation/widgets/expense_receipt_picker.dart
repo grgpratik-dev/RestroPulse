@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 
@@ -19,9 +20,9 @@ class ExpenseReceiptPicker extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(AppSpacing.spaceSm),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF7ED),
+            color: AppColors.warningSurface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFFED7AA)),
+            border: Border.all(color: AppColors.warningBorder),
           ),
           child: Row(
             children: [
@@ -34,7 +35,7 @@ class ExpenseReceiptPicker extends StatelessWidget {
                           color: Colors.white,
                           child: Icon(
                             Icons.receipt_long_outlined,
-                            color: Color(0xFFB45309),
+                            color: AppColors.warning,
                           ),
                         )
                       : Image.file(File(path), fit: BoxFit.cover),

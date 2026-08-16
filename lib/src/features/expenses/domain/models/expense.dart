@@ -9,8 +9,7 @@ enum ExpenseType {
 enum ExpensePeriod {
   week('1W'),
   month('1M'),
-  sixMonths('6M'),
-  year('1Y');
+  quarter('3M');
 
   const ExpensePeriod(this.label);
   final String label;
@@ -81,6 +80,16 @@ class ExpenseCategorySummary {
   final double percentage;
   final int transactionCount;
   final double change;
+}
+
+class ExpenseCategoryDetailsData {
+  const ExpenseCategoryDetailsData({
+    required this.category,
+    required this.period,
+  });
+
+  final ExpenseCategorySummary category;
+  final ExpensePeriod period;
 }
 
 class ExpenseTrendPoint {
@@ -175,50 +184,163 @@ abstract final class ExpensesMockData {
     ),
   ];
 
-  static const categorySummaries = [
-    ExpenseCategorySummary(
-      name: 'Ingredients',
-      amount: 210000,
-      percentage: 0.44,
-      transactionCount: 34,
-      change: 14.2,
-    ),
-    ExpenseCategorySummary(
-      name: 'Salaries',
-      amount: 120000,
-      percentage: 0.25,
-      transactionCount: 12,
-      change: 0,
-    ),
-    ExpenseCategorySummary(
-      name: 'Rent',
-      amount: 55000,
-      percentage: 0.12,
-      transactionCount: 1,
-      change: 0,
-    ),
-    ExpenseCategorySummary(
-      name: 'Packaging',
-      amount: 32000,
-      percentage: 0.07,
-      transactionCount: 18,
-      change: -8,
-    ),
-    ExpenseCategorySummary(
-      name: 'Utilities',
-      amount: 28300,
-      percentage: 0.06,
-      transactionCount: 8,
-      change: 5.4,
-    ),
-    ExpenseCategorySummary(
-      name: 'Other',
-      amount: 33000,
-      percentage: 0.06,
-      transactionCount: 13,
-      change: 2.1,
-    ),
-  ];
+  static List<ExpenseCategorySummary> categorySummaries(ExpensePeriod period) =>
+      switch (period) {
+        ExpensePeriod.week => const [
+          ExpenseCategorySummary(
+            name: 'Ingredients',
+            amount: 48000,
+            percentage: 0.426,
+            transactionCount: 9,
+            change: 8.0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Salaries',
+            amount: 28000,
+            percentage: 0.248,
+            transactionCount: 3,
+            change: 0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Rent',
+            amount: 13000,
+            percentage: 0.115,
+            transactionCount: 1,
+            change: 0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Packaging',
+            amount: 9000,
+            percentage: 0.080,
+            transactionCount: 4,
+            change: -3.2,
+          ),
+          ExpenseCategorySummary(
+            name: 'Utilities',
+            amount: 7800,
+            percentage: 0.069,
+            transactionCount: 3,
+            change: 4.1,
+          ),
+          ExpenseCategorySummary(
+            name: 'Other',
+            amount: 7000,
+            percentage: 0.062,
+            transactionCount: 4,
+            change: 1.8,
+          ),
+        ],
+        ExpensePeriod.month => const [
+          ExpenseCategorySummary(
+            name: 'Ingredients',
+            amount: 210000,
+            percentage: 0.44,
+            transactionCount: 34,
+            change: 14.2,
+          ),
+          ExpenseCategorySummary(
+            name: 'Salaries',
+            amount: 120000,
+            percentage: 0.25,
+            transactionCount: 12,
+            change: 0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Rent',
+            amount: 55000,
+            percentage: 0.12,
+            transactionCount: 1,
+            change: 0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Packaging',
+            amount: 32000,
+            percentage: 0.07,
+            transactionCount: 18,
+            change: -8,
+          ),
+          ExpenseCategorySummary(
+            name: 'Utilities',
+            amount: 28300,
+            percentage: 0.06,
+            transactionCount: 8,
+            change: 5.4,
+          ),
+          ExpenseCategorySummary(
+            name: 'Other',
+            amount: 33000,
+            percentage: 0.06,
+            transactionCount: 13,
+            change: 2.1,
+          ),
+        ],
+        ExpensePeriod.quarter => const [
+          ExpenseCategorySummary(
+            name: 'Ingredients',
+            amount: 610000,
+            percentage: 0.433,
+            transactionCount: 100,
+            change: 11.0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Salaries',
+            amount: 360000,
+            percentage: 0.256,
+            transactionCount: 36,
+            change: 2.1,
+          ),
+          ExpenseCategorySummary(
+            name: 'Rent',
+            amount: 165000,
+            percentage: 0.117,
+            transactionCount: 3,
+            change: 0,
+          ),
+          ExpenseCategorySummary(
+            name: 'Packaging',
+            amount: 94000,
+            percentage: 0.067,
+            transactionCount: 52,
+            change: -4.5,
+          ),
+          ExpenseCategorySummary(
+            name: 'Utilities',
+            amount: 84300,
+            percentage: 0.060,
+            transactionCount: 24,
+            change: 6.8,
+          ),
+          ExpenseCategorySummary(
+            name: 'Other',
+            amount: 95000,
+            percentage: 0.067,
+            transactionCount: 37,
+            change: 3.4,
+          ),
+        ],
+      };
+
+  static String categoryInsight(ExpensePeriod period) => switch (period) {
+    ExpensePeriod.week =>
+      'Ingredient spending is 8% higher than the previous week.',
+    ExpensePeriod.month =>
+      'Ingredient spending is 14% higher than the previous month.',
+    ExpensePeriod.quarter =>
+      'Ingredient spending is 11% higher than the previous 3 months.',
+  };
+
+  static List<ExpenseTrendPoint> categoryTrend(
+    ExpenseCategorySummary category,
+    ExpensePeriod period,
+  ) => snapshot(period).trend
+      .map(
+        (point) => ExpenseTrendPoint(
+          point.label,
+          point.tooltipLabel,
+          point.amount * category.percentage,
+        ),
+      )
+      .toList();
 
   static ExpensePeriodSnapshot snapshot(ExpensePeriod period) =>
       switch (period) {
@@ -229,13 +351,13 @@ abstract final class ExpensesMockData {
           averageDaily: 16114,
           comparisonLabel: 'vs previous 7 days',
           trend: [
+            ExpenseTrendPoint('Sun', 'Sunday', 16.0),
             ExpenseTrendPoint('Mon', 'Monday', 13.2),
             ExpenseTrendPoint('Tue', 'Tuesday', 14.8),
             ExpenseTrendPoint('Wed', 'Wednesday', 15.1),
             ExpenseTrendPoint('Thu', 'Thursday', 12.9),
             ExpenseTrendPoint('Fri', 'Friday', 16.3),
             ExpenseTrendPoint('Sat', 'Saturday', 24.5),
-            ExpenseTrendPoint('Sun', 'Sunday', 16.0),
           ],
         ),
         ExpensePeriod.month => const ExpensePeriodSnapshot(
@@ -252,40 +374,16 @@ abstract final class ExpensesMockData {
             ExpenseTrendPoint('W5', 'Aug 29–31', 62.3),
           ],
         ),
-        ExpensePeriod.sixMonths => const ExpensePeriodSnapshot(
-          total: 2576000,
-          change: 7.3,
-          transactions: 508,
-          averageDaily: 14154,
-          comparisonLabel: 'vs previous 6 months',
+        ExpensePeriod.quarter => const ExpensePeriodSnapshot(
+          total: 1408300,
+          change: 8.1,
+          transactions: 252,
+          averageDaily: 15308,
+          comparisonLabel: 'vs previous 3 months',
           trend: [
-            ExpenseTrendPoint('Mar', 'March 2026', 382),
-            ExpenseTrendPoint('Apr', 'April 2026', 401),
-            ExpenseTrendPoint('May', 'May 2026', 416),
             ExpenseTrendPoint('Jun', 'June 2026', 438),
             ExpenseTrendPoint('Jul', 'July 2026', 492),
-            ExpenseTrendPoint('Aug', 'August 2026', 447),
-          ],
-        ),
-        ExpensePeriod.year => const ExpensePeriodSnapshot(
-          total: 5168000,
-          change: 12.1,
-          transactions: 1012,
-          averageDaily: 14159,
-          comparisonLabel: 'vs previous 12 months',
-          trend: [
-            ExpenseTrendPoint('Sep', 'September 2025', 378),
-            ExpenseTrendPoint('Oct', 'October 2025', 390),
-            ExpenseTrendPoint('Nov', 'November 2025', 404),
-            ExpenseTrendPoint('Dec', 'December 2025', 438),
-            ExpenseTrendPoint('Jan', 'January 2026', 402),
-            ExpenseTrendPoint('Feb', 'February 2026', 415),
-            ExpenseTrendPoint('Mar', 'March 2026', 421),
-            ExpenseTrendPoint('Apr', 'April 2026', 428),
-            ExpenseTrendPoint('May', 'May 2026', 436),
-            ExpenseTrendPoint('Jun', 'June 2026', 448),
-            ExpenseTrendPoint('Jul', 'July 2026', 492),
-            ExpenseTrendPoint('Aug', 'August 2026', 516),
+            ExpenseTrendPoint('Aug', 'August 2026', 478.3),
           ],
         ),
       };

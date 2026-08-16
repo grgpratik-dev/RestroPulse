@@ -70,10 +70,30 @@ class MenuItemCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: _Metric(
-                              label: 'MARGIN',
+                              label: 'FOOD COST',
                               value:
-                                  '${item.marginPercentage.toStringAsFixed(0)}%',
-                              positive: item.marginPercentage >= 50,
+                                  '${item.foodCostPercentage.toStringAsFixed(0)}%',
+                              positive: item.foodCostPercentage <= 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _Metric(
+                              label: 'UNITS · THIS MONTH',
+                              value: NumberFormat.decimalPattern().format(
+                                item.unitsSold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: _Metric(
+                              label: 'REVENUE · THIS MONTH',
+                              value: 'Rs ${currency.format(item.revenue)}',
+                              positive: item.revenue > 0,
                             ),
                           ),
                         ],
@@ -94,8 +114,13 @@ class MenuItemCard extends StatelessWidget {
                       child: Text('Edit item'),
                     ),
                     PopupMenuItem(
-                      value: 'status',
-                      child: Text(item.isActive ? 'Deactivate' : 'Reactivate'),
+                      value: 'delete',
+                      child: Text(
+                        'Delete item',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
                     ),
                   ],
                   icon: const Icon(Icons.more_vert_rounded),
@@ -122,7 +147,7 @@ class _MenuImage extends StatelessWidget {
         dimension: 64,
         child: path == null
             ? ColoredBox(
-                color: const Color(0xFFE4F5EF),
+                color: AppColors.mintSoft,
                 child: const Icon(
                   Icons.restaurant_menu_rounded,
                   color: AppColors.primary,
@@ -184,28 +209,28 @@ class _CompactStatus extends StatelessWidget {
     final (label, background, foreground) = switch (status) {
       MenuPerformanceStatus.star => (
         'HIGH DEMAND',
-        const Color(0xFFDCEAFE),
-        const Color(0xFF173B6C),
+        AppColors.infoSurfaceSoft,
+        AppColors.infoForeground,
       ),
       MenuPerformanceStatus.reviewCost => (
         'REVIEW COST',
-        const Color(0xFFFFE8CC),
-        const Color(0xFF9A3412),
+        AppColors.warningChip,
+        AppColors.warningStrong,
       ),
       MenuPerformanceStatus.promote => (
         'PROMOTE',
-        const Color(0xFFDDF7EC),
+        AppColors.mintChip,
         AppColors.primary,
       ),
       MenuPerformanceStatus.lowPerformer => (
         'TRENDING DOWN',
-        const Color(0xFFFED7D7),
-        const Color(0xFF991B1B),
+        AppColors.dangerSurface,
+        AppColors.danger,
       ),
       MenuPerformanceStatus.notEnoughData => (
         'NEW',
-        const Color(0xFFE2E8F0),
-        const Color(0xFF475569),
+        AppColors.neutral300,
+        AppColors.neutral700,
       ),
     };
 

@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
@@ -20,11 +21,12 @@ class ExpenseTrendCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final highest = points.reduce((a, b) => a.amount >= b.amount ? a : b);
     final maximum = highest.amount * 1.25;
+    final axisInterval = _axisInterval(maximum);
     final currency = NumberFormat.decimalPattern();
     final highestLabel = switch (period) {
       ExpensePeriod.week => 'Highest day',
       ExpensePeriod.month => 'Highest week',
-      ExpensePeriod.sixMonths || ExpensePeriod.year => 'Highest month',
+      ExpensePeriod.quarter => 'Highest month',
     };
 
     return CustomContainer(
@@ -46,7 +48,7 @@ class ExpenseTrendCard extends StatelessWidget {
                 alignment: BarChartAlignment.spaceAround,
                 gridData: FlGridData(
                   drawVerticalLine: false,
-                  horizontalInterval: maximum / 4,
+                  horizontalInterval: axisInterval,
                   getDrawingHorizontalLine: (_) => FlLine(
                     color: Theme.of(context).colorScheme.outlineVariant,
                     strokeWidth: 0.7,
@@ -54,8 +56,37 @@ class ExpenseTrendCard extends StatelessWidget {
                 ),
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 38,
+                      interval: axisInterval,
+                      getTitlesWidget: (value, meta) {
+                        final isInterval =
+                            ((value / axisInterval) -
+                                    (value / axisInterval).round())
+                                .abs() <
+                            0.001;
+                        if (value == 0 || !isInterval) {
+                          return const SizedBox.shrink();
+                        }
+                        return SideTitleWidget(
+                          meta: meta,
+                          space: 6,
+                          child: Text(
+                            '${value.round()}k',
+                            maxLines: 1,
+                            softWrap: false,
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   rightTitles: const AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
@@ -87,7 +118,7 @@ class ExpenseTrendCard extends StatelessWidget {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => const Color(0xFF102037),
+                    getTooltipColor: (_) => AppColors.ink,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       final point = points[group.x];
                       final multiplier = period == ExpensePeriod.week
@@ -112,7 +143,7 @@ class ExpenseTrendCard extends StatelessWidget {
                         BarChartRodData(
                           toY: points[index].amount,
                           width: points.length > 7 ? 10 : 18,
-                          color: const Color(0xFFE38B2C),
+                          color: AppColors.warningChart,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(5),
                           ),
@@ -128,12 +159,12 @@ class ExpenseTrendCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.spaceSm),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF7ED),
+              color: AppColors.warningSurface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                const Icon(Icons.bar_chart_rounded, color: Color(0xFFB45309)),
+                const Icon(Icons.bar_chart_rounded, color: AppColors.warning),
                 const SizedBox(width: AppSpacing.spaceXs),
                 Expanded(
                   child: Column(
@@ -158,5 +189,12 @@ class ExpenseTrendCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  double _axisInterval(double maximum) {
+    if (maximum <= 40) return 10;
+    if (maximum <= 200) return 50;
+    if (maximum <= 800) return 200;
+    return 500;
   }
 }

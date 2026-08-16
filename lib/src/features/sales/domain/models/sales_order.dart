@@ -15,7 +15,6 @@ class MenuItemSnapshot {
     required this.category,
     required this.sellingPrice,
     required this.estimatedCost,
-    this.isActive = true,
     this.isPopular = false,
   });
 
@@ -24,7 +23,6 @@ class MenuItemSnapshot {
   final String category;
   final int sellingPrice;
   final int estimatedCost;
-  final bool isActive;
   final bool isPopular;
 }
 
@@ -116,14 +114,6 @@ abstract final class SalesMockData {
       sellingPrice: 120,
       estimatedCost: 55,
       isPopular: true,
-    ),
-    MenuItemSnapshot(
-      id: 'inactive-old-item',
-      name: 'Old Special',
-      category: 'Other',
-      sellingPrice: 400,
-      estimatedCost: 180,
-      isActive: false,
     ),
   ];
 

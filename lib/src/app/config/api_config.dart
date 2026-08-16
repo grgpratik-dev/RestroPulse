@@ -1,5 +1,3 @@
-
-
 const restApiConfig = ApiConfig(baseUrl: 'https://api.example.com');
 
 /// Settings used when the app connects to a REST API.

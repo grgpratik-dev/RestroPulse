@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_typography.dart';
 
-Widget appName({required BuildContext context, double? fontSize, Color? leadColor}) {
+Widget appName({
+  required BuildContext context,
+  double? fontSize,
+  Color? leadColor,
+}) {
   return Text.rich(
     TextSpan(
       text: 'Restro',
@@ -15,7 +19,7 @@ Widget appName({required BuildContext context, double? fontSize, Color? leadColo
       ],
     ),
     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-      color:leadColor ?? Colors.white,
+      color: leadColor ?? Colors.white,
       fontWeight: FontWeight.bold,
       fontSize: fontSize,
       fontFamily: AppTypography.plusJakartaSansFontFamily,

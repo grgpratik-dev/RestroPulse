@@ -1,16 +1,25 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/router/app_route.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
+import '../widgets/expense_detail_widgets.dart';
 
 class ExpenseCategoryDetailsScreen extends StatelessWidget {
-  const ExpenseCategoryDetailsScreen({required this.category, super.key});
+  const ExpenseCategoryDetailsScreen({
+    required this.category,
+    required this.period,
+    super.key,
+  });
 
   final ExpenseCategorySummary category;
+  final ExpensePeriod period;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +27,13 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
     final related = ExpensesMockData.expenses
         .where((expense) => expense.category == category.name)
         .toList();
+    final trend = ExpensesMockData.categoryTrend(category, period);
+    final maximum =
+        trend.fold<double>(
+          0,
+          (value, point) => point.amount > value ? point.amount : value,
+        ) *
+        1.25;
     return Scaffold(
       appBar: AppBar(title: Text(category.name)),
       body: SafeArea(
@@ -54,19 +70,19 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _Metric(
+                        child: ExpenseDetailMetric(
                           label: 'Transactions',
                           value: '${category.transactionCount}',
                         ),
                       ),
                       Expanded(
-                        child: _Metric(
+                        child: ExpenseDetailMetric(
                           label: 'Share of expenses',
                           value: '${(category.percentage * 100).round()}%',
                         ),
                       ),
                       Expanded(
-                        child: _Metric(
+                        child: ExpenseDetailMetric(
                           label: 'Comparison',
                           value:
                               '${category.change >= 0 ? '↑' : '↓'} ${category.change.abs().toStringAsFixed(1)}%',
@@ -83,7 +99,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Monthly trend',
+                    '${period.label} category trend',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -93,39 +109,50 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                     height: 150,
                     child: BarChart(
                       BarChartData(
-                        maxY: 60,
+                        maxY: maximum,
                         borderData: FlBorderData(show: false),
                         gridData: const FlGridData(show: false),
-                        titlesData: const FlTitlesData(
-                          leftTitles: AxisTitles(
+                        titlesData: FlTitlesData(
+                          leftTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          rightTitles: AxisTitles(
+                          rightTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          topTitles: AxisTitles(
+                          topTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
                           bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 28,
+                              getTitlesWidget: (value, meta) {
+                                final index = value.toInt();
+                                if (index < 0 || index >= trend.length) {
+                                  return const SizedBox.shrink();
+                                }
+                                return SideTitleWidget(
+                                  meta: meta,
+                                  child: Text(
+                                    trend[index].label,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.labelSmall,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         barGroups: [
-                          for (var index = 0; index < 6; index++)
+                          for (var index = 0; index < trend.length; index++)
                             BarChartGroupData(
                               x: index,
                               barRods: [
                                 BarChartRodData(
-                                  toY: [
-                                    32,
-                                    38,
-                                    35,
-                                    44,
-                                    51,
-                                    48,
-                                  ][index].toDouble(),
-                                  width: 18,
-                                  color: const Color(0xFFE38B2C),
+                                  toY: trend[index].amount,
+                                  width: trend.length > 7 ? 10 : 18,
+                                  color: AppColors.warningChart,
                                   borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(5),
                                   ),
@@ -155,13 +182,24 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
               for (final expense in related)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
+                  onTap: () => context.pushNamed(
+                    AppRoute.expenseDetails.name,
+                    extra: expense,
+                  ),
                   title: Text(expense.description),
                   subtitle: Text(
                     DateFormat('MMM d, yyyy').format(expense.date),
                   ),
-                  trailing: Text(
-                    'Rs ${currency.format(expense.amount)}',
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Rs ${currency.format(expense.amount)}',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.chevron_right_rounded, size: 20),
+                    ],
                   ),
                 ),
           ],
@@ -169,25 +207,4 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Metric extends StatelessWidget {
-  const _Metric({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-      const SizedBox(height: 4),
-      Text(value, style: const TextStyle(fontWeight: FontWeight.w700)),
-    ],
-  );
 }

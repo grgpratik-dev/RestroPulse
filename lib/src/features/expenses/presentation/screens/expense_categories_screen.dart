@@ -43,7 +43,7 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  'Categories remain attached to historical expenses even when deactivated.',
+                  'Rename categories or remove custom categories you no longer use.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -64,19 +64,11 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
                   category.name,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                subtitle: Text(
-                  '${category.type.label}${category.isActive ? '' : ' · Inactive'}',
-                ),
+                subtitle: Text(category.type.label),
                 trailing: PopupMenuButton<String>(
                   onSelected: (action) => _handleAction(action, itemIndex),
                   itemBuilder: (_) => [
                     const PopupMenuItem(value: 'rename', child: Text('Rename')),
-                    PopupMenuItem(
-                      value: 'status',
-                      child: Text(
-                        category.isActive ? 'Deactivate' : 'Reactivate',
-                      ),
-                    ),
                     if (!category.isDefault)
                       const PopupMenuItem(
                         value: 'delete',
@@ -99,13 +91,29 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
       setState(
         () => _categories[index] = _categories[index].copyWith(name: name),
       );
-    } else if (action == 'status') {
-      setState(() {
-        final category = _categories[index];
-        _categories[index] = category.copyWith(isActive: !category.isActive);
-      });
     } else if (action == 'delete') {
-      setState(() => _categories.removeAt(index));
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete this category?'),
+          content: const Text(
+            'Only unused custom categories should be deleted.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete Category'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed == true && mounted) {
+        setState(() => _categories.removeAt(index));
+      }
     }
   }
 
@@ -172,18 +180,15 @@ class _CategorySetting {
     required this.name,
     required this.type,
     required this.isDefault,
-    this.isActive = true,
   });
 
   final String name;
   final ExpenseType type;
   final bool isDefault;
-  final bool isActive;
 
-  _CategorySetting copyWith({String? name, bool? isActive}) => _CategorySetting(
+  _CategorySetting copyWith({String? name}) => _CategorySetting(
     name: name ?? this.name,
     type: type,
     isDefault: isDefault,
-    isActive: isActive ?? this.isActive,
   );
 }

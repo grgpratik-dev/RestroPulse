@@ -43,6 +43,7 @@ class QuickActionsSection extends StatelessWidget {
                 icon: Icons.account_balance_wallet_outlined,
                 label: 'Add Expense',
                 onTap: onAddExpense,
+                tone: _QuickActionTone.expense,
               ),
             ),
             const SizedBox(width: AppSpacing.spaceXs),
@@ -51,7 +52,7 @@ class QuickActionsSection extends StatelessWidget {
                 icon: Icons.delete_outline_rounded,
                 label: 'Record Wastage',
                 onTap: onRecordWastage,
-                isWarning: true,
+                tone: _QuickActionTone.warning,
               ),
             ),
           ],
@@ -66,25 +67,39 @@ class _QuickAction extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.isWarning = false,
+    this.tone = _QuickActionTone.positive,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final bool isWarning;
+  final _QuickActionTone tone;
 
   @override
   Widget build(BuildContext context) {
-    final color = isWarning ? const Color(0xFFB45309) : AppColors.primary;
+    final (foreground, background, border) = switch (tone) {
+      _QuickActionTone.positive => (
+        AppColors.primary,
+        AppColors.splashAccent.withValues(alpha: 0.32),
+        AppColors.primary.withValues(alpha: 0.14),
+      ),
+      _QuickActionTone.expense => (
+        AppColors.expenseForeground,
+        AppColors.expenseSurface,
+        AppColors.expenseBorder,
+      ),
+      _QuickActionTone.warning => (
+        AppColors.warning,
+        AppColors.warningSoft,
+        AppColors.warning.withValues(alpha: 0.14),
+      ),
+    };
 
     return Material(
-      color: isWarning
-          ? const Color(0xFFFFF4E5)
-          : AppColors.splashAccent.withValues(alpha: 0.32),
+      color: background,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.md),
-        side: BorderSide(color: color.withValues(alpha: 0.14)),
+        side: BorderSide(color: border),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -96,13 +111,13 @@ class _QuickAction extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(icon, color: color, size: 23),
+              Icon(icon, color: foreground, size: 23),
               const SizedBox(height: AppSpacing.spaceXs),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: color,
+                  color: foreground,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -113,3 +128,5 @@ class _QuickAction extends StatelessWidget {
     );
   }
 }
+
+enum _QuickActionTone { positive, expense, warning }

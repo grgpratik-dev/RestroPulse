@@ -4,8 +4,7 @@ import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 enum SalesTrendPeriod {
   week('1W'),
   month('1M'),
-  sixMonths('6M'),
-  year('1Y');
+  quarter('3M');
 
   const SalesTrendPeriod(this.label);
 
@@ -48,8 +47,7 @@ abstract final class SalesTrendAggregator {
     return switch (period) {
       SalesTrendPeriod.week => _week(orders, now),
       SalesTrendPeriod.month => _month(orders, now),
-      SalesTrendPeriod.sixMonths => _months(orders, now, 6),
-      SalesTrendPeriod.year => _months(orders, now, 12),
+      SalesTrendPeriod.quarter => _months(orders, now, 3),
     };
   }
 

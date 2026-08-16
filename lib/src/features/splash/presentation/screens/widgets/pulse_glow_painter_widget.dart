@@ -1,6 +1,5 @@
 part of '../splash_screen.dart';
 
-
 class PulseGlowPainter extends CustomPainter {
   PulseGlowPainter(this.animation) : super(repaint: animation);
 

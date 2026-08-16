@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/router/app_route.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_info_row.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
 
@@ -51,10 +53,10 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                 children: [
                   const CircleAvatar(
                     radius: 36,
-                    backgroundColor: Color(0xFFFFF2DF),
+                    backgroundColor: AppColors.warningMuted,
                     child: Icon(
                       Icons.delete_sweep_outlined,
-                      color: Color(0xFFB45309),
+                      color: AppColors.warning,
                       size: 36,
                     ),
                   ),
@@ -69,7 +71,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                   Text(
                     'Rs ${currency.format(_entry.estimatedLoss)}',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: const Color(0xFFB45309),
+                      color: AppColors.warning,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -81,24 +83,24 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
             CustomContainer(
               child: Column(
                 children: [
-                  _InfoRow(label: 'Reason', value: _entry.reason.label),
+                  AppInfoRow(label: 'Reason', value: _entry.reason.label),
                   if (_entry.quantityLabel != null) ...[
                     const Divider(height: 24),
-                    _InfoRow(label: 'Quantity', value: _entry.quantityLabel!),
+                    AppInfoRow(label: 'Quantity', value: _entry.quantityLabel!),
                   ],
                   const Divider(height: 24),
-                  _InfoRow(
+                  AppInfoRow(
                     label: 'Date',
                     value: DateFormat('MMM d, yyyy').format(_entry.date),
                   ),
                   const Divider(height: 24),
-                  _InfoRow(
+                  AppInfoRow(
                     label: 'Time',
                     value: DateFormat.jm().format(_entry.date),
                   ),
                   if (_entry.notes?.isNotEmpty == true) ...[
                     const Divider(height: 24),
-                    _InfoRow(label: 'Notes', value: _entry.notes!),
+                    AppInfoRow(label: 'Notes', value: _entry.notes!),
                   ],
                 ],
               ),
@@ -154,29 +156,4 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
     if (!mounted || confirmed != true) return;
     Navigator.pop(context, const WastageDetailsResult.deleted());
   }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      SizedBox(
-        width: 96,
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ),
-      Expanded(
-        child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-      ),
-    ],
-  );
 }
