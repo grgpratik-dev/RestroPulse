@@ -19,7 +19,7 @@ Widget appName({
       ],
     ),
     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-      color: leadColor ?? Colors.white,
+      color: leadColor ?? AppColors.kNeutral600,
       fontWeight: FontWeight.bold,
       fontSize: fontSize,
       fontFamily: AppTypography.plusJakartaSansFontFamily,

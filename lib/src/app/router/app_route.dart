@@ -7,6 +7,7 @@ enum AppRoute {
   splash('/splash'),
   login('/login'),
   register('/register'),
+  restaurantAccess('/restaurant-access'),
   main('/main'),
   dashboard('/dashboard'),
   profile('/profile'),

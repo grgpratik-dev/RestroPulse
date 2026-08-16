@@ -180,7 +180,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 width: double.infinity,
                                 height: 54,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  key: const ValueKey('register-submit-button'),
+                                  onPressed: () {
+                                    context.goNamed(
+                                      AppRoute.restaurantAccess.name,
+                                    );
+                                  },
                                   child: Text('Create account'),
                                 ),
                               ),

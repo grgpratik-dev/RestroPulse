@@ -19,6 +19,7 @@ import 'package:restropulse/src/features/onboarding/presentation/screens/onboard
 import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_details_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
@@ -114,6 +115,11 @@ class AppRouter {
         path: AppRoute.register.path,
         name: AppRoute.register.name,
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.restaurantAccess.path,
+        name: AppRoute.restaurantAccess.name,
+        builder: (context, state) => const RestaurantAccessScreen(),
       ),
 
       GoRoute(
