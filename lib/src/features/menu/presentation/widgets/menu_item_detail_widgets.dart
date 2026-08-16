@@ -116,9 +116,14 @@ class MenuPricingCard extends StatelessWidget {
 }
 
 class MenuPerformanceCard extends StatelessWidget {
-  const MenuPerformanceCard({required this.item, super.key});
+  const MenuPerformanceCard({
+    required this.item,
+    this.periodLabel = '1M · August 2026',
+    super.key,
+  });
 
   final MenuItem item;
+  final String periodLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -172,8 +177,8 @@ class MenuPerformanceCard extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: .1),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: const Text(
-                  'This Month',
+                child: Text(
+                  periodLabel,
                   style: TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -247,13 +252,21 @@ class MenuPerformanceCard extends StatelessWidget {
 }
 
 class MenuClassificationCard extends StatelessWidget {
-  const MenuClassificationCard({required this.item, super.key});
+  const MenuClassificationCard({
+    required this.item,
+    this.demandMultiplier = 1,
+    super.key,
+  });
 
   final MenuItem item;
+  final double demandMultiplier;
 
   @override
   Widget build(BuildContext context) {
-    final status = MenuPerformanceClassifier.classify(item);
+    final status = MenuPerformanceClassifier.classify(
+      item,
+      demandMultiplier: demandMultiplier,
+    );
     return CustomContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

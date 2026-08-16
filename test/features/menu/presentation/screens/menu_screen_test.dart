@@ -26,6 +26,16 @@ void main() {
     expect(imageAssets, contains('assets/images/menu_chicken_burger.jpg'));
     expect(find.text('Active'), findsNothing);
     expect(find.text('Inactive'), findsNothing);
+    expect(
+      tester.getTopLeft(find.text('All Items')).dy,
+      lessThan(tester.getTopLeft(find.text('1M')).dy),
+    );
+
+    await tester.tap(find.text('3M'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('June–August 2026'), findsOneWidget);
+    expect(find.text('372'), findsWidgets);
 
     await tester.tap(find.byTooltip('Item actions').first);
     await tester.pumpAndSettle();

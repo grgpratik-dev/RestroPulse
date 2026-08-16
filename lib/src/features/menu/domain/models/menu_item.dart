@@ -6,6 +6,31 @@ enum MenuPerformanceStatus {
   notEnoughData,
 }
 
+enum MenuAnalysisPeriod {
+  month('1M', 'August 2026', 1),
+  quarter('3M', 'June–August 2026', 2.95),
+  sixMonths('6M', 'March–August 2026', 5.7),
+  year('1Y', 'September 2025–August 2026', 10.5);
+
+  const MenuAnalysisPeriod(this.label, this.dateLabel, this.mockMultiplier);
+
+  final String label;
+  final String dateLabel;
+  final double mockMultiplier;
+}
+
+class MenuItemDetailsData {
+  const MenuItemDetailsData({
+    required this.item,
+    required this.periodLabel,
+    required this.demandMultiplier,
+  });
+
+  final MenuItem item;
+  final String periodLabel;
+  final double demandMultiplier;
+}
+
 extension MenuPerformanceStatusX on MenuPerformanceStatus {
   String get label => switch (this) {
     MenuPerformanceStatus.star => 'Star',
@@ -92,6 +117,10 @@ class MenuItem {
     double? estimatedCost,
     String? notes,
     String? imagePath,
+    int? unitsSold,
+    double? revenue,
+    double? historicalCost,
+    int? ordersContainingItem,
   }) {
     return MenuItem(
       id: id,
@@ -99,10 +128,10 @@ class MenuItem {
       category: category ?? this.category,
       sellingPrice: sellingPrice ?? this.sellingPrice,
       estimatedCost: estimatedCost ?? this.estimatedCost,
-      unitsSold: unitsSold,
-      revenue: revenue,
-      historicalCost: historicalCost,
-      ordersContainingItem: ordersContainingItem,
+      unitsSold: unitsSold ?? this.unitsSold,
+      revenue: revenue ?? this.revenue,
+      historicalCost: historicalCost ?? this.historicalCost,
+      ordersContainingItem: ordersContainingItem ?? this.ordersContainingItem,
       notes: notes ?? this.notes,
       imagePath: imagePath ?? this.imagePath,
     );
@@ -110,10 +139,13 @@ class MenuItem {
 }
 
 abstract final class MenuPerformanceClassifier {
-  static MenuPerformanceStatus classify(MenuItem item) {
+  static MenuPerformanceStatus classify(
+    MenuItem item, {
+    double demandMultiplier = 1,
+  }) {
     if (item.unitsSold == 0) return MenuPerformanceStatus.notEnoughData;
 
-    final hasHighSales = item.unitsSold >= 50;
+    final hasHighSales = item.unitsSold >= 50 * demandMultiplier;
     final hasHighMargin = item.foodCostPercentage <= 40;
 
     return switch ((hasHighSales, hasHighMargin)) {
@@ -201,4 +233,23 @@ abstract final class MenuMockData {
       imagePath: 'assets/images/menu_masala_fries.jpg',
     ),
   ];
+
+  static List<MenuItem> forPeriod(
+    List<MenuItem> source,
+    MenuAnalysisPeriod period,
+  ) {
+    if (period == MenuAnalysisPeriod.month) return [...source];
+    final multiplier = period.mockMultiplier;
+    return source
+        .map(
+          (item) => item.copyWith(
+            unitsSold: (item.unitsSold * multiplier).round(),
+            revenue: item.revenue * multiplier,
+            historicalCost: item.historicalCost * multiplier,
+            ordersContainingItem: (item.ordersContainingItem * multiplier)
+                .round(),
+          ),
+        )
+        .toList();
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/gen/assets.gen.dart';
+import 'package:restropulse/gen/fonts.gen.dart';
 
 import 'app_colors.dart';
 import 'app_radius.dart';
@@ -24,7 +26,7 @@ abstract final class AppTheme {
     const buttonRadius = BorderRadius.all(Radius.circular(AppRadius.md));
 
     return ThemeData(
-      fontFamily: AppTypography.interFontFamily,
+      fontFamily: FontFamily.inter,
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,

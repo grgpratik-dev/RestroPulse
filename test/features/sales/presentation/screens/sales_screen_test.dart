@@ -80,11 +80,26 @@ void main() {
       expect(find.text('Best day'), findsOneWidget);
       expect(find.text('Sunday'), findsOneWidget);
       expect(find.text('Rs 31,200'), findsOneWidget);
-      expect(find.text('Last 7 days'), findsOneWidget);
+      expect(find.text('Aug 16–22, 2026'), findsOneWidget);
       expect(find.text('Sun–Sat'), findsOneWidget);
       expect(find.text('1M'), findsNothing);
       expect(find.text('3M'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('sales analysis changes without changing today overview', (
+    tester,
+  ) async {
+    await pumpAtMobileSize(tester, const SalesScreen());
+
+    await tester.tap(find.text('1M'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Today · Aug 16'), findsOneWidget);
+    expect(find.text('Rs 28,450'), findsOneWidget);
+    expect(find.text('August 2026'), findsWidgets);
+    expect(find.text('Best week'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

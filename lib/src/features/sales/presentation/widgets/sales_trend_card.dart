@@ -10,11 +10,13 @@ import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
 class SalesTrendCard extends StatelessWidget {
-  const SalesTrendCard({super.key});
+  const SalesTrendCard({this.period = SalesTrendPeriod.week, super.key});
+
+  final SalesTrendPeriod period;
 
   SalesTrendDataset get _dataset => SalesTrendAggregator.prepare(
     orders: SalesTrendMockOrders.values,
-    period: SalesTrendPeriod.week,
+    period: period,
     now: SalesTrendMockOrders.currentDate,
   );
 
@@ -42,7 +44,7 @@ class SalesTrendCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Last 7 days',
+                      period.dateLabel,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -60,7 +62,7 @@ class SalesTrendCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
                 child: Text(
-                  'Sun–Sat',
+                  period.chartContext,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -266,7 +268,7 @@ class SalesTrendCard extends StatelessWidget {
           return '${point.tooltipLabel}: Rs ${currency.format(point.value)}';
         })
         .join(', ');
-    return 'Sales trend for the last 7 days, Sunday through Saturday. $values';
+    return 'Sales trend for ${period.dateLabel}. $values';
   }
 }
 

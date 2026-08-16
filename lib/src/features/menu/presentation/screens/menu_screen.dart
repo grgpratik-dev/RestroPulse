@@ -6,6 +6,7 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_feature_header.dart';
+import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_card.dart';
 import '../widgets/menu_performance_highlights.dart';
@@ -41,6 +42,9 @@ class _MenuScreenState extends State<MenuScreen> {
   late final List<MenuItem> _items = [...widget.initialItems];
   String _category = 'All';
   _ProfitabilityFilter _profitability = _ProfitabilityFilter.all;
+  MenuAnalysisPeriod _period = MenuAnalysisPeriod.month;
+
+  List<MenuItem> get _analysisItems => MenuMockData.forPeriod(_items, _period);
 
   List<String> get _categories {
     final values = _items.map((item) => item.category).toSet().toList()..sort();
@@ -48,10 +52,13 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   List<MenuItem> get _visibleItems {
-    final items = _items.where((item) {
+    final items = _analysisItems.where((item) {
       if (_category != 'All' && item.category != _category) return false;
       if (_profitability == _ProfitabilityFilter.needsReview) {
-        final status = MenuPerformanceClassifier.classify(item);
+        final status = MenuPerformanceClassifier.classify(
+          item,
+          demandMultiplier: _period.mockMultiplier,
+        );
         return status == MenuPerformanceStatus.reviewCost ||
             status == MenuPerformanceStatus.lowPerformer;
       }
@@ -91,9 +98,8 @@ class _MenuScreenState extends State<MenuScreen> {
             const AppFeatureHeader(
               title: 'Menu Performance',
               subtitle: 'Track menu profitability and popularity.',
-              contextLabel: 'This Month · August 2026',
             ),
-            const SizedBox(height: AppSpacing.spaceLg),
+            const SizedBox(height: AppSpacing.spaceMd),
             _FilterBar(
               categories: _categories,
               selectedCategory: _category,
@@ -106,9 +112,20 @@ class _MenuScreenState extends State<MenuScreen> {
               onProfitabilityChanged: (value) =>
                   setState(() => _profitability = value),
             ),
+            const SizedBox(height: AppSpacing.spaceMd),
+            AppPeriodSelector<MenuAnalysisPeriod>(
+              selected: _period,
+              options: MenuAnalysisPeriod.values,
+              labelOf: (period) => period.label,
+              descriptionOf: (period) => period.dateLabel,
+              title: 'Menu analysis period',
+              onChanged: (period) => setState(() => _period = period),
+            ),
             const SizedBox(height: AppSpacing.spaceLg),
-            if (_items.any((item) => item.unitsSold > 0)) ...[
-              IntrinsicHeight(child: MenuPerformanceHighlights(items: _items)),
+            if (_analysisItems.any((item) => item.unitsSold > 0)) ...[
+              IntrinsicHeight(
+                child: MenuPerformanceHighlights(items: _analysisItems),
+              ),
               const SizedBox(height: AppSpacing.spaceXl),
             ],
             Text(
@@ -145,6 +162,7 @@ class _MenuScreenState extends State<MenuScreen> {
         for (final item in items) ...[
           MenuItemCard(
             item: item,
+            demandMultiplier: _period.mockMultiplier,
             onTap: () => _openDetails(item),
             onAction: (action) => _handleItemAction(item, action),
           ),
@@ -166,7 +184,11 @@ class _MenuScreenState extends State<MenuScreen> {
   Future<void> _openDetails(MenuItem item) async {
     final deleted = await context.pushNamed<bool>(
       AppRoute.menuItemDetails.name,
-      extra: item,
+      extra: MenuItemDetailsData(
+        item: item,
+        periodLabel: '${_period.label} · ${_period.dateLabel}',
+        demandMultiplier: _period.mockMultiplier,
+      ),
     );
     if (!mounted || deleted != true) return;
     setState(() => _items.removeWhere((entry) => entry.id == item.id));
@@ -176,6 +198,7 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Future<void> _handleItemAction(MenuItem item, String action) async {
+    final sourceItem = _items.firstWhere((entry) => entry.id == item.id);
     if (action == 'details') {
       await _openDetails(item);
       return;
@@ -183,7 +206,7 @@ class _MenuScreenState extends State<MenuScreen> {
     if (action == 'edit') {
       final updated = await context.pushNamed<MenuItem>(
         AppRoute.addMenuItem.name,
-        extra: item,
+        extra: sourceItem,
       );
       if (!mounted || updated == null) return;
       setState(() {

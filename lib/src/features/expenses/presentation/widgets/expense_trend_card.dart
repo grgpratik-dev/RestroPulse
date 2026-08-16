@@ -26,7 +26,9 @@ class ExpenseTrendCard extends StatelessWidget {
     final highestLabel = switch (period) {
       ExpensePeriod.week => 'Highest day',
       ExpensePeriod.month => 'Highest week',
-      ExpensePeriod.quarter => 'Highest month',
+      ExpensePeriod.quarter ||
+      ExpensePeriod.sixMonths ||
+      ExpensePeriod.year => 'Highest month',
     };
 
     return CustomContainer(

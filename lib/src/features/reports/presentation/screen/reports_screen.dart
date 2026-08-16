@@ -64,13 +64,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
               selected: _period,
               onChanged: (value) => setState(() => _period = value),
             ),
-            const SizedBox(height: 6),
-            Text(
-              _period.dateLabel,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
             const SizedBox(height: AppSpacing.spaceLg),
             _buildContent(),
           ],

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/gen/assets.gen.dart';
+import 'package:restropulse/gen/fonts.gen.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/app/theme/app_typography.dart';
 
 part 'widgets/pulse_glow_painter_widget.dart';
 
@@ -148,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppTypography.plusJakartaSansFontFamily,
+                  fontFamily: FontFamily.plusJakartaSans,
                 ),
                 semanticsLabel: 'RestroPulse',
               ),

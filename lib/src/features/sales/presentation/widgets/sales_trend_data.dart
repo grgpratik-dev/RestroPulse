@@ -4,11 +4,29 @@ import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 enum SalesTrendPeriod {
   week('1W'),
   month('1M'),
-  quarter('3M');
+  quarter('3M'),
+  sixMonths('6M'),
+  year('1Y');
 
   const SalesTrendPeriod(this.label);
 
   final String label;
+
+  String get dateLabel => switch (this) {
+    SalesTrendPeriod.week => 'Aug 16–22, 2026',
+    SalesTrendPeriod.month => 'August 2026',
+    SalesTrendPeriod.quarter => 'June–August 2026',
+    SalesTrendPeriod.sixMonths => 'March–August 2026',
+    SalesTrendPeriod.year => 'September 2025–August 2026',
+  };
+
+  String get chartContext => switch (this) {
+    SalesTrendPeriod.week => 'Sun–Sat',
+    SalesTrendPeriod.month => 'By week',
+    SalesTrendPeriod.quarter ||
+    SalesTrendPeriod.sixMonths ||
+    SalesTrendPeriod.year => 'By month',
+  };
 }
 
 class SalesTrendPoint {
@@ -48,6 +66,8 @@ abstract final class SalesTrendAggregator {
       SalesTrendPeriod.week => _week(orders, now),
       SalesTrendPeriod.month => _month(orders, now),
       SalesTrendPeriod.quarter => _months(orders, now, 3),
+      SalesTrendPeriod.sixMonths => _months(orders, now, 6),
+      SalesTrendPeriod.year => _months(orders, now, 12),
     };
   }
 

@@ -4,11 +4,13 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_add_floating_action_button.dart';
 import 'package:restropulse/src/core/widgets/app_feature_header.dart';
+import 'package:restropulse/src/core/widgets/app_period_selector.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_channel_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_entry_type_sheet.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_loading_skeleton.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_card.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_orders_section.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_sales_summary_card.dart';
 
@@ -30,6 +32,7 @@ class SalesScreen extends StatefulWidget {
 
 class _SalesScreenState extends State<SalesScreen> {
   OrderChannel? _selectedChannel;
+  SalesTrendPeriod _analysisPeriod = SalesTrendPeriod.week;
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +70,22 @@ class _SalesScreenState extends State<SalesScreen> {
               else ...[
                 const TodaySalesSummaryCard(),
                 const SizedBox(height: AppSpacing.spaceMd),
+                AppPeriodSelector<SalesTrendPeriod>(
+                  selected: _analysisPeriod,
+                  options: SalesTrendPeriod.values,
+                  labelOf: (period) => period.label,
+                  descriptionOf: (period) => period.dateLabel,
+                  title: 'Sales analysis period',
+                  onChanged: (period) =>
+                      setState(() => _analysisPeriod = period),
+                ),
+                const SizedBox(height: AppSpacing.spaceMd),
                 if (widget.viewState == SalesViewState.partial)
                   SalesChannelEmptyCard(onUpdateSales: _openAddOrder)
                 else
-                  const SalesChannelCard(),
+                  SalesChannelCard(period: _analysisPeriod),
                 const SizedBox(height: AppSpacing.spaceMd),
-                const SalesTrendCard(),
+                SalesTrendCard(period: _analysisPeriod),
                 const SizedBox(height: AppSpacing.spaceLg),
                 TodayOrdersSection(
                   orders: SalesMockData.todayOrders,

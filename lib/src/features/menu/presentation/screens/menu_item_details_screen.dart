@@ -8,9 +8,16 @@ import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_detail_widgets.dart';
 
 class MenuItemDetailsScreen extends StatefulWidget {
-  const MenuItemDetailsScreen({required this.item, super.key});
+  const MenuItemDetailsScreen({
+    required this.item,
+    this.periodLabel = '1M · August 2026',
+    this.demandMultiplier = 1,
+    super.key,
+  });
 
   final MenuItem item;
+  final String periodLabel;
+  final double demandMultiplier;
 
   @override
   State<MenuItemDetailsScreen> createState() => _MenuItemDetailsScreenState();
@@ -43,9 +50,12 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
             const SizedBox(height: AppSpacing.spaceMd),
             MenuPricingCard(item: _item),
             const SizedBox(height: AppSpacing.spaceMd),
-            MenuPerformanceCard(item: _item),
+            MenuPerformanceCard(item: _item, periodLabel: widget.periodLabel),
             const SizedBox(height: AppSpacing.spaceMd),
-            MenuClassificationCard(item: _item),
+            MenuClassificationCard(
+              item: _item,
+              demandMultiplier: widget.demandMultiplier,
+            ),
             const SizedBox(height: AppSpacing.spaceLg),
             OutlinedButton.icon(
               onPressed: _confirmDelete,

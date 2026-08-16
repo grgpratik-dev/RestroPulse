@@ -6,6 +6,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
 import '../../../../core/widgets/app_feature_header.dart';
+import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_breakdown.dart';
 import '../widgets/expense_filter_sheet.dart';
@@ -37,7 +38,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   late final List<Expense> _expenses = [
     ...(widget.initialExpenses ?? ExpensesMockData.expenses),
   ];
-  static const _period = ExpensePeriod.month;
+  ExpensePeriod _period = ExpensePeriod.month;
   ExpenseFilterSelection _filters = const ExpenseFilterSelection();
   double _totalAdjustment = 0;
   int _transactionAdjustment = 0;
@@ -108,9 +109,21 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       return ExpensesNoPeriodState(onAddExpense: _addExpense);
     }
 
+    final monthlyBase = ExpensesMockData.snapshot(ExpensePeriod.month);
+    final monthlyCategories = ExpensesMockData.categorySummaries(
+      ExpensePeriod.month,
+    );
+    final monthlySnapshot = ExpensePeriodSnapshot(
+      total: monthlyBase.total + _totalAdjustment,
+      change: monthlyBase.change,
+      transactions: monthlyBase.transactions + _transactionAdjustment,
+      averageDaily: monthlyBase.averageDaily,
+      comparisonLabel: monthlyBase.comparisonLabel,
+      trend: monthlyBase.trend,
+    );
     final baseSnapshot = ExpensesMockData.snapshot(_period);
     final categories = ExpensesMockData.categorySummaries(_period);
-    final snapshot = ExpensePeriodSnapshot(
+    final analysisSnapshot = ExpensePeriodSnapshot(
       total: baseSnapshot.total + _totalAdjustment,
       change: baseSnapshot.change,
       transactions: baseSnapshot.transactions + _transactionAdjustment,
@@ -121,8 +134,22 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     return Column(
       children: [
         ExpenseSummaryCard(
-          snapshot: snapshot,
-          largestCategory: categories.first,
+          snapshot: monthlySnapshot,
+          largestCategory: monthlyCategories.first,
+        ),
+        const SizedBox(height: AppSpacing.spaceLg),
+        AppPeriodSelector<ExpensePeriod>(
+          selected: _period,
+          options: const [
+            ExpensePeriod.month,
+            ExpensePeriod.quarter,
+            ExpensePeriod.sixMonths,
+            ExpensePeriod.year,
+          ],
+          labelOf: (period) => period.label,
+          descriptionOf: (period) => period.dateLabel,
+          title: 'Expense analysis period',
+          onChanged: (period) => setState(() => _period = period),
         ),
         const SizedBox(height: AppSpacing.spaceLg),
         ExpenseCategoryBreakdown(
@@ -159,7 +186,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
         ),
         const SizedBox(height: AppSpacing.spaceLg),
-        ExpenseTrendCard(period: _period, points: snapshot.trend),
+        ExpenseTrendCard(period: _period, points: analysisSnapshot.trend),
         const SizedBox(height: AppSpacing.spaceLg),
         RecentExpensesList(
           expenses: _filteredExpenses,

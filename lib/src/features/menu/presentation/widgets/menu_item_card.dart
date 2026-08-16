@@ -13,17 +13,22 @@ class MenuItemCard extends StatelessWidget {
     required this.item,
     required this.onTap,
     required this.onAction,
+    this.demandMultiplier = 1,
     super.key,
   });
 
   final MenuItem item;
   final VoidCallback onTap;
   final ValueChanged<String> onAction;
+  final double demandMultiplier;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    final status = MenuPerformanceClassifier.classify(item);
+    final status = MenuPerformanceClassifier.classify(
+      item,
+      demandMultiplier: demandMultiplier,
+    );
 
     return Semantics(
       button: true,

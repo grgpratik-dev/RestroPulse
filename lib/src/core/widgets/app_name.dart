@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/gen/fonts.gen.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_typography.dart';
@@ -22,7 +23,7 @@ Widget appName({
       color: leadColor ?? AppColors.kNeutral600,
       fontWeight: FontWeight.bold,
       fontSize: fontSize,
-      fontFamily: AppTypography.plusJakartaSansFontFamily,
+      fontFamily: FontFamily.plusJakartaSans,
     ),
     semanticsLabel: 'RestroPulse',
   );

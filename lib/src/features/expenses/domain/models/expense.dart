@@ -9,10 +9,20 @@ enum ExpenseType {
 enum ExpensePeriod {
   week('1W'),
   month('1M'),
-  quarter('3M');
+  quarter('3M'),
+  sixMonths('6M'),
+  year('1Y');
 
   const ExpensePeriod(this.label);
   final String label;
+
+  String get dateLabel => switch (this) {
+    ExpensePeriod.week => 'Aug 16–22, 2026',
+    ExpensePeriod.month => 'August 2026',
+    ExpensePeriod.quarter => 'June–August 2026',
+    ExpensePeriod.sixMonths => 'March–August 2026',
+    ExpensePeriod.year => 'September 2025–August 2026',
+  };
 }
 
 enum ExpenseSort {
@@ -318,7 +328,33 @@ abstract final class ExpensesMockData {
             change: 3.4,
           ),
         ],
+        ExpensePeriod.sixMonths => _scaledCategories(
+          categorySummaries(ExpensePeriod.quarter),
+          1.917,
+          changeAdjustment: -1.4,
+        ),
+        ExpensePeriod.year => _scaledCategories(
+          categorySummaries(ExpensePeriod.quarter),
+          3.521,
+          changeAdjustment: -2.2,
+        ),
       };
+
+  static List<ExpenseCategorySummary> _scaledCategories(
+    List<ExpenseCategorySummary> source,
+    double multiplier, {
+    required double changeAdjustment,
+  }) => source
+      .map(
+        (category) => ExpenseCategorySummary(
+          name: category.name,
+          amount: (category.amount * multiplier).roundToDouble(),
+          percentage: category.percentage,
+          transactionCount: (category.transactionCount * multiplier).round(),
+          change: category.change == 0 ? 0 : category.change + changeAdjustment,
+        ),
+      )
+      .toList();
 
   static String categoryInsight(ExpensePeriod period) => switch (period) {
     ExpensePeriod.week =>
@@ -327,6 +363,10 @@ abstract final class ExpensesMockData {
       'Ingredient spending is 14% higher than the previous month.',
     ExpensePeriod.quarter =>
       'Ingredient spending is 11% higher than the previous 3 months.',
+    ExpensePeriod.sixMonths =>
+      'Ingredient spending is 10% higher than the previous 6 months.',
+    ExpensePeriod.year =>
+      'Ingredient spending is 9% higher than the previous year.',
   };
 
   static List<ExpenseTrendPoint> categoryTrend(
@@ -383,6 +423,42 @@ abstract final class ExpensesMockData {
           trend: [
             ExpenseTrendPoint('Jun', 'June 2026', 438),
             ExpenseTrendPoint('Jul', 'July 2026', 492),
+            ExpenseTrendPoint('Aug', 'August 2026', 478.3),
+          ],
+        ),
+        ExpensePeriod.sixMonths => const ExpensePeriodSnapshot(
+          total: 2699300,
+          change: 7.2,
+          transactions: 486,
+          averageDaily: 14831,
+          comparisonLabel: 'vs previous 6 months',
+          trend: [
+            ExpenseTrendPoint('Mar', 'March 2026', 399),
+            ExpenseTrendPoint('Apr', 'April 2026', 414),
+            ExpenseTrendPoint('May', 'May 2026', 468),
+            ExpenseTrendPoint('Jun', 'June 2026', 438),
+            ExpenseTrendPoint('Jul', 'July 2026', 502),
+            ExpenseTrendPoint('Aug', 'August 2026', 478.3),
+          ],
+        ),
+        ExpensePeriod.year => const ExpensePeriodSnapshot(
+          total: 4958300,
+          change: 6.1,
+          transactions: 912,
+          averageDaily: 13584,
+          comparisonLabel: 'vs previous year',
+          trend: [
+            ExpenseTrendPoint('Sep', 'September 2025', 348),
+            ExpenseTrendPoint('Oct', 'October 2025', 361),
+            ExpenseTrendPoint('Nov', 'November 2025', 378),
+            ExpenseTrendPoint('Dec', 'December 2025', 392),
+            ExpenseTrendPoint('Jan', 'January 2026', 406),
+            ExpenseTrendPoint('Feb', 'February 2026', 392),
+            ExpenseTrendPoint('Mar', 'March 2026', 399),
+            ExpenseTrendPoint('Apr', 'April 2026', 414),
+            ExpenseTrendPoint('May', 'May 2026', 468),
+            ExpenseTrendPoint('Jun', 'June 2026', 438),
+            ExpenseTrendPoint('Jul', 'July 2026', 484),
             ExpenseTrendPoint('Aug', 'August 2026', 478.3),
           ],
         ),

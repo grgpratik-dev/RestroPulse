@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/report_data.dart';
 
 class ReportPeriodSelector extends StatelessWidget {
@@ -15,33 +16,13 @@ class ReportPeriodSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: SegmentedButton<ReportPeriod>(
-        segments: ReportPeriod.values
-            .map(
-              (period) =>
-                  ButtonSegment(value: period, label: Text(period.label)),
-            )
-            .toList(),
-        selected: {selected},
-        showSelectedIcon: false,
-        onSelectionChanged: (values) => onChanged(values.first),
-        style: ButtonStyle(
-          visualDensity: VisualDensity.compact,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          backgroundColor: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.selected)
-                ? AppColors.primary
-                : AppColors.surface,
-          ),
-          foregroundColor: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.selected)
-                ? AppColors.surface
-                : Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-      ),
+    return AppPeriodSelector<ReportPeriod>(
+      selected: selected,
+      options: ReportPeriod.values,
+      labelOf: (period) => period.label,
+      descriptionOf: (period) => period.dateLabel,
+      title: 'Report period',
+      onChanged: onChanged,
     );
   }
 }

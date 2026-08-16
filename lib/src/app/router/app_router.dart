@@ -244,9 +244,19 @@ class AppRouter {
       GoRoute(
         path: AppRoute.menuItemDetails.path,
         name: AppRoute.menuItemDetails.name,
-        builder: (context, state) => MenuItemDetailsScreen(
-          item: state.extra as MenuItem? ?? MenuMockData.items.first,
-        ),
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is MenuItemDetailsData) {
+            return MenuItemDetailsScreen(
+              item: extra.item,
+              periodLabel: extra.periodLabel,
+              demandMultiplier: extra.demandMultiplier,
+            );
+          }
+          return MenuItemDetailsScreen(
+            item: extra as MenuItem? ?? MenuMockData.items.first,
+          );
+        },
       ),
       GoRoute(
         path: AppRoute.menuCategories.path,

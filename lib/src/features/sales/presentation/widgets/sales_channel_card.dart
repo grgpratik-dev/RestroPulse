@@ -3,42 +3,60 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
 class SalesChannelCard extends StatelessWidget {
-  const SalesChannelCard({super.key});
+  const SalesChannelCard({this.period = SalesTrendPeriod.week, super.key});
+
+  final SalesTrendPeriod period;
 
   @override
   Widget build(BuildContext context) {
-    return const CustomContainer(
+    final total = switch (period) {
+      SalesTrendPeriod.week => 198450,
+      SalesTrendPeriod.month => 842500,
+      SalesTrendPeriod.quarter => 2482500,
+      SalesTrendPeriod.sixMonths => 4772500,
+      SalesTrendPeriod.year => 8812500,
+    };
+    String amount(double share) =>
+        'Rs ${_formatAmount((total * share).round())}';
+
+    return CustomContainer(
       borderRadius: AppRadius.lg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ChannelHeader(),
-          SizedBox(height: AppSpacing.spaceMd),
+          _ChannelHeader(periodLabel: period.dateLabel),
+          const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Dine-in',
-            amount: 'Rs 15,650',
+            amount: amount(.55),
             percent: 55,
             color: AppColors.primary,
           ),
-          SizedBox(height: AppSpacing.spaceMd),
+          const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Takeaway',
-            amount: 'Rs 7,100',
+            amount: amount(.25),
             percent: 25,
             color: AppColors.info,
           ),
-          SizedBox(height: AppSpacing.spaceMd),
+          const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Delivery',
-            amount: 'Rs 5,700',
+            amount: amount(.20),
             percent: 20,
             color: AppColors.warning,
           ),
         ],
       ),
     );
+  }
+
+  String _formatAmount(int value) {
+    final digits = value.toString();
+    return digits.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
   }
 }
 
@@ -86,15 +104,29 @@ class SalesChannelEmptyCard extends StatelessWidget {
 }
 
 class _ChannelHeader extends StatelessWidget {
-  const _ChannelHeader();
+  const _ChannelHeader({required this.periodLabel});
+
+  final String periodLabel;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Sales by Channel',
-      style: Theme.of(
-        context,
-      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Sales by Channel',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          periodLabel,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }
