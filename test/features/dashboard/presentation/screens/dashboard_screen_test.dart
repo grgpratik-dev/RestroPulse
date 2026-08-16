@@ -26,7 +26,7 @@ void main() {
     await pumpDashboard(tester);
 
     expect(find.text('Restaurant Pulse'), findsOneWidget);
-    expect(find.text('84'), findsOneWidget);
+    expect(find.text('84/100'), findsOneWidget);
     expect(find.text('Rs 28,450'), findsOneWidget);
     expect(find.text('142'), findsOneWidget);
     expect(find.text('Rs 201'), findsOneWidget);

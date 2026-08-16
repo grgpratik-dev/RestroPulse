@@ -52,8 +52,6 @@ class MainScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 18),
             child: IconButton(
-              key: const ValueKey('main-profile-button'),
-              tooltip: 'Open profile',
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints.tightFor(width: 52, height: 52),
               onPressed: () {
@@ -62,18 +60,8 @@ class MainScreen extends StatelessWidget {
               icon: Container(
                 width: 44,
                 height: 44,
-                decoration: BoxDecoration(
-                  color: AppColors.splashAccent,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.12),
-                  ),
-                ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: AppColors.primary,
-                  size: 26,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: Image.asset(Assets.logo.restroLogo.path),
               ),
             ),
           ),

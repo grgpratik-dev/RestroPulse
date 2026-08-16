@@ -4,6 +4,8 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 
+import 'restaurant_pulse_heart.dart';
+
 class RestaurantPulseCard extends StatelessWidget {
   const RestaurantPulseCard({
     required this.hasData,
@@ -51,59 +53,7 @@ class RestaurantPulseCard extends StatelessWidget {
         const SizedBox(height: AppSpacing.spaceMd),
         Row(
           children: [
-            Semantics(
-              label: 'Restaurant Pulse score: 84 out of 100',
-              child: ExcludeSemantics(
-                child: SizedBox.square(
-                  dimension: 112,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox.square(
-                        dimension: 104,
-                        child: CircularProgressIndicator(
-                          value: 0.84,
-                          strokeWidth: 9,
-                          strokeCap: StrokeCap.round,
-                          backgroundColor: AppColors.surface.withValues(
-                            alpha: 0.18,
-                          ),
-                          color: AppColors.mintBright,
-                        ),
-                      ),
-                      const FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '84',
-                              style: TextStyle(
-                                color: AppColors.surface,
-                                fontSize: 34,
-                                height: 1,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 3),
-                              child: Text(
-                                '/100',
-                                style: TextStyle(
-                                  color: AppColors.splashAccent,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            const RestaurantPulseHeart(score: 84, size: 124),
             const SizedBox(width: AppSpacing.spaceMd),
             Expanded(
               child: Column(
@@ -160,11 +110,6 @@ class RestaurantPulseCard extends StatelessWidget {
           children: [
             _HealthFactor(label: 'Sales', value: 'Strong'),
             _HealthFactor(label: 'Profitability', value: 'Healthy'),
-            _HealthFactor(
-              label: 'Food Cost',
-              value: 'Needs Attention',
-              isWarning: true,
-            ),
           ],
         ),
       ],
@@ -220,29 +165,20 @@ class RestaurantPulseCard extends StatelessWidget {
 }
 
 class _HealthFactor extends StatelessWidget {
-  const _HealthFactor({
-    required this.label,
-    required this.value,
-    this.isWarning = false,
-  });
+  const _HealthFactor({required this.label, required this.value});
 
   final String label;
   final String value;
-  final bool isWarning;
 
   @override
   Widget build(BuildContext context) {
-    const warning = AppColors.warning;
-
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.spaceSm,
         vertical: AppSpacing.spaceXs,
       ),
       decoration: BoxDecoration(
-        color: isWarning
-            ? AppColors.warningSoft
-            : AppColors.surface.withValues(alpha: 0.8),
+        color: AppColors.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Text.rich(
@@ -251,8 +187,8 @@ class _HealthFactor extends StatelessWidget {
           children: [
             TextSpan(
               text: value,
-              style: TextStyle(
-                color: isWarning ? warning : AppColors.primary,
+              style: const TextStyle(
+                color: AppColors.primary,
                 fontWeight: FontWeight.w700,
               ),
             ),

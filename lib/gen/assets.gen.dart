@@ -11,6 +11,13 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// Directory path: assets/icons/navigation
+  $AssetsIconsNavigationGen get navigation => const $AssetsIconsNavigationGen();
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -32,8 +39,12 @@ class $AssetsLogoGen {
   /// File path: assets/logo/applogo.png
   AssetGenImage get applogo => const AssetGenImage('assets/logo/applogo.png');
 
+  /// File path: assets/logo/restro_logo.jpg
+  AssetGenImage get restroLogo =>
+      const AssetGenImage('assets/logo/restro_logo.jpg');
+
   /// List of all assets
-  List<AssetGenImage> get values => [applogo];
+  List<AssetGenImage> get values => [applogo, restroLogo];
 }
 
 class $AssetsOnboardingGen {
@@ -55,9 +66,64 @@ class $AssetsOnboardingGen {
   List<AssetGenImage> get values => [onboarding1, onboarding2, onboarding3];
 }
 
+class $AssetsIconsNavigationGen {
+  const $AssetsIconsNavigationGen();
+
+  /// File path: assets/icons/navigation/SOURCE.md
+  String get source => 'assets/icons/navigation/SOURCE.md';
+
+  /// File path: assets/icons/navigation/dashboard_filled.svg
+  String get dashboardFilled => 'assets/icons/navigation/dashboard_filled.svg';
+
+  /// File path: assets/icons/navigation/dashboard_outlined.svg
+  String get dashboardOutlined =>
+      'assets/icons/navigation/dashboard_outlined.svg';
+
+  /// File path: assets/icons/navigation/expenses_filled.svg
+  String get expensesFilled => 'assets/icons/navigation/expenses_filled.svg';
+
+  /// File path: assets/icons/navigation/expenses_outlined.svg
+  String get expensesOutlined =>
+      'assets/icons/navigation/expenses_outlined.svg';
+
+  /// File path: assets/icons/navigation/menu_filled.svg
+  String get menuFilled => 'assets/icons/navigation/menu_filled.svg';
+
+  /// File path: assets/icons/navigation/menu_outlined.svg
+  String get menuOutlined => 'assets/icons/navigation/menu_outlined.svg';
+
+  /// File path: assets/icons/navigation/reports_filled.svg
+  String get reportsFilled => 'assets/icons/navigation/reports_filled.svg';
+
+  /// File path: assets/icons/navigation/reports_outlined.svg
+  String get reportsOutlined => 'assets/icons/navigation/reports_outlined.svg';
+
+  /// File path: assets/icons/navigation/sales_filled.svg
+  String get salesFilled => 'assets/icons/navigation/sales_filled.svg';
+
+  /// File path: assets/icons/navigation/sales_outlined.svg
+  String get salesOutlined => 'assets/icons/navigation/sales_outlined.svg';
+
+  /// List of all assets
+  List<String> get values => [
+    source,
+    dashboardFilled,
+    dashboardOutlined,
+    expensesFilled,
+    expensesOutlined,
+    menuFilled,
+    menuOutlined,
+    reportsFilled,
+    reportsOutlined,
+    salesFilled,
+    salesOutlined,
+  ];
+}
+
 class Assets {
   const Assets._();
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLogoGen logo = $AssetsLogoGen();
   static const $AssetsOnboardingGen onboarding = $AssetsOnboardingGen();
