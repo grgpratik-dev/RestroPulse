@@ -6,6 +6,7 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/features/profile/presentation/widgets/members_access_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class MembersAccessScreen extends StatefulWidget {
   const MembersAccessScreen({super.key});
@@ -151,7 +152,7 @@ class _MembersAccessScreenState extends State<MembersAccessScreen> {
         message:
             'The current code will stop working immediately. Existing pending requests will not be affected.',
         confirmLabel: 'Regenerate',
-        icon: Icons.refresh_rounded,
+        icon: AppIcons.refresh_rounded,
         confirmButtonKey: ValueKey('confirm-regenerate-code-button'),
       ),
     );

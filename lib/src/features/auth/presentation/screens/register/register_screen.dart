@@ -6,6 +6,8 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 
 import '../widgets/ambient_glow_widget.dart';
 import '../widgets/fields_label_widget.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -65,9 +67,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Text(
                                 'Create your account',
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.headlineMedium?.copyWith(
+                                style: theme.textTheme.displaySmall?.copyWith(
                                   color: colorScheme.onSurface,
-                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.spaceXs),
@@ -89,8 +90,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Enter full name',
-                                  prefixIcon: const Icon(
-                                    Icons.person_outline_rounded,
+                                  prefixIcon: const AppIcon(
+                                    AppIcons.person_outline_rounded,
                                   ),
                                 ),
                               ),
@@ -105,7 +106,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Enter email address',
-                                  prefixIcon: const Icon(Icons.email_outlined),
+                                  prefixIcon: const AppIcon(
+                                    AppIcons.email_outlined,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.spaceMd),
@@ -122,8 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Create a password',
-                                  prefixIcon: const Icon(
-                                    Icons.lock_outline_rounded,
+                                  prefixIcon: const AppIcon(
+                                    AppIcons.lock_outline_rounded,
                                   ),
                                   suffixIcon: IconButton(
                                     tooltip: _obscurePassword
@@ -134,10 +137,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         _obscurePassword = !_obscurePassword;
                                       });
                                     },
-                                    icon: Icon(
+                                    icon: AppIcon(
                                       _obscurePassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
+                                          ? AppIcons.visibility_off_outlined
+                                          : AppIcons.visibility_outlined,
                                     ),
                                   ),
                                 ),
@@ -156,7 +159,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Re-enter your password',
-                                  prefixIcon: const Icon(Icons.lock_outline),
+                                  prefixIcon: const AppIcon(
+                                    AppIcons.lock_outline,
+                                  ),
                                   suffixIcon: IconButton(
                                     tooltip: _obscureConfirmation
                                         ? 'Show password confirmation'
@@ -167,10 +172,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             !_obscureConfirmation;
                                       });
                                     },
-                                    icon: Icon(
+                                    icon: AppIcon(
                                       _obscureConfirmation
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
+                                          ? AppIcons.visibility_off_outlined
+                                          : AppIcons.visibility_outlined,
                                     ),
                                   ),
                                 ),

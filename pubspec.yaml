@@ -79,7 +79,7 @@ flutter:
     - assets/images/
     - assets/onboarding/
     - assets/logo/
-    - assets/icons/navigation/
+    - assets/svg/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

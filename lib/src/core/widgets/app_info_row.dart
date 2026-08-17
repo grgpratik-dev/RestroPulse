@@ -22,16 +22,13 @@ class AppInfoRow extends StatelessWidget {
           width: labelWidth,
           child: Text(
             label,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),
         Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          child: Text(value, style: Theme.of(context).textTheme.titleSmall),
         ),
       ],
     );

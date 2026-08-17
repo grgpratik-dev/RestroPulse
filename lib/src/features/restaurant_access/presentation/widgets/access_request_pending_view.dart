@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AccessRequestPendingView extends StatelessWidget {
   const AccessRequestPendingView({super.key});
@@ -25,8 +27,8 @@ class AccessRequestPendingView extends StatelessWidget {
                   color: AppColors.infoSurface,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.hourglass_top_rounded,
+                child: const AppIcon(
+                  AppIcons.hourglass_top_rounded,
                   color: AppColors.info,
                   size: 36,
                 ),
@@ -62,8 +64,8 @@ class AccessRequestPendingView extends StatelessWidget {
                 ),
                 child: const Row(
                   children: [
-                    Icon(
-                      Icons.schedule_rounded,
+                    AppIcon(
+                      AppIcons.schedule_rounded,
                       color: AppColors.warning,
                       size: 18,
                     ),

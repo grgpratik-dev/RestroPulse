@@ -21,6 +21,7 @@ enum AppRoute {
   membersAccess('/profile/members-access'),
   helpSupport('/help-support'),
   expenses('/expenses'),
+  expenseHistory('/expenses/history'),
   addExpense('/expenses/add'),
   expenseDetails('/expenses/details'),
   expenseCategoryDetails('/expenses/category/details'),

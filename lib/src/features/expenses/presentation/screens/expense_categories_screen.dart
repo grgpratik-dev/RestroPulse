@@ -7,6 +7,8 @@ import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoriesScreen extends StatefulWidget {
   const ExpenseCategoriesScreen({super.key});
@@ -52,7 +54,7 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
         backgroundColor: AppColors.expenseAccent,
         foregroundColor: AppColors.surface,
         onPressed: _addCategory,
-        child: const Icon(Icons.add_rounded),
+        child: const AppIcon(AppIcons.add_rounded),
       ),
       body: SafeArea(
         top: false,
@@ -181,7 +183,7 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
         message:
             'This custom category will be removed from your expense organization.',
         confirmLabel: 'Delete',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
         confirmButtonKey: const ValueKey(
           'confirm-delete-expense-category-button',

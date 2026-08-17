@@ -9,6 +9,8 @@ import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/order_detail_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({required this.order, super.key});
@@ -30,7 +32,7 @@ class OrderDetailsScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Edit order',
             onPressed: () => _editOrder(context),
-            icon: const Icon(Icons.edit_outlined),
+            icon: const AppIcon(AppIcons.edit_outlined),
           ),
         ],
       ),
@@ -124,7 +126,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 foregroundColor: theme.colorScheme.error,
                 side: BorderSide(color: theme.colorScheme.error),
               ),
-              icon: const Icon(Icons.delete_outline_rounded),
+              icon: const AppIcon(AppIcons.delete_outline_rounded),
               label: const Text('Delete Order'),
             ),
           ],
@@ -150,7 +152,7 @@ class OrderDetailsScreen extends StatelessWidget {
         message:
             "This order and its items will be removed from today's sales data.",
         confirmLabel: 'Delete',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
       ),
     );

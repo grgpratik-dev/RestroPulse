@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 /// Consistent empty, error, and no-data presentation used across features.
 class AppStateMessage extends StatelessWidget {
@@ -16,7 +17,7 @@ class AppStateMessage extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String message;
   final List<Widget> actions;
@@ -39,15 +40,17 @@ class AppStateMessage extends StatelessWidget {
               CircleAvatar(
                 radius: 32,
                 backgroundColor: iconBackgroundColor ?? colors.primaryContainer,
-                child: Icon(icon, color: iconColor ?? colors.primary, size: 32),
+                child: AppIcon(
+                  icon,
+                  color: iconColor ?? colors.primary,
+                  size: 32,
+                ),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: AppSpacing.spaceXs),
               Text(
@@ -55,7 +58,6 @@ class AppStateMessage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: colors.onSurfaceVariant,
-                  height: 1.4,
                 ),
               ),
               if (actions.isNotEmpty) ...[

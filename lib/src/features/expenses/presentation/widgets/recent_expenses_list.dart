@@ -7,20 +7,20 @@ import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import 'expense_category_icon.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RecentExpensesList extends StatelessWidget {
   const RecentExpensesList({
     required this.expenses,
     required this.onExpenseTap,
-    required this.onFilter,
-    required this.hasActiveFilter,
+    required this.onViewHistory,
     super.key,
   });
 
   final List<Expense> expenses;
   final ValueChanged<Expense> onExpenseTap;
-  final VoidCallback onFilter;
-  final bool hasActiveFilter;
+  final VoidCallback onViewHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +32,19 @@ class RecentExpensesList extends StatelessWidget {
             Expanded(
               child: Text(
                 'Recent Expenses',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            OutlinedButton.icon(
-              onPressed: onFilter,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 40),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                backgroundColor: hasActiveFilter
-                    ? AppColors.expenseSurface
-                    : null,
+            TextButton(
+              onPressed: onViewHistory,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('View all'),
+                  SizedBox(width: 2),
+                  AppIcon(AppIcons.arrow_forward_rounded, size: 18),
+                ],
               ),
-              icon: Icon(
-                hasActiveFilter
-                    ? Icons.filter_alt_rounded
-                    : Icons.filter_alt_outlined,
-                size: 18,
-              ),
-              label: const Text('Filter'),
             ),
           ],
         ),
@@ -143,7 +135,7 @@ class _ExpenseRow extends StatelessWidget {
               'Rs ${currency.format(expense.amount)}',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
-            const Icon(Icons.chevron_right_rounded, size: 20),
+            const AppIcon(AppIcons.chevron_right_rounded, size: 20),
           ],
         ),
       ),

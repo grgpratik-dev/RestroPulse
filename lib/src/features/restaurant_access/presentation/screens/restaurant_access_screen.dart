@@ -3,6 +3,7 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_option_card.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class RestaurantAccessScreen extends StatelessWidget {
   const RestaurantAccessScreen({
@@ -50,7 +51,7 @@ class RestaurantAccessScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.spaceLg),
                   RestaurantAccessOptionCard(
                     key: const ValueKey('create-restaurant-option'),
-                    icon: Icons.add_business_rounded,
+                    icon: AppIcons.add_business_rounded,
                     title: 'Create your restaurant',
                     roleLabel: 'Owner access',
                     description:
@@ -63,7 +64,7 @@ class RestaurantAccessScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.spaceMd),
                   RestaurantAccessOptionCard(
                     key: const ValueKey('join-restaurant-option'),
-                    icon: Icons.group_add_outlined,
+                    icon: AppIcons.group_add_outlined,
                     title: 'Join a restaurant',
                     roleLabel: 'Viewer access',
                     description:

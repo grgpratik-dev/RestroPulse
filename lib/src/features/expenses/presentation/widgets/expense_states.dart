@@ -4,6 +4,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_skeleton.dart';
 import '../../../../core/widgets/app_state_message.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class ExpensesEmptyState extends StatelessWidget {
   const ExpensesEmptyState({required this.onAddExpense, super.key});
@@ -12,7 +13,7 @@ class ExpensesEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateMessage(
-    icon: Icons.receipt_long_outlined,
+    icon: AppIcons.receipt_long_outlined,
     title: 'No expenses recorded yet',
     message:
         "Add your restaurant's expenses to understand costs and estimate profitability.",
@@ -31,7 +32,7 @@ class ExpensesNoPeriodState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateMessage(
-    icon: Icons.event_busy_outlined,
+    icon: AppIcons.event_busy_outlined,
     title: 'No expenses in this period',
     message: 'Try another time range or add a new expense.',
     iconBackgroundColor: AppColors.expenseSurface,
@@ -49,7 +50,7 @@ class ExpensesErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppStateMessage(
-    icon: Icons.cloud_off_rounded,
+    icon: AppIcons.cloud_off_rounded,
     title: "Couldn't load expenses",
     message: 'Check your connection and try again.',
     iconBackgroundColor: AppColors.expenseSurface,

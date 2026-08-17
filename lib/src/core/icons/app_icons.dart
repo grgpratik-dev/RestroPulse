@@ -1,0 +1,130 @@
+/// Central registry for every SVG icon used by RestroPulse.
+///
+/// Names intentionally mirror the former Material icon names so feature code
+/// remains easy to scan while all visuals come from our own asset catalog.
+// ignore_for_file: constant_identifier_names
+abstract final class AppIcons {
+  static const _root = 'assets/svg';
+
+  static const account_balance_wallet_outlined = '$_root/wallet.svg';
+  static const add_business_rounded = '$_root/store.svg';
+  static const add_chart_rounded = '$_root/add_order.svg';
+  static const add_circle_rounded = '$_root/plus.svg';
+  static const add_photo_alternate_outlined = '$_root/image.svg';
+  static const add_rounded = '$_root/plus.svg';
+  static const admin_panel_settings_outlined = '$_root/user_shield.svg';
+  static const analytics_outlined = '$_root/chart.svg';
+  static const arrow_back_rounded = '$_root/arrow_left.svg';
+  static const arrow_forward_rounded = '$_root/arrow_right.svg';
+  static const attach_file_rounded = '$_root/paperclip.svg';
+  static const bar_chart_rounded = '$_root/chart.svg';
+  static const bug_report_outlined = '$_root/bug.svg';
+  static const calculate_outlined = '$_root/calculator.svg';
+  static const calendar_month_outlined = '$_root/calendar_day.svg';
+  static const calendar_today_outlined = '$_root/calendar_day.svg';
+  static const camera_alt_outlined = '$_root/camera.svg';
+  static const category_outlined = '$_root/category.svg';
+  static const check_circle_outline_rounded = '$_root/check_circle.svg';
+  static const check_circle_rounded = '$_root/check_circle.svg';
+  static const check_rounded = '$_root/check.svg';
+  static const chevron_right_rounded = '$_root/arrow_right.svg';
+  static const circle_outlined = '$_root/circle.svg';
+  static const close_rounded = '$_root/close.svg';
+  static const cloud_off_outlined = '$_root/cloud_off.svg';
+  static const cloud_off_rounded = '$_root/cloud_off.svg';
+  static const content_copy_outlined = '$_root/copy.svg';
+  static const content_paste_rounded = '$_root/paste.svg';
+  static const copy_rounded = '$_root/copy.svg';
+  static const date_range_outlined = '$_root/calendar_day.svg';
+  static const delete_outline_rounded = '$_root/trash.svg';
+  static const delete_sweep_outlined = '$_root/wastage.svg';
+  static const delivery_dining_outlined = '$_root/order_delivery.svg';
+  static const description_outlined = '$_root/document.svg';
+  static const eco_outlined = '$_root/leaf.svg';
+  static const edit_outlined = '$_root/edit.svg';
+  static const email_outlined = '$_root/mail.svg';
+  static const event_available_outlined = '$_root/calendar_day.svg';
+  static const event_busy_outlined = '$_root/calendar_day.svg';
+  static const filter_alt_outlined = '$_root/filter.svg';
+  static const filter_alt_rounded = '$_root/filter.svg';
+  static const group_add_outlined = '$_root/users.svg';
+  static const group_outlined = '$_root/users.svg';
+  static const help_outline_rounded = '$_root/help.svg';
+  static const hourglass_top_rounded = '$_root/hourglass.svg';
+  static const info_outline_rounded = '$_root/info.svg';
+  static const insights_outlined = '$_root/chart.svg';
+  static const ios_share_rounded = '$_root/share.svg';
+  static const keyboard_arrow_down_rounded = '$_root/chevron_down.svg';
+  static const lightbulb_outline_rounded = '$_root/lightbulb.svg';
+  static const local_fire_department_outlined = '$_root/expense_gas.svg';
+  static const location_on_outlined = '$_root/location.svg';
+  static const lock_outline = '$_root/lock.svg';
+  static const lock_outline_rounded = '$_root/lock.svg';
+  static const lock_reset_rounded = '$_root/key.svg';
+  static const logout_rounded = '$_root/logout.svg';
+  static const mark_email_read_outlined = '$_root/mail.svg';
+  static const menu_book_outlined = '$_root/food_menu.svg';
+  static const monitor_heart_outlined = '$_root/heart_pulse.svg';
+  static const more_vert_rounded = '$_root/more_vertical.svg';
+  static const note_add_outlined = '$_root/document.svg';
+  static const notifications_none_rounded = '$_root/bell.svg';
+  static const payments_outlined = '$_root/money_in.svg';
+  static const person_outline = '$_root/user.svg';
+  static const person_outline_rounded = '$_root/user.svg';
+  static const person_rounded = '$_root/user.svg';
+  static const photo_library_outlined = '$_root/image.svg';
+  static const picture_as_pdf_outlined = '$_root/pdf.svg';
+  static const pie_chart_outline_rounded = '$_root/pie_chart.svg';
+  static const playlist_add_rounded = '$_root/batch_list.svg';
+  static const privacy_tip_outlined = '$_root/shield.svg';
+  static const receipt_long_outlined = '$_root/receipt.svg';
+  static const refresh_rounded = '$_root/refresh.svg';
+  static const remove_rounded = '$_root/minus.svg';
+  static const restaurant_menu_rounded = '$_root/food_menu.svg';
+  static const restaurant_outlined = '$_root/serving_food.svg';
+  static const schedule_rounded = '$_root/clock.svg';
+  static const search_off_rounded = '$_root/search_empty.svg';
+  static const search_rounded = '$_root/search.svg';
+  static const sell_outlined = '$_root/tag.svg';
+  static const set_meal_outlined = '$_root/serving_food.svg';
+  static const short_text_rounded = '$_root/document.svg';
+  static const ssid_chart_rounded = '$_root/trend_up.svg';
+  static const storefront_outlined = '$_root/store.svg';
+  static const storefront_rounded = '$_root/store.svg';
+  static const support_agent_rounded = '$_root/help.svg';
+  static const table_chart_outlined = '$_root/table_chart.svg';
+  static const trending_down_rounded = '$_root/trend_down.svg';
+  static const trending_up_rounded = '$_root/trend_up.svg';
+  static const tune_rounded = '$_root/filter.svg';
+  static const verified_rounded = '$_root/check_circle.svg';
+  static const verified_user_outlined = '$_root/user_shield.svg';
+  static const visibility_off_outlined = '$_root/eye_off.svg';
+  static const visibility_outlined = '$_root/eye.svg';
+  static const vpn_key_outlined = '$_root/key.svg';
+  static const warning_amber_rounded = '$_root/warning.svg';
+
+  static const currency = '$_root/currency.svg';
+  static const expenseAdd = '$_root/wallet.svg';
+  static const expenseCategories = '$_root/wallet.svg';
+  static const salesChannel = '$_root/pie_chart.svg';
+  static const wastage = '$_root/wastage.svg';
+
+  static const dashboard = '$_root/dashboard.svg';
+
+  static const expenseIngredients = '$_root/expense_ingredients.svg';
+  static const expenseSalaries = '$_root/expense_salaries.svg';
+  static const expenseRent = '$_root/expense_rent.svg';
+  static const expenseUtilities = '$_root/expense_utilities.svg';
+  static const expensePackaging = '$_root/expense_packaging.svg';
+  static const expenseGas = '$_root/expense_gas.svg';
+  static const expenseDeliveryFees = '$_root/expense_delivery_fees.svg';
+  static const expenseMarketing = '$_root/expense_marketing.svg';
+  static const expenseRepairs = '$_root/expense_repairs_maintenance.svg';
+  static const expenseEquipment = '$_root/expense_equipment.svg';
+  static const expenseMiscellaneous = '$_root/expense_miscellaneous.svg';
+  static const expenseOther = '$_root/expense_other.svg';
+
+  static const orderDineIn = '$_root/order_dine_in.svg';
+  static const orderTakeaway = '$_root/order_takeaway.svg';
+  static const orderDelivery = '$_root/order_delivery.svg';
+}

@@ -5,6 +5,8 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 
 import 'restaurant_pulse_heart.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantPulseCard extends StatelessWidget {
   const RestaurantPulseCard({
@@ -38,10 +40,7 @@ class RestaurantPulseCard extends StatelessWidget {
       children: [
         Text(
           'Restaurant Pulse',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: AppColors.surface,
-            fontWeight: FontWeight.w700,
-          ),
+          style: theme.textTheme.titleLarge?.copyWith(color: AppColors.surface),
         ),
         const SizedBox(height: AppSpacing.space2xs),
         Text(
@@ -71,8 +70,8 @@ class RestaurantPulseCard extends StatelessWidget {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.check_circle_rounded,
+                        AppIcon(
+                          AppIcons.check_circle_rounded,
                           color: AppColors.success,
                           size: 18,
                         ),
@@ -130,8 +129,8 @@ class RestaurantPulseCard extends StatelessWidget {
               color: AppColors.surface,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.monitor_heart_outlined,
+            child: const AppIcon(
+              AppIcons.monitor_heart_outlined,
               color: AppColors.primary,
               size: 28,
             ),

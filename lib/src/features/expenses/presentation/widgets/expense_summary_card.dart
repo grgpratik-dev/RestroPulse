@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../app/theme/app_typography.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 
@@ -30,7 +31,6 @@ class ExpenseSummaryCard extends StatelessWidget {
             "THIS MONTH'S EXPENSES",
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: AppColors.surface.withValues(alpha: 0.72),
-              letterSpacing: 0.7,
             ),
           ),
           const SizedBox(height: 6),
@@ -39,9 +39,8 @@ class ExpenseSummaryCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Rs ${currency.format(snapshot.total)}',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              style: AppTypography.metricLarge.copyWith(
                 color: AppColors.surface,
-                fontWeight: FontWeight.w700,
               ),
             ),
           ),

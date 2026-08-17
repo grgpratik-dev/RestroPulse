@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SupportActionCard extends StatelessWidget {
   const SupportActionCard({
@@ -52,14 +54,14 @@ class SupportActionCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceMd),
           OutlinedButton.icon(
             onPressed: onEmailSupport,
-            icon: const Icon(Icons.email_outlined),
+            icon: const AppIcon(AppIcons.email_outlined),
             label: const Text('Email Support'),
           ),
           const SizedBox(height: AppSpacing.spaceSm),
           FilledButton.icon(
             key: const ValueKey('report-problem-button'),
             onPressed: onReportProblem,
-            icon: const Icon(Icons.bug_report_outlined),
+            icon: const AppIcon(AppIcons.bug_report_outlined),
             label: const Text('Report a Problem'),
           ),
         ],

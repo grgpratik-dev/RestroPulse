@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class LogoutConfirmationDialog extends StatelessWidget {
   const LogoutConfirmationDialog({
@@ -19,7 +20,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
       message:
           'You’ll need to sign in again to access your restaurant dashboard and reports.',
       confirmLabel: 'Log Out',
-      icon: Icons.logout_rounded,
+      icon: AppIcons.logout_rounded,
       isDestructive: true,
       onCancel: onCancel,
       onConfirm: onConfirm,

@@ -13,6 +13,8 @@ import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseDetailsResult {
   const ExpenseDetailsResult.updated(this.expense) : deleted = false;
@@ -42,7 +44,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, ExpenseDetailsResult.updated(_expense)),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const AppIcon(AppIcons.arrow_back_rounded),
         ),
         title: const Text('Expense Details'),
         actions: [
@@ -125,7 +127,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const Icon(Icons.delete_outline_rounded),
+              icon: const AppIcon(AppIcons.delete_outline_rounded),
               label: const Text('Delete Expense'),
             ),
           ],
@@ -154,7 +156,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
         message:
             "This expense will be removed from your restaurant's spending data.",
         confirmLabel: 'Delete',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
       ),
     );

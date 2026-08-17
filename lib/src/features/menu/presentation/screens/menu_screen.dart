@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../app/theme/app_typography.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_feature_header.dart';
@@ -11,6 +12,8 @@ import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_card.dart';
 import '../widgets/menu_performance_highlights.dart';
 import '../widgets/menu_states.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum MenuViewState { loaded, empty, loading, error }
 
@@ -27,19 +30,21 @@ enum _ProfitabilityFilter {
 class MenuScreen extends StatefulWidget {
   const MenuScreen({
     this.viewState = MenuViewState.loaded,
-    this.initialItems = MenuMockData.items,
+    this.initialItems,
     super.key,
   });
 
   final MenuViewState viewState;
-  final List<MenuItem> initialItems;
+  final List<MenuItem>? initialItems;
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  late final List<MenuItem> _items = [...widget.initialItems];
+  late final List<MenuItem> _items = [
+    ...(widget.initialItems ?? MenuMockData.items),
+  ];
   String _category = 'All';
   _ProfitabilityFilter _profitability = _ProfitabilityFilter.all;
   MenuAnalysisPeriod _period = MenuAnalysisPeriod.month;
@@ -130,10 +135,8 @@ class _MenuScreenState extends State<MenuScreen> {
             ],
             Text(
               'ITEM BREAKDOWN',
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              style: AppTypography.eyebrow.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
@@ -225,7 +228,7 @@ class _MenuScreenState extends State<MenuScreen> {
         message:
             'This removes the item from your current menu. Its historical sales will remain available in reports.',
         confirmLabel: 'Delete Item',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
       ),
     );
@@ -267,7 +270,7 @@ class _FilterBar extends StatelessWidget {
               minimumSize: const Size(0, 40),
               padding: const EdgeInsets.symmetric(horizontal: 14),
             ),
-            icon: const Icon(Icons.tune_rounded, size: 17),
+            icon: const AppIcon(AppIcons.tune_rounded, size: 17),
             label: const Text('All Items'),
           ),
           const SizedBox(width: AppSpacing.spaceXs),
@@ -323,7 +326,7 @@ class _OutlinedFilter extends StatelessWidget {
         children: [
           Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(width: 8),
-          const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+          const AppIcon(AppIcons.keyboard_arrow_down_rounded, size: 18),
         ],
       ),
     );

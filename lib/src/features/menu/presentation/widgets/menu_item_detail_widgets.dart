@@ -7,6 +7,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/menu_item.dart';
 import 'menu_performance_chip.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemHeader extends StatelessWidget {
   const MenuItemHeader({required this.item, super.key});
@@ -24,8 +26,8 @@ class MenuItemHeader extends StatelessWidget {
             color: AppColors.mintSoft,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const Icon(
-            Icons.restaurant_menu_rounded,
+          child: const AppIcon(
+            AppIcons.restaurant_menu_rounded,
             color: AppColors.primary,
             size: 36,
           ),
@@ -134,8 +136,8 @@ class MenuPerformanceCard extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                Icon(
-                  Icons.bar_chart_rounded,
+                AppIcon(
+                  AppIcons.bar_chart_rounded,
                   size: 38,
                   color: AppColors.primary,
                 ),
@@ -298,8 +300,8 @@ class MenuClassificationCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.lightbulb_outline_rounded,
+                const AppIcon(
+                  AppIcons.lightbulb_outline_rounded,
                   color: AppColors.primary,
                   size: 21,
                 ),

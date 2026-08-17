@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({
@@ -20,19 +22,14 @@ class QuickActionsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'Quick Actions',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
+        Text('Quick Actions', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: AppSpacing.spaceSm),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _QuickAction(
-                icon: Icons.add_chart_rounded,
+                icon: AppIcons.add_chart_rounded,
                 label: 'Add Order',
                 onTap: onAddOrder,
               ),
@@ -40,7 +37,7 @@ class QuickActionsSection extends StatelessWidget {
             const SizedBox(width: AppSpacing.spaceXs),
             Expanded(
               child: _QuickAction(
-                icon: Icons.account_balance_wallet_outlined,
+                icon: AppIcons.expenseAdd,
                 label: 'Add Expense',
                 onTap: onAddExpense,
                 tone: _QuickActionTone.expense,
@@ -49,7 +46,7 @@ class QuickActionsSection extends StatelessWidget {
             const SizedBox(width: AppSpacing.spaceXs),
             Expanded(
               child: _QuickAction(
-                icon: Icons.delete_outline_rounded,
+                icon: AppIcons.wastage,
                 label: 'Record Wastage',
                 onTap: onRecordWastage,
                 tone: _QuickActionTone.warning,
@@ -70,7 +67,7 @@ class _QuickAction extends StatelessWidget {
     this.tone = _QuickActionTone.positive,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final VoidCallback onTap;
   final _QuickActionTone tone;
@@ -111,7 +108,7 @@ class _QuickAction extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(icon, color: foreground, size: 23),
+              AppIcon(icon, color: foreground, size: 23),
               const SizedBox(height: AppSpacing.spaceXs),
               Text(
                 label,

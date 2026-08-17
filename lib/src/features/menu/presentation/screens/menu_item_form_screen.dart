@@ -8,6 +8,7 @@ import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_form_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class MenuItemFormScreen extends StatelessWidget {
   const MenuItemFormScreen({this.item, super.key});
@@ -311,7 +312,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
               'An item with this name is already on your menu. Save it anyway?',
           confirmLabel: 'Save Anyway',
           cancelLabel: 'Review',
-          icon: Icons.content_copy_outlined,
+          icon: AppIcons.content_copy_outlined,
         ),
       );
       if (proceed != true || !mounted) return;

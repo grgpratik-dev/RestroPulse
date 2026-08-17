@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum SalesEntryType { singleOrder, batchEntry }
 
@@ -48,7 +50,7 @@ class _SalesEntryTypeSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.spaceLg),
             _EntryOption(
-              icon: Icons.receipt_long_outlined,
+              icon: AppIcons.receipt_long_outlined,
               title: 'Single Order',
               subtitle: 'Record one customer order with its items and channel.',
               badge: 'Recommended',
@@ -57,7 +59,7 @@ class _SalesEntryTypeSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.spaceSm),
             _EntryOption(
-              icon: Icons.playlist_add_rounded,
+              icon: AppIcons.playlist_add_rounded,
               title: 'Batch Entry',
               subtitle: 'Record several orders quickly in one entry session.',
               onTap: () => Navigator.pop(context, SalesEntryType.batchEntry),
@@ -79,7 +81,7 @@ class _EntryOption extends StatelessWidget {
     this.emphasized = false,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -112,7 +114,7 @@ class _EntryOption extends StatelessWidget {
                   color: emphasized ? AppColors.primary : AppColors.mintSoft,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: Icon(
+                child: AppIcon(
                   icon,
                   color: emphasized ? Colors.white : AppColors.primary,
                 ),
@@ -166,7 +168,7 @@ class _EntryOption extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
-              const Icon(Icons.chevron_right_rounded),
+              const AppIcon(AppIcons.chevron_right_rounded),
             ],
           ),
         ),

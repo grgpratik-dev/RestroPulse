@@ -9,9 +9,8 @@ class FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        fontSize: 14,
-        // fontWeight: FontWeight.w600,
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

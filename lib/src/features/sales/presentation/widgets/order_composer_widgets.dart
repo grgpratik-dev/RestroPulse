@@ -7,6 +7,10 @@ import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 
+import 'order_channel_icon.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
+
 class OrderChannelSelector extends StatelessWidget {
   const OrderChannelSelector({
     required this.selected,
@@ -24,17 +28,17 @@ class OrderChannelSelector extends StatelessWidget {
         ButtonSegment(
           value: OrderChannel.dineIn,
           label: Text('Dine-in'),
-          icon: Icon(Icons.restaurant_outlined),
+          icon: OrderChannelIcon(channel: OrderChannel.dineIn, size: 18),
         ),
         ButtonSegment(
           value: OrderChannel.takeaway,
           label: Text('Takeaway'),
-          icon: Icon(Icons.shopping_bag_outlined),
+          icon: OrderChannelIcon(channel: OrderChannel.takeaway, size: 18),
         ),
         ButtonSegment(
           value: OrderChannel.delivery,
           label: Text('Delivery'),
-          icon: Icon(Icons.delivery_dining_outlined),
+          icon: OrderChannelIcon(channel: OrderChannel.delivery, size: 18),
         ),
       ],
       selected: {selected},
@@ -95,7 +99,7 @@ class OrderMenuBrowser extends StatelessWidget {
           onChanged: onSearchChanged,
           decoration: const InputDecoration(
             hintText: 'Search menu items',
-            prefixIcon: Icon(Icons.search_rounded),
+            prefixIcon: AppIcon(AppIcons.search_rounded),
           ),
         ),
         const SizedBox(height: AppSpacing.spaceSm),
@@ -251,14 +255,14 @@ class OrderTotalsCard extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: onAddDiscount,
-                  icon: const Icon(Icons.sell_outlined),
+                  icon: const AppIcon(AppIcons.sell_outlined),
                   label: Text(discount > 0 ? 'Edit Discount' : 'Add Discount'),
                 ),
               ),
               Expanded(
                 child: TextButton.icon(
                   onPressed: onAddNote,
-                  icon: const Icon(Icons.note_add_outlined),
+                  icon: const AppIcon(AppIcons.note_add_outlined),
                   label: const Text('Add Note'),
                 ),
               ),
@@ -309,8 +313,8 @@ class _MenuItemCard extends StatelessWidget {
                   color: AppColors.splashAccent.withValues(alpha: .38),
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
-                child: const Icon(
-                  Icons.restaurant_menu_rounded,
+                child: const AppIcon(
+                  AppIcons.restaurant_menu_rounded,
                   color: AppColors.primary,
                 ),
               ),
@@ -342,7 +346,10 @@ class _MenuItemCard extends StatelessWidget {
                   child: Text('$quantity'),
                 )
               else
-                const Icon(Icons.add_circle_rounded, color: AppColors.primary),
+                const AppIcon(
+                  AppIcons.add_circle_rounded,
+                  color: AppColors.primary,
+                ),
             ],
           ),
         ),
@@ -398,7 +405,7 @@ class _SelectedItemRow extends StatelessWidget {
             tooltip: 'Decrease ${item.name}',
             onPressed: onDecrement,
             visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.remove_rounded),
+            icon: const AppIcon(AppIcons.remove_rounded),
           ),
           SizedBox(
             width: 34,
@@ -412,12 +419,15 @@ class _SelectedItemRow extends StatelessWidget {
             tooltip: 'Increase ${item.name}',
             onPressed: onIncrement,
             visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.add_rounded),
+            icon: const AppIcon(AppIcons.add_rounded),
           ),
           IconButton(
             tooltip: 'Remove ${item.name}',
             onPressed: onRemove,
-            icon: Icon(Icons.close_rounded, color: theme.colorScheme.error),
+            icon: AppIcon(
+              AppIcons.close_rounded,
+              color: theme.colorScheme.error,
+            ),
           ),
         ],
       ),

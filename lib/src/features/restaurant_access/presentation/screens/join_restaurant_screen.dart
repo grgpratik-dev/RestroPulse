@@ -6,6 +6,8 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/access_request_pending_view.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_invitation_preview_card.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class JoinRestaurantScreen extends StatefulWidget {
   const JoinRestaurantScreen({this.onJoined, super.key});
@@ -71,8 +73,8 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
-                                    Icons.visibility_outlined,
+                                  AppIcon(
+                                    AppIcons.visibility_outlined,
                                     color: AppColors.info,
                                     size: 17,
                                   ),
@@ -116,8 +118,8 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
-                                  Icons.lock_outline_rounded,
+                                const AppIcon(
+                                  AppIcons.lock_outline_rounded,
                                   color: AppColors.info,
                                   size: 21,
                                 ),
@@ -169,14 +171,14 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                   onFieldSubmitted: (_) => _findRestaurant(),
                                   decoration: InputDecoration(
                                     hintText: 'e.g. RP-7K9M2',
-                                    prefixIcon: const Icon(
-                                      Icons.vpn_key_outlined,
+                                    prefixIcon: const AppIcon(
+                                      AppIcons.vpn_key_outlined,
                                     ),
                                     suffixIcon: IconButton(
                                       tooltip: 'Paste invitation code',
                                       onPressed: _pasteCode,
-                                      icon: const Icon(
-                                        Icons.content_paste_rounded,
+                                      icon: const AppIcon(
+                                        AppIcons.content_paste_rounded,
                                       ),
                                     ),
                                   ),

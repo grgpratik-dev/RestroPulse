@@ -18,7 +18,6 @@ void main() {
     expect(find.text('5 categories'), findsOneWidget);
     expect(find.text('38 menu items organized'), findsOneWidget);
     expect(find.text('Momo'), findsOneWidget);
-    expect(find.byIcon(Icons.ramen_dining_rounded), findsNothing);
 
     await tester.tap(find.byKey(const ValueKey('menu-category-add-button')));
     await tester.pumpAndSettle();

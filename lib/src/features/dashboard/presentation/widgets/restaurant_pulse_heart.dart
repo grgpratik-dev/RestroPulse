@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
+import '../../../../app/theme/app_typography.dart';
 
 @visibleForTesting
 double restaurantPulseBpmForScore(double score) {
@@ -163,18 +164,13 @@ class _RestaurantPulseHeartState extends State<RestaurantPulseHeart>
                         children: const [
                           TextSpan(
                             text: '/100',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: AppTypography.labelSmall,
                           ),
                         ],
                       ),
-                      style: const TextStyle(
+                      style: AppTypography.metricMedium.copyWith(
                         color: AppColors.ink,
-                        fontSize: 24,
                         height: 1,
-                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
@@ -197,7 +193,7 @@ class _HeartFillPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final heart = _heartPath(size);
 
-    canvas.drawShadow(heart, AppColors.ink.withValues(alpha: 0.2), 7, false);
+    canvas.drawShadow(heart, _glowColor.withValues(alpha: 0.62), 12, false);
 
     canvas.drawPath(
       heart,
@@ -229,9 +225,19 @@ class _HeartFillPainter extends CustomPainter {
   }
 
   List<Color> get _fillColors => switch (progress) {
-    >= 0.75 => const [AppColors.pulseHealthy, AppColors.pulseHealthyHighlight],
+    >= 0.75 => const [
+      AppColors.pulseHealthyDeep,
+      AppColors.pulseHealthy,
+      AppColors.pulseHealthyHighlight,
+    ],
     >= 0.5 => const [AppColors.pulseModerate, AppColors.pulseModerateHighlight],
     _ => const [AppColors.pulseLow, AppColors.pulseLowHighlight],
+  };
+
+  Color get _glowColor => switch (progress) {
+    >= 0.75 => AppColors.pulseHealthyGlow,
+    >= 0.5 => AppColors.pulseModerate,
+    _ => AppColors.pulseLow,
   };
 
   Path _heartPath(Size size) {

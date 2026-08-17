@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileFormSection extends StatelessWidget {
   const ProfileFormSection({
@@ -78,10 +80,10 @@ class ProfileImageEditor extends StatelessWidget {
                       : null,
                   border: Border.all(color: AppColors.mintBright),
                 ),
-                child: Icon(
+                child: AppIcon(
                   isRestaurant
-                      ? Icons.storefront_rounded
-                      : Icons.person_rounded,
+                      ? AppIcons.storefront_rounded
+                      : AppIcons.person_rounded,
                   color: AppColors.primary,
                   size: 44,
                 ),
@@ -102,8 +104,8 @@ class ProfileImageEditor extends StatelessWidget {
                     customBorder: const CircleBorder(),
                     child: const Padding(
                       padding: EdgeInsets.all(AppSpacing.spaceXs),
-                      child: Icon(
-                        Icons.camera_alt_outlined,
+                      child: AppIcon(
+                        AppIcons.camera_alt_outlined,
                         color: AppColors.surface,
                         size: 19,
                       ),
@@ -156,12 +158,12 @@ Future<void> showProfileImageOptions(
             ),
             const SizedBox(height: AppSpacing.spaceSm),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
+              leading: const AppIcon(AppIcons.photo_library_outlined),
               title: const Text('Choose from gallery'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt_outlined),
+              leading: const AppIcon(AppIcons.camera_alt_outlined),
               title: const Text('Take a photo'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),

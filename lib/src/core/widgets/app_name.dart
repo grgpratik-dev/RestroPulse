@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restropulse/gen/fonts.gen.dart';
-
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_typography.dart';
 
@@ -19,11 +17,9 @@ Widget appName({
         ),
       ],
     ),
-    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-      color: leadColor ?? AppColors.kNeutral600,
-      fontWeight: FontWeight.bold,
+    style: AppTypography.headlineMedium.copyWith(
+      color: leadColor ?? AppColors.ink,
       fontSize: fontSize,
-      fontFamily: FontFamily.plusJakartaSans,
     ),
     semanticsLabel: 'RestroPulse',
   );

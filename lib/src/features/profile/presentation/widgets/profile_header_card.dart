@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({required this.onEdit, super.key});
@@ -61,8 +63,8 @@ class ProfileHeaderCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.space2xs),
                 Row(
                   children: [
-                    Icon(
-                      Icons.location_on_outlined,
+                    AppIcon(
+                      AppIcons.location_on_outlined,
                       size: 16,
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -91,7 +93,7 @@ class ProfileHeaderCard extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.28),
                     ),
                   ),
-                  icon: const Icon(Icons.edit_outlined, size: 17),
+                  icon: const AppIcon(AppIcons.edit_outlined, size: 17),
                   label: const Text('Edit Restaurant'),
                 ),
               ],
@@ -112,17 +114,17 @@ class _RestaurantAvatar extends StatelessWidget {
       label: 'Restaurant logo placeholder',
       image: true,
       child: Container(
-        width: 72,
-        height: 72,
+        width: 64,
+        height: 64,
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
         ),
-        child: const Icon(
-          Icons.storefront_rounded,
+        child: const AppIcon(
+          AppIcons.storefront_rounded,
           color: AppColors.primary,
-          size: 36,
+          size: 28,
         ),
       ),
     );

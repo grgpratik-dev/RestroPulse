@@ -35,9 +35,7 @@ class TodayOrdersSection extends StatelessWidget {
             Expanded(
               child: Text(
                 "Today's Orders",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             Text(

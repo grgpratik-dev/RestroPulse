@@ -11,6 +11,8 @@ import '../widgets/report_controls.dart';
 import '../widgets/report_sections.dart';
 import '../widgets/report_states.dart';
 import '../widgets/revenue_expenses_chart.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum ReportsViewState { loaded, partial, empty, loading, error }
 
@@ -55,7 +57,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   minimumSize: const Size(0, 42),
                   padding: const EdgeInsets.symmetric(horizontal: 13),
                 ),
-                icon: const Icon(Icons.ios_share_rounded, size: 18),
+                icon: const AppIcon(AppIcons.ios_share_rounded, size: 18),
                 label: const Text('Export'),
               ),
             ),
@@ -156,14 +158,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               ReportExportOption(
-                icon: Icons.picture_as_pdf_outlined,
+                icon: AppIcons.picture_as_pdf_outlined,
                 title: 'PDF',
                 subtitle: 'Easy to share and print',
                 onTap: () => Navigator.pop(context, 'PDF'),
               ),
               const SizedBox(height: AppSpacing.spaceXs),
               ReportExportOption(
-                icon: Icons.table_chart_outlined,
+                icon: AppIcons.table_chart_outlined,
                 title: 'CSV',
                 subtitle: 'Open report data in a spreadsheet',
                 onTap: () => Navigator.pop(context, 'CSV'),

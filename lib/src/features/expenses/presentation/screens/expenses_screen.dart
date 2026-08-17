@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -9,7 +11,6 @@ import '../../../../core/widgets/app_feature_header.dart';
 import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_breakdown.dart';
-import '../widgets/expense_filter_sheet.dart';
 import '../widgets/expense_states.dart';
 import '../widgets/expense_summary_card.dart';
 import '../widgets/expense_trend_card.dart';
@@ -39,30 +40,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     ...(widget.initialExpenses ?? ExpensesMockData.expenses),
   ];
   ExpensePeriod _period = ExpensePeriod.month;
-  ExpenseFilterSelection _filters = const ExpenseFilterSelection();
   double _totalAdjustment = 0;
   int _transactionAdjustment = 0;
-
-  List<Expense> get _filteredExpenses {
-    final result = _expenses.where((expense) {
-      final categoryMatches =
-          _filters.category == null || expense.category == _filters.category;
-      final typeMatches =
-          _filters.type == null || expense.type == _filters.type;
-      return categoryMatches && typeMatches;
-    }).toList();
-    switch (_filters.sort) {
-      case ExpenseSort.newest:
-        result.sort((a, b) => b.date.compareTo(a.date));
-      case ExpenseSort.oldest:
-        result.sort((a, b) => a.date.compareTo(b.date));
-      case ExpenseSort.highest:
-        result.sort((a, b) => b.amount.compareTo(a.amount));
-      case ExpenseSort.lowest:
-        result.sort((a, b) => a.amount.compareTo(b.amount));
-    }
-    return result;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +150,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.insights_outlined,
+              const AppIcon(
+                AppIcons.insights_outlined,
                 color: AppColors.expenseForeground,
               ),
               const SizedBox(width: AppSpacing.spaceXs),
@@ -189,10 +168,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ExpenseTrendCard(period: _period, points: analysisSnapshot.trend),
         const SizedBox(height: AppSpacing.spaceLg),
         RecentExpensesList(
-          expenses: _filteredExpenses,
+          expenses: _expenses.take(5).toList(),
           onExpenseTap: _openExpense,
-          onFilter: _showFilters,
-          hasActiveFilter: _filters.isActive,
+          onViewHistory: _openExpenseHistory,
         ),
       ],
     );
@@ -237,12 +215,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     }
   }
 
-  Future<void> _showFilters() async {
-    final selected = await showExpenseFilterSheet(
-      context: context,
-      initial: _filters,
-    );
-    if (!mounted || selected == null) return;
-    setState(() => _filters = selected);
+  void _openExpenseHistory() {
+    context.pushNamed(AppRoute.expenseHistory.name, extra: [..._expenses]);
   }
 }

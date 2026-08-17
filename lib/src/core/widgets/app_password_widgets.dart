@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AppPasswordField extends StatelessWidget {
   const AppPasswordField({
@@ -45,10 +47,10 @@ class AppPasswordField extends StatelessWidget {
         suffixIcon: IconButton(
           tooltip: obscureText ? 'Show $label' : 'Hide $label',
           onPressed: onVisibilityChanged,
-          icon: Icon(
+          icon: AppIcon(
             obscureText
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
+                ? AppIcons.visibility_off_outlined
+                : AppIcons.visibility_outlined,
           ),
         ),
       ),
@@ -116,8 +118,8 @@ class _PasswordRequirement extends StatelessWidget {
     final color = isMet ? AppColors.success : AppColors.neutral500;
     return Row(
       children: [
-        Icon(
-          isMet ? Icons.check_circle_rounded : Icons.circle_outlined,
+        AppIcon(
+          isMet ? AppIcons.check_circle_rounded : AppIcons.circle_outlined,
           color: color,
           size: 18,
         ),

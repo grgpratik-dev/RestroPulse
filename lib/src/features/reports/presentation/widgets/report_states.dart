@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_skeleton.dart';
 import '../../../../core/widgets/app_state_message.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class ReportsEmptyState extends StatelessWidget {
   const ReportsEmptyState({
@@ -17,7 +18,7 @@ class ReportsEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppStateMessage(
-      icon: Icons.analytics_outlined,
+      icon: AppIcons.analytics_outlined,
       title: 'Not enough data for reports yet',
       message: 'Keep recording orders and expenses to unlock deeper insights.',
       actions: [
@@ -39,7 +40,7 @@ class ReportsErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppStateMessage(
-      icon: Icons.cloud_off_rounded,
+      icon: AppIcons.cloud_off_rounded,
       title: "Couldn't load reports",
       message: 'Check your connection and try again.',
       actions: [

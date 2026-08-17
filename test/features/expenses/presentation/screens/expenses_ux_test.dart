@@ -31,6 +31,7 @@ void main() {
     expect(find.text('3M'), findsOneWidget);
     expect(find.text('6M'), findsOneWidget);
     expect(find.text('1Y'), findsOneWidget);
+    expect(find.text('View all'), findsOneWidget);
     final summaryAmount = find.descendant(
       of: find.byType(ExpenseSummaryCard),
       matching: find.text('Rs 478,300'),

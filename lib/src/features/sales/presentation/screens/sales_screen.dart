@@ -69,7 +69,7 @@ class _SalesScreenState extends State<SalesScreen> {
                 SalesOrdersEmptyState(onRecordSales: _showEntryOptions)
               else ...[
                 const TodaySalesSummaryCard(),
-                const SizedBox(height: AppSpacing.spaceMd),
+                const SizedBox(height: AppSpacing.spaceLg),
                 AppPeriodSelector<SalesTrendPeriod>(
                   selected: _analysisPeriod,
                   options: SalesTrendPeriod.values,
@@ -79,7 +79,7 @@ class _SalesScreenState extends State<SalesScreen> {
                   onChanged: (period) =>
                       setState(() => _analysisPeriod = period),
                 ),
-                const SizedBox(height: AppSpacing.spaceMd),
+                const SizedBox(height: AppSpacing.spaceLg),
                 if (widget.viewState == SalesViewState.partial)
                   SalesChannelEmptyCard(onUpdateSales: _openAddOrder)
                 else

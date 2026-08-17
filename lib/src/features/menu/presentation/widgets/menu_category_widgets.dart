@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuCategorySummaryCard extends StatelessWidget {
   const MenuCategorySummaryCard({
@@ -101,7 +103,7 @@ class MenuCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const AppIcon(AppIcons.more_vert_rounded),
             ),
           ],
         ),
@@ -184,7 +186,7 @@ class _MenuCategoryEditorSheetState extends State<MenuCategoryEditorSheet> {
                 decoration: const InputDecoration(
                   labelText: 'Category name',
                   hintText: 'e.g. Desserts',
-                  prefixIcon: Icon(Icons.category_outlined),
+                  prefixIcon: AppIcon(AppIcons.category_outlined),
                 ),
                 onFieldSubmitted: (_) => _submit(),
                 validator: (value) {

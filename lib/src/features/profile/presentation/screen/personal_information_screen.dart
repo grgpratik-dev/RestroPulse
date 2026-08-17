@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../widgets/profile_form_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({this.onSaved, super.key});
@@ -124,7 +126,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: 'Current role',
-                      suffixIcon: Icon(Icons.lock_outline_rounded, size: 19),
+                      suffixIcon: AppIcon(
+                        AppIcons.lock_outline_rounded,
+                        size: 19,
+                      ),
                     ),
                   ),
                 ],

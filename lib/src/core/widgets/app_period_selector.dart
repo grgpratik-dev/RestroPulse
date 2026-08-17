@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_spacing.dart';
+import '../../app/theme/app_typography.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 /// Shared, always-visible period tabs for analytical feature screens.
 class AppPeriodSelector<T> extends StatelessWidget {
@@ -66,7 +69,7 @@ class AppPeriodSelector<T> extends StatelessWidget {
                   BorderSide(color: AppColors.neutral300),
                 ),
                 textStyle: const WidgetStatePropertyAll(
-                  TextStyle(fontWeight: FontWeight.w700),
+                  AppTypography.labelLarge,
                 ),
               ),
             ),
@@ -74,8 +77,8 @@ class AppPeriodSelector<T> extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceXs),
           Row(
             children: [
-              const Icon(
-                Icons.calendar_today_outlined,
+              const AppIcon(
+                AppIcons.calendar_today_outlined,
                 size: 14,
                 color: AppColors.neutral700,
               ),
@@ -87,7 +90,6 @@ class AppPeriodSelector<T> extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

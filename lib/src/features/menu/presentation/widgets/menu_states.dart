@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_skeleton.dart';
 import '../../../../core/widgets/app_state_message.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class MenuEmptyState extends StatelessWidget {
   const MenuEmptyState({required this.onAddItem, super.key});
@@ -12,7 +13,7 @@ class MenuEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppStateMessage(
-      icon: Icons.menu_book_outlined,
+      icon: AppIcons.menu_book_outlined,
       title: 'Your menu is empty',
       message:
           'Add menu items so RestroPulse can track item sales, food cost, and profitability.',
@@ -31,7 +32,7 @@ class MenuNoResultsState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppStateMessage(
-      icon: Icons.search_off_rounded,
+      icon: AppIcons.search_off_rounded,
       title: 'No menu items found',
       message: 'Try another name, category, or performance filter.',
       verticalPadding: AppSpacing.space2xl,
@@ -48,7 +49,7 @@ class MenuErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppStateMessage(
-      icon: Icons.cloud_off_rounded,
+      icon: AppIcons.cloud_off_rounded,
       title: "Couldn't load your menu",
       message: 'Check your connection and try again.',
       verticalPadding: AppSpacing.space2xl,

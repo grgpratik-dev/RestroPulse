@@ -80,6 +80,7 @@ class _ExpenseFilterSheetState extends State<_ExpenseFilterSheet> {
             ),
             const SizedBox(height: AppSpacing.spaceXs),
             DropdownButtonFormField<String?>(
+              isExpanded: true,
               initialValue: _category,
               decoration: const InputDecoration(hintText: 'All categories'),
               items: [
@@ -101,6 +102,7 @@ class _ExpenseFilterSheetState extends State<_ExpenseFilterSheet> {
             ),
             const SizedBox(height: AppSpacing.spaceXs),
             SegmentedButton<ExpenseType?>(
+              expandedInsets: EdgeInsets.zero,
               segments: const [
                 ButtonSegment(value: null, label: Text('All')),
                 ButtonSegment(value: ExpenseType.fixed, label: Text('Fixed')),
@@ -111,6 +113,16 @@ class _ExpenseFilterSheetState extends State<_ExpenseFilterSheet> {
               ],
               selected: {_type},
               showSelectedIcon: false,
+              style: const ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                ),
+                textStyle: WidgetStatePropertyAll(
+                  TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+              ),
               onSelectionChanged: (values) =>
                   setState(() => _type = values.first),
             ),
@@ -118,6 +130,7 @@ class _ExpenseFilterSheetState extends State<_ExpenseFilterSheet> {
             const Text('Sort', style: TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: AppSpacing.spaceXs),
             DropdownButtonFormField<ExpenseSort>(
+              isExpanded: true,
               initialValue: _sort,
               items: ExpenseSort.values
                   .map(

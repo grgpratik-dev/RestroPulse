@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class IssueCategorySelector extends StatelessWidget {
   const IssueCategorySelector({
@@ -21,7 +23,7 @@ class IssueCategorySelector extends StatelessWidget {
       decoration: const InputDecoration(
         labelText: 'Issue Category',
         hintText: 'Select a category',
-        prefixIcon: Icon(Icons.category_outlined),
+        prefixIcon: AppIcon(AppIcons.category_outlined),
       ),
       items: [
         for (final item in items)

@@ -6,6 +6,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_detail_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemDetailsScreen extends StatefulWidget {
   const MenuItemDetailsScreen({
@@ -63,7 +65,7 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const Icon(Icons.delete_outline_rounded),
+              icon: const AppIcon(AppIcons.delete_outline_rounded),
               label: const Text('Delete Menu Item'),
             ),
           ],
@@ -80,7 +82,7 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
         message:
             'This removes the item from your current menu. Its historical sales will remain available in reports.',
         confirmLabel: 'Delete Item',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
       ),
     );

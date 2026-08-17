@@ -1,3 +1,5 @@
+import 'package:restropulse/gen/assets.gen.dart';
+
 enum MenuPerformanceStatus {
   star,
   reviewCost,
@@ -158,7 +160,7 @@ abstract final class MenuPerformanceClassifier {
 }
 
 abstract final class MenuMockData {
-  static const items = <MenuItem>[
+  static final items = <MenuItem>[
     MenuItem(
       id: 'chicken-momo',
       name: 'Chicken Momo',
@@ -170,7 +172,7 @@ abstract final class MenuMockData {
       historicalCost: 7812,
       ordersContainingItem: 94,
       notes: 'House special served with tomato achar.',
-      imagePath: 'assets/images/menu_chicken_momo.jpg',
+      imagePath: Assets.images.menuChickenMomo.path,
     ),
     MenuItem(
       id: 'chicken-burger',
@@ -182,7 +184,7 @@ abstract final class MenuMockData {
       revenue: 28700,
       historicalCost: 13776,
       ordersContainingItem: 71,
-      imagePath: 'assets/images/menu_chicken_burger.jpg',
+      imagePath: Assets.images.menuChickenBurger.path,
     ),
     MenuItem(
       id: 'lemonade',
@@ -194,7 +196,7 @@ abstract final class MenuMockData {
       revenue: 3600,
       historicalCost: 720,
       ordersContainingItem: 22,
-      imagePath: 'assets/images/menu_mint_lemonade.jpg',
+      imagePath: Assets.images.menuMintLemonade.path,
     ),
     MenuItem(
       id: 'veg-pizza',
@@ -206,7 +208,7 @@ abstract final class MenuMockData {
       revenue: 8640,
       historicalCost: 4752,
       ordersContainingItem: 17,
-      imagePath: 'assets/images/menu_veg_pizza.jpg',
+      imagePath: Assets.images.menuVegPizza.path,
     ),
     MenuItem(
       id: 'buff-momo',
@@ -218,7 +220,7 @@ abstract final class MenuMockData {
       revenue: 20160,
       historicalCost: 7296,
       ordersContainingItem: 80,
-      imagePath: 'assets/images/menu_buff_jhol_momo.jpg',
+      imagePath: Assets.images.menuBuffJholMomo.path,
     ),
     MenuItem(
       id: 'crispy-fries',
@@ -230,7 +232,7 @@ abstract final class MenuMockData {
       revenue: 0,
       historicalCost: 0,
       ordersContainingItem: 0,
-      imagePath: 'assets/images/menu_masala_fries.jpg',
+      imagePath: Assets.images.menuMasalaFries.path,
     ),
   ];
 

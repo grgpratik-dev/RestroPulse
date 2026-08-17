@@ -10,6 +10,8 @@ import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
 import '../widgets/expense_detail_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoryDetailsScreen extends StatelessWidget {
   const ExpenseCategoryDetailsScreen({
@@ -198,7 +200,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right_rounded, size: 20),
+                      const AppIcon(AppIcons.chevron_right_rounded, size: 20),
                     ],
                   ),
                 ),

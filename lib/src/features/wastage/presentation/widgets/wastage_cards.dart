@@ -8,6 +8,8 @@ import '../../../../core/widgets/app_section_heading.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageSummaryCard extends StatelessWidget {
   const WastageSummaryCard({required this.snapshot, super.key});
@@ -275,8 +277,10 @@ class MostWastedItemsSection extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: AppColors.warningMuted,
-                  child: Icon(
-                    index == 0 ? Icons.set_meal_outlined : Icons.eco_outlined,
+                  child: AppIcon(
+                    index == 0
+                        ? AppIcons.set_meal_outlined
+                        : AppIcons.eco_outlined,
                     color: AppColors.warning,
                   ),
                 ),
@@ -334,8 +338,8 @@ class RecentWastageSection extends StatelessWidget {
                   children: [
                     const CircleAvatar(
                       backgroundColor: AppColors.warningMuted,
-                      child: Icon(
-                        Icons.delete_sweep_outlined,
+                      child: AppIcon(
+                        AppIcons.delete_sweep_outlined,
                         color: AppColors.warning,
                       ),
                     ),
@@ -366,7 +370,7 @@ class RecentWastageSection extends StatelessWidget {
                       'Rs ${currency.format(entries[index].estimatedLoss)}',
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    const Icon(Icons.chevron_right_rounded, size: 20),
+                    const AppIcon(AppIcons.chevron_right_rounded, size: 20),
                   ],
                 ),
               ),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 /// Shared heading for top-level operational feature screens.
 class AppFeatureHeader extends StatelessWidget {
@@ -10,7 +12,7 @@ class AppFeatureHeader extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.contextLabel,
-    this.contextIcon = Icons.calendar_today_outlined,
+    this.contextIcon = AppIcons.calendar_today_outlined,
     this.trailing,
     super.key,
   });
@@ -18,7 +20,7 @@ class AppFeatureHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final String? contextLabel;
-  final IconData contextIcon;
+  final String contextIcon;
   final Widget? trailing;
 
   @override
@@ -36,7 +38,6 @@ class AppFeatureHeader extends StatelessWidget {
                 title,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   color: AppColors.ink,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -68,13 +69,12 @@ class AppFeatureHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(contextIcon, size: 16, color: AppColors.neutral700),
+                AppIcon(contextIcon, size: 16, color: AppColors.neutral700),
                 const SizedBox(width: AppSpacing.spaceXs),
                 Text(
                   contextLabel!,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: AppColors.neutral700,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],

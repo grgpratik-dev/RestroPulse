@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseReceiptPicker extends StatelessWidget {
   const ExpenseReceiptPicker({this.initialPath, super.key});
@@ -33,8 +35,8 @@ class ExpenseReceiptPicker extends StatelessWidget {
                   child: path == null
                       ? const ColoredBox(
                           color: Colors.white,
-                          child: Icon(
-                            Icons.receipt_long_outlined,
+                          child: AppIcon(
+                            AppIcons.receipt_long_outlined,
                             color: AppColors.expenseForeground,
                           ),
                         )
@@ -69,7 +71,7 @@ class ExpenseReceiptPicker extends StatelessWidget {
                           imageQuality: 85,
                         ),
                       ),
-                icon: const Icon(Icons.attach_file_rounded, size: 18),
+                icon: const AppIcon(AppIcons.attach_file_rounded, size: 18),
                 label: Text(path == null ? 'Attach' : 'Change'),
               ),
             ],

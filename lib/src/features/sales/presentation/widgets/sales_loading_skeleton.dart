@@ -3,6 +3,8 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SalesLoadingSkeleton extends StatelessWidget {
   const SalesLoadingSkeleton({super.key});
@@ -35,8 +37,8 @@ class SalesErrorCard extends StatelessWidget {
     return CustomContainer(
       child: Column(
         children: [
-          Icon(
-            Icons.cloud_off_outlined,
+          AppIcon(
+            AppIcons.cloud_off_outlined,
             size: 42,
             color: theme.colorScheme.error,
           ),
@@ -84,8 +86,8 @@ class SalesOrdersEmptyState extends StatelessWidget {
               color: AppColors.surface,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.receipt_long_outlined,
+            child: const AppIcon(
+              AppIcons.receipt_long_outlined,
               size: 32,
               color: AppColors.primary,
             ),
@@ -110,7 +112,7 @@ class SalesOrdersEmptyState extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               onPressed: onRecordSales,
-              icon: const Icon(Icons.add_rounded),
+              icon: const AppIcon(AppIcons.add_rounded),
               label: const Text('Record Sales'),
             ),
           ),

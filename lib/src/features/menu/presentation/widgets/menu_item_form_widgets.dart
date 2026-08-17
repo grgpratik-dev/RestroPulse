@@ -8,6 +8,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import '../../../../core/widgets/custom_container.dart';
 import 'menu_image_provider.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuPhotoPicker extends StatelessWidget {
   const MenuPhotoPicker({this.initialPath, super.key});
@@ -28,8 +30,8 @@ class MenuPhotoPicker extends StatelessWidget {
                 child: path == null
                     ? const ColoredBox(
                         color: AppColors.mintSoft,
-                        child: Icon(
-                          Icons.restaurant_menu_rounded,
+                        child: AppIcon(
+                          AppIcons.restaurant_menu_rounded,
                           color: AppColors.primary,
                           size: 34,
                         ),
@@ -74,8 +76,8 @@ class MenuPhotoPicker extends StatelessWidget {
                             dimension: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(
-                            Icons.add_photo_alternate_outlined,
+                        : const AppIcon(
+                            AppIcons.add_photo_alternate_outlined,
                             size: 19,
                           ),
                     label: Text(path == null ? 'Add Photo' : 'Change Photo'),
@@ -116,8 +118,8 @@ class MenuCostPreview extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.calculate_outlined,
+              const AppIcon(
+                AppIcons.calculate_outlined,
                 color: AppColors.primary,
                 size: 20,
               ),
@@ -186,7 +188,10 @@ class MenuCostWarning extends StatelessWidget {
       ),
       child: const Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: AppColors.warningStrong),
+          AppIcon(
+            AppIcons.warning_amber_rounded,
+            color: AppColors.warningStrong,
+          ),
           SizedBox(width: AppSpacing.spaceXs),
           Expanded(
             child: Text(

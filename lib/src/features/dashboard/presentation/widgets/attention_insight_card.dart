@@ -3,6 +3,8 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AttentionInsightCard extends StatelessWidget {
   const AttentionInsightCard({
@@ -36,10 +38,10 @@ class AttentionInsightCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.8),
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: AppIcon(
               isHealthy
-                  ? Icons.check_circle_outline_rounded
-                  : Icons.warning_amber_rounded,
+                  ? AppIcons.check_circle_outline_rounded
+                  : AppIcons.warning_amber_rounded,
               color: color,
             ),
           ),

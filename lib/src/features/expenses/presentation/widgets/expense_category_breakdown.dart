@@ -7,6 +7,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoryBreakdown extends StatelessWidget {
   const ExpenseCategoryBreakdown({
@@ -184,8 +186,8 @@ class _CategoryRow extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right_rounded,
+              AppIcon(
+                AppIcons.chevron_right_rounded,
                 size: 20,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),

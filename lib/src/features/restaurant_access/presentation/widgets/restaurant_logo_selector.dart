@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantLogoSelector extends StatelessWidget {
   const RestaurantLogoSelector({required this.onTap, super.key});
@@ -33,8 +35,8 @@ class RestaurantLogoSelector extends StatelessWidget {
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: const Icon(
-                  Icons.add_photo_alternate_outlined,
+                child: const AppIcon(
+                  AppIcons.add_photo_alternate_outlined,
                   color: AppColors.primary,
                 ),
               ),
@@ -60,8 +62,8 @@ class RestaurantLogoSelector extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
+              const AppIcon(
+                AppIcons.chevron_right_rounded,
                 color: AppColors.neutral600,
               ),
             ],

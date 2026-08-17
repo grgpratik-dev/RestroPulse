@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../core/widgets/app_svg_icon.dart';
 
-IconData expenseCategoryIcon(String category) => switch (category) {
-  'Ingredients' => Icons.shopping_basket_outlined,
-  'Salaries' => Icons.groups_outlined,
-  'Rent' => Icons.store_outlined,
-  'Utilities' => Icons.bolt_outlined,
-  'Packaging' => Icons.inventory_2_outlined,
-  'Gas' => Icons.local_fire_department_outlined,
-  'Delivery Fees' => Icons.delivery_dining_outlined,
-  'Marketing' => Icons.campaign_outlined,
-  'Repairs & Maintenance' => Icons.handyman_outlined,
-  'Equipment' => Icons.kitchen_outlined,
-  _ => Icons.receipt_long_outlined,
+String expenseCategoryIconAsset(String category) => switch (category) {
+  'Ingredients' => AppIcons.expenseIngredients,
+  'Salaries' => AppIcons.expenseSalaries,
+  'Rent' => AppIcons.expenseRent,
+  'Utilities' => AppIcons.expenseUtilities,
+  'Packaging' => AppIcons.expensePackaging,
+  'Gas' => AppIcons.expenseGas,
+  'Delivery Fees' => AppIcons.expenseDeliveryFees,
+  'Marketing' => AppIcons.expenseMarketing,
+  'Repairs & Maintenance' => AppIcons.expenseRepairs,
+  'Equipment' => AppIcons.expenseEquipment,
+  'Miscellaneous' => AppIcons.expenseMiscellaneous,
+  _ => AppIcons.expenseOther,
 };
 
 class ExpenseCategoryIcon extends StatelessWidget {
   const ExpenseCategoryIcon({
     required this.category,
-    this.size = 44,
+    this.size = 40,
     super.key,
   });
 
@@ -35,10 +38,10 @@ class ExpenseCategoryIcon extends StatelessWidget {
         color: AppColors.expenseSurface,
         borderRadius: BorderRadius.circular(size * 0.27),
       ),
-      child: Icon(
-        expenseCategoryIcon(category),
+      child: AppSvgIcon(
+        asset: expenseCategoryIconAsset(category),
         color: AppColors.expenseForeground,
-        size: size * 0.5,
+        size: size * 0.45,
       ),
     );
   }

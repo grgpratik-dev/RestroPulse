@@ -4,6 +4,8 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SalesChannelCard extends StatelessWidget {
   const SalesChannelCard({this.period = SalesTrendPeriod.week, super.key});
@@ -72,8 +74,8 @@ class SalesChannelEmptyCard extends StatelessWidget {
     return CustomContainer(
       child: Column(
         children: [
-          const Icon(
-            Icons.pie_chart_outline_rounded,
+          const AppIcon(
+            AppIcons.pie_chart_outline_rounded,
             color: AppColors.primary,
             size: 34,
           ),

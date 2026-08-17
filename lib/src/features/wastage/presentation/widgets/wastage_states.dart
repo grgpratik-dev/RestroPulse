@@ -4,6 +4,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_skeleton.dart';
 import '../../../../core/widgets/app_state_message.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class WastageStateMessage extends StatelessWidget {
   const WastageStateMessage({
@@ -11,7 +12,7 @@ class WastageStateMessage extends StatelessWidget {
     required this.message,
     required this.actionLabel,
     required this.onAction,
-    this.icon = Icons.delete_sweep_outlined,
+    this.icon = AppIcons.delete_sweep_outlined,
     super.key,
   });
 
@@ -19,7 +20,7 @@ class WastageStateMessage extends StatelessWidget {
   final String message;
   final String actionLabel;
   final VoidCallback onAction;
-  final IconData icon;
+  final String icon;
 
   @override
   Widget build(BuildContext context) => AppStateMessage(

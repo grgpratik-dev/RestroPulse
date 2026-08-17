@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AppConfirmationDialog extends StatelessWidget {
   const AppConfirmationDialog({
@@ -11,7 +13,7 @@ class AppConfirmationDialog extends StatelessWidget {
     required this.confirmLabel,
     this.cancelLabel = 'Cancel',
     this.showCancelButton = true,
-    this.icon = Icons.help_outline_rounded,
+    this.icon = AppIcons.help_outline_rounded,
     this.isDestructive = false,
     this.confirmButtonKey,
     this.onConfirm,
@@ -24,7 +26,7 @@ class AppConfirmationDialog extends StatelessWidget {
   final String confirmLabel;
   final String cancelLabel;
   final bool showCancelButton;
-  final IconData icon;
+  final String icon;
   final bool isDestructive;
   final Key? confirmButtonKey;
   final VoidCallback? onConfirm;
@@ -61,22 +63,21 @@ class AppConfirmationDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 62,
-                height: 62,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   border: Border.all(color: accent.withValues(alpha: 0.14)),
                 ),
-                child: Icon(icon, color: accent, size: 30),
+                child: AppIcon(icon, color: accent, size: 24),
               ),
               const SizedBox(height: AppSpacing.spaceLg),
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge?.copyWith(
+                style: theme.textTheme.headlineSmall?.copyWith(
                   color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceXs),
@@ -85,7 +86,6 @@ class AppConfirmationDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
-                  height: 1.45,
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceLg),

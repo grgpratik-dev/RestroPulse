@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/menu_item.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum MenuSortOption {
   bestSelling('Best Selling'),
@@ -26,7 +28,7 @@ class MenuSearchField extends StatelessWidget {
       textInputAction: TextInputAction.search,
       decoration: const InputDecoration(
         hintText: 'Search menu items',
-        prefixIcon: Icon(Icons.search_rounded),
+        prefixIcon: AppIcon(AppIcons.search_rounded),
       ),
     );
   }
@@ -130,8 +132,8 @@ class MenuSortControl extends StatelessWidget {
                 children: [
                   Expanded(child: Text(option.label)),
                   if (option == value)
-                    Icon(
-                      Icons.check_rounded,
+                    AppIcon(
+                      AppIcons.check_rounded,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                 ],
@@ -149,7 +151,7 @@ class MenuSortControl extends StatelessWidget {
             ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(width: 2),
-          const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+          const AppIcon(AppIcons.keyboard_arrow_down_rounded, size: 20),
         ],
       ),
     );

@@ -28,8 +28,10 @@ abstract final class AppColors {
   static const successStrong = Color(0xFF0F8A63);
 
   // Restaurant Pulse health visualization.
-  static const pulseHealthy = Color(0xFFFB7185);
-  static const pulseHealthyHighlight = Color(0xFFFFE4E6);
+  static const pulseHealthyDeep = Color(0xFF0891B2);
+  static const pulseHealthy = Color(0xFF2DD4BF);
+  static const pulseHealthyHighlight = Color(0xFFD1FAE5);
+  static const pulseHealthyGlow = Color(0xFF99F6E4);
   static const pulseModerate = Color(0xFFF59E0B);
   static const pulseModerateHighlight = Color(0xFFFEF3C7);
   static const pulseLow = Color(0xFFEF4444);

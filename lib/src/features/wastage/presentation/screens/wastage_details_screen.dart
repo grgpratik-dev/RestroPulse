@@ -10,6 +10,8 @@ import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/wastage.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageDetailsResult {
   const WastageDetailsResult.updated(this.entry) : deleted = false;
@@ -37,7 +39,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, WastageDetailsResult.updated(_entry)),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const AppIcon(AppIcons.arrow_back_rounded),
         ),
         title: const Text('Wastage Details'),
         actions: [
@@ -56,8 +58,8 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                   const CircleAvatar(
                     radius: 36,
                     backgroundColor: AppColors.warningMuted,
-                    child: Icon(
-                      Icons.delete_sweep_outlined,
+                    child: AppIcon(
+                      AppIcons.delete_sweep_outlined,
                       color: AppColors.warning,
                       size: 36,
                     ),
@@ -114,7 +116,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const Icon(Icons.delete_outline_rounded),
+              icon: const AppIcon(AppIcons.delete_outline_rounded),
               label: const Text('Delete Entry'),
             ),
           ],
@@ -140,7 +142,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
         message:
             "This entry will be removed from your restaurant's wastage analytics.",
         confirmLabel: 'Delete',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
       ),
     );

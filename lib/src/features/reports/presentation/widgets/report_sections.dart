@@ -7,6 +7,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/report_data.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfitabilityReportCard extends StatelessWidget {
   const ProfitabilityReportCard({
@@ -23,7 +25,7 @@ class ProfitabilityReportCard extends StatelessWidget {
     final currency = NumberFormat.decimalPattern();
     return _ReportCard(
       title: 'Estimated Profit',
-      icon: Icons.ssid_chart_rounded,
+      icon: AppIcons.ssid_chart_rounded,
       child: hasExpenseData
           ? Column(
               children: [
@@ -111,7 +113,7 @@ class FoodCostReportCard extends StatelessWidget {
     final color = aboveTarget ? AppColors.warning : AppColors.primary;
     return _ReportCard(
       title: 'Food Cost',
-      icon: Icons.restaurant_outlined,
+      icon: AppIcons.restaurant_outlined,
       trailing: Text(
         'Target < 30%',
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -186,7 +188,7 @@ class ExpenseBreakdownCard extends StatelessWidget {
     final items = _expenseBreakdown(report.period);
     return _ReportCard(
       title: 'Where Money Went',
-      icon: Icons.account_balance_wallet_outlined,
+      icon: AppIcons.account_balance_wallet_outlined,
       footer: _CardAction(label: 'View Expenses', onTap: onViewExpenses),
       child: Column(
         children: [
@@ -222,7 +224,7 @@ class SalesChannelReportCard extends StatelessWidget {
     final channels = _salesChannels(report);
     return _ReportCard(
       title: 'Sales by Channel',
-      icon: Icons.storefront_outlined,
+      icon: AppIcons.salesChannel,
       footer: _CardAction(label: 'View Sales', onTap: onViewSales),
       child: Column(
         children: [
@@ -258,7 +260,7 @@ class MenuPerformanceReportCard extends StatelessWidget {
     final data = _menuPerformance(report.period);
     return _ReportCard(
       title: 'Menu Performance',
-      icon: Icons.restaurant_menu_rounded,
+      icon: AppIcons.restaurant_menu_rounded,
       footer: _CardAction(label: 'View Menu Performance', onTap: onViewMenu),
       child: Column(
         children: [
@@ -307,7 +309,7 @@ class WastageReportCard extends StatelessWidget {
     final data = _wastageData(report.period);
     return _ReportCard(
       title: 'Wastage',
-      icon: Icons.delete_sweep_outlined,
+      icon: AppIcons.delete_sweep_outlined,
       footer: _CardAction(label: 'View Wastage', onTap: onViewWastage),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,7 +339,7 @@ class WastageReportCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.spaceMd),
           _InsightBox(
-            icon: Icons.info_outline_rounded,
+            icon: AppIcons.info_outline_rounded,
             title: '${data.$3} increased wastage',
             message:
                 'It accounted for ${data.$4}% of wastage during this period.',
@@ -359,7 +361,7 @@ class OrderBehaviourCard extends StatelessWidget {
     final data = _orderBehaviour(report.period);
     return _ReportCard(
       title: 'Order Behaviour',
-      icon: Icons.receipt_long_outlined,
+      icon: AppIcons.receipt_long_outlined,
       child: Column(
         children: [
           Row(
@@ -425,7 +427,7 @@ class OperationalHighlightsCard extends StatelessWidget {
       child: Column(
         children: [
           _OperationalHighlightRow(
-            icon: Icons.restaurant_outlined,
+            icon: AppIcons.restaurant_outlined,
             label: 'Food cost',
             value: '${report.foodCost.toStringAsFixed(1)}%',
             detail:
@@ -435,7 +437,7 @@ class OperationalHighlightsCard extends StatelessWidget {
           ),
           const AppDivider(height: 1),
           _OperationalHighlightRow(
-            icon: Icons.storefront_outlined,
+            icon: AppIcons.salesChannel,
             label: 'Leading sales channel',
             value: leadingChannel.$1,
             detail: '${(leadingChannel.$3 * 100).round()}% of revenue',
@@ -443,7 +445,7 @@ class OperationalHighlightsCard extends StatelessWidget {
           ),
           const AppDivider(height: 1),
           _OperationalHighlightRow(
-            icon: Icons.restaurant_menu_rounded,
+            icon: AppIcons.restaurant_menu_rounded,
             label: 'Top revenue menu item',
             value: 'Chicken Burger',
             detail: menu.$1,
@@ -451,7 +453,7 @@ class OperationalHighlightsCard extends StatelessWidget {
           ),
           const AppDivider(height: 1),
           _OperationalHighlightRow(
-            icon: Icons.delete_sweep_outlined,
+            icon: AppIcons.delete_sweep_outlined,
             label: 'Wastage loss',
             value: wastage.$1,
             detail: '↑ ${wastage.$2.toStringAsFixed(1)}%',
@@ -460,7 +462,7 @@ class OperationalHighlightsCard extends StatelessWidget {
           ),
           const AppDivider(height: 1),
           _OperationalHighlightRow(
-            icon: Icons.receipt_long_outlined,
+            icon: AppIcons.receipt_long_outlined,
             label: 'Average order value',
             value: 'Rs ${currency.format(report.averageOrderValue.round())}',
             detail: '↑ ${orders.$1.toStringAsFixed(1)}%',
@@ -483,7 +485,7 @@ class _OperationalHighlightRow extends StatelessWidget {
     this.detailIsGood,
   });
 
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
   final String detail;
@@ -512,7 +514,7 @@ class _OperationalHighlightRow extends StatelessWidget {
                 color: AppColors.mintSoft,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
-              child: Icon(icon, color: AppColors.primary, size: 21),
+              child: AppIcon(icon, color: AppColors.primary, size: 21),
             ),
             const SizedBox(width: AppSpacing.spaceSm),
             Expanded(
@@ -545,8 +547,8 @@ class _OperationalHighlightRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 3),
-            Icon(
-              Icons.chevron_right_rounded,
+            AppIcon(
+              AppIcons.chevron_right_rounded,
               size: 20,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
@@ -576,7 +578,7 @@ class BusinessInsightsSection extends StatelessWidget {
     final deliveryGrowth = _salesChannels(report).last.$4;
     final insights = [
       (
-        Icons.trending_down_rounded,
+        AppIcons.trending_down_rounded,
         report.profitChange < 0
             ? 'Revenue increased, but profit declined'
             : 'Profit improved this period',
@@ -587,14 +589,14 @@ class BusinessInsightsSection extends StatelessWidget {
         onViewExpenses,
       ),
       (
-        Icons.restaurant_menu_rounded,
+        AppIcons.restaurant_menu_rounded,
         'Chicken Burger is popular but costly',
         'It generated strong revenue, but its food cost reached 48%.',
         'Review High-Cost Items',
         onViewMenu,
       ),
       (
-        Icons.delivery_dining_outlined,
+        AppIcons.delivery_dining_outlined,
         'Delivery is growing fastest',
         'Delivery sales increased $deliveryGrowth% compared with the previous period.',
         'View Delivery Sales',
@@ -624,7 +626,11 @@ class BusinessInsightsSection extends StatelessWidget {
                     color: AppColors.mintSoft,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: Icon(insight.$1, color: AppColors.primary, size: 22),
+                  child: AppIcon(
+                    insight.$1,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
                 Expanded(
@@ -787,7 +793,7 @@ class _ReportCard extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final String icon;
   final Widget child;
   final Widget? trailing;
   final Widget? footer;
@@ -800,7 +806,7 @@ class _ReportCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: AppColors.primary, size: 21),
+              AppIcon(icon, color: AppColors.primary, size: 21),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(
                 child: Text(
@@ -1028,7 +1034,7 @@ class _InsightBox extends StatelessWidget {
     required this.message,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String message;
 
@@ -1043,7 +1049,7 @@ class _InsightBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.primary, size: 20),
+          AppIcon(icon, color: AppColors.primary, size: 20),
           const SizedBox(width: AppSpacing.spaceXs),
           Expanded(
             child: Column(
@@ -1093,7 +1099,10 @@ class _MissingData extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.spaceMd),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: AppColors.warning),
+          const AppIcon(
+            AppIcons.info_outline_rounded,
+            color: AppColors.warning,
+          ),
           const SizedBox(width: AppSpacing.spaceSm),
           Expanded(child: Text(message)),
         ],

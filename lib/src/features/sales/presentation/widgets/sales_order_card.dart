@@ -5,6 +5,9 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/sales_order.dart';
+import 'order_channel_icon.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SalesOrderCard extends StatelessWidget {
   const SalesOrderCard({required this.order, required this.onTap, super.key});
@@ -54,16 +57,16 @@ class SalesOrderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 44,
-                    height: 44,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
                       color: channelColor.withValues(alpha: .1),
                       borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
-                    child: Icon(
-                      _channelIcon(order.channel),
+                    child: OrderChannelIcon(
+                      channel: order.channel,
                       color: channelColor,
-                      size: 21,
+                      size: 18,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.spaceSm),
@@ -117,8 +120,8 @@ class SalesOrderCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.schedule_rounded,
+                          AppIcon(
+                            AppIcons.schedule_rounded,
                             size: 14,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -135,8 +138,8 @@ class SalesOrderCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: AppSpacing.space2xs),
-                  Icon(
-                    Icons.chevron_right_rounded,
+                  AppIcon(
+                    AppIcons.chevron_right_rounded,
                     size: 21,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -153,12 +156,6 @@ class SalesOrderCard extends StatelessWidget {
     OrderChannel.dineIn => AppColors.primary,
     OrderChannel.takeaway => AppColors.info,
     OrderChannel.delivery => AppColors.warning,
-  };
-
-  IconData _channelIcon(OrderChannel channel) => switch (channel) {
-    OrderChannel.dineIn => Icons.restaurant_outlined,
-    OrderChannel.takeaway => Icons.shopping_bag_outlined,
-    OrderChannel.delivery => Icons.delivery_dining_outlined,
   };
 }
 

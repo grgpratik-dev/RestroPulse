@@ -6,6 +6,8 @@ import 'package:restropulse/src/features/profile/presentation/widgets/help_and_s
 import 'package:restropulse/src/features/profile/presentation/widgets/help_and_support/support_action_card.dart';
 
 import 'report_problem_screen.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({super.key});
@@ -206,8 +208,8 @@ class _HelpHeader extends StatelessWidget {
                 color: AppColors.surface,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.support_agent_rounded,
+              child: const AppIcon(
+                AppIcons.support_agent_rounded,
                 color: AppColors.primary,
                 size: 26,
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_svg_icon.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 
 void main() {
@@ -26,7 +28,14 @@ void main() {
 
     expect(find.text('Select currency'), findsOneWidget);
     expect(find.text('Nepalese Rupee'), findsOneWidget);
-    expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is AppSvgIcon &&
+            widget.asset == AppIcons.check_circle_rounded,
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('confirms logout before invoking the callback', (tester) async {

@@ -4,6 +4,8 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/expense.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategorySummaryCard extends StatelessWidget {
   const ExpenseCategorySummaryCard({
@@ -126,7 +128,7 @@ class ExpenseCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: const Icon(Icons.more_vert_rounded),
+              icon: const AppIcon(AppIcons.more_vert_rounded),
             ),
           ],
         ),

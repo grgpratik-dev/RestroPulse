@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../app/theme/app_typography.dart';
 import '../../domain/models/menu_item.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuPerformanceHighlights extends StatelessWidget {
   const MenuPerformanceHighlights({required this.items, super.key});
@@ -27,7 +30,7 @@ class MenuPerformanceHighlights extends StatelessWidget {
         Expanded(
           child: _HighlightCard(
             eyebrow: 'BEST SELLER',
-            icon: Icons.local_fire_department_outlined,
+            icon: AppIcons.local_fire_department_outlined,
             itemName: bestSeller.name,
             value: '${bestSeller.unitsSold}',
             suffix: 'units sold',
@@ -38,7 +41,7 @@ class MenuPerformanceHighlights extends StatelessWidget {
         Expanded(
           child: _HighlightCard(
             eyebrow: 'MOST PROFITABLE',
-            icon: Icons.trending_up_rounded,
+            icon: AppIcons.trending_up_rounded,
             itemName: mostProfitable.name,
             value: '${mostProfitable.marginPercentage.toStringAsFixed(0)}%',
             suffix: 'margin',
@@ -61,7 +64,7 @@ class _HighlightCard extends StatelessWidget {
   });
 
   final String eyebrow;
-  final IconData icon;
+  final String icon;
   final String itemName;
   final String value;
   final String suffix;
@@ -92,16 +95,12 @@ class _HighlightCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: accent),
+              AppIcon(icon, size: 16, color: accent),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
                   eyebrow,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: accent,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
+                  style: AppTypography.eyebrow.copyWith(color: accent),
                 ),
               ),
             ],
@@ -111,11 +110,9 @@ class _HighlightCard extends StatelessWidget {
             itemName,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w700,
-              height: 1.15,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: foreground),
           ),
           const Spacer(),
           Wrap(
@@ -124,10 +121,7 @@ class _HighlightCard extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTypography.metricSmall.copyWith(color: foreground),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 3),
@@ -137,7 +131,6 @@ class _HighlightCard extends StatelessWidget {
                     color: isPrimary
                         ? Colors.white.withValues(alpha: 0.8)
                         : Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

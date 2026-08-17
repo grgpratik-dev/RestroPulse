@@ -5,15 +5,13 @@ import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/core/widgets/app_bottom_navigation_bar.dart';
 
 void main() {
-  test('every destination has a distinct outlined and filled SVG', () {
+  test('every destination uses one reusable semantic SVG', () {
     expect(items, hasLength(5));
     expect(items.map((item) => item.iconAsset).toSet(), hasLength(5));
-    expect(items.map((item) => item.selectedIconAsset).toSet(), hasLength(5));
 
     for (final item in items) {
-      expect(item.iconAsset, endsWith('_outlined.svg'));
-      expect(item.selectedIconAsset, endsWith('_filled.svg'));
-      expect(item.iconAsset, isNot(item.selectedIconAsset));
+      expect(item.iconAsset, startsWith('assets/svg/'));
+      expect(item.iconAsset, endsWith('.svg'));
     }
   });
 

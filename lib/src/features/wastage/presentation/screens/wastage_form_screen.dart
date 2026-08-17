@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/wastage.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageFormScreen extends StatefulWidget {
   const WastageFormScreen({this.entry, super.key});
@@ -220,7 +222,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 child: InputDecorator(
                   decoration: const InputDecoration(
                     labelText: 'Date',
-                    suffixIcon: Icon(Icons.calendar_today_outlined),
+                    suffixIcon: AppIcon(AppIcons.calendar_today_outlined),
                   ),
                   child: Text(DateFormat('MMM d, yyyy').format(_date)),
                 ),

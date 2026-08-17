@@ -6,6 +6,8 @@ import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SelectedDateSummaryCard extends StatelessWidget {
   const SelectedDateSummaryCard({
@@ -36,8 +38,8 @@ class SelectedDateSummaryCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.calendar_today_outlined,
+              const AppIcon(
+                AppIcons.calendar_today_outlined,
                 color: AppColors.primary,
                 size: 18,
               ),

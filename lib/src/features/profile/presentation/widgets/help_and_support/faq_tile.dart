@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class FaqTile extends StatelessWidget {
   const FaqTile({
@@ -53,8 +55,8 @@ class FaqTile extends StatelessWidget {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
+                    child: AppIcon(
+                      AppIcons.keyboard_arrow_down_rounded,
                       color: AppColors.primary,
                     ),
                   ),

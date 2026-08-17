@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/app/theme/app_typography.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum MetricStatus { positive, negative, warning, neutral }
 
@@ -17,7 +19,7 @@ class DashboardMetricCard extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String value;
   final String? comparison;
@@ -41,15 +43,15 @@ class DashboardMetricCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: status == MetricStatus.warning
                       ? AppColors.warningSoft
                       : AppColors.splashAccent.withValues(alpha: 0.36),
                   borderRadius: BorderRadius.circular(AppRadius.xs),
                 ),
-                child: Icon(icon, color: statusColor, size: 19),
+                child: AppIcon(icon, color: statusColor, size: 17),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(
@@ -66,11 +68,11 @@ class DashboardMetricCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceSm),
           Text(
             value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontSize: value == 'Not enough data' ? 15 : 21,
-              fontWeight: FontWeight.w800,
-              height: 1.15,
-            ),
+            style: value == 'Not enough data'
+                ? theme.textTheme.titleSmall
+                : AppTypography.metricSmall.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
           ),
           if (comparison != null || subtitle != null) ...[
             const SizedBox(height: AppSpacing.spaceXs),

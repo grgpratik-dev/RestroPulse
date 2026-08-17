@@ -11,6 +11,7 @@ import 'package:restropulse/src/features/expenses/presentation/screens/expense_c
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_category_details_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_details_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_form_screen.dart';
+import 'package:restropulse/src/features/expenses/presentation/screens/expense_history_screen.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expenses_screen.dart';
 import 'package:restropulse/src/features/menu/domain/models/menu_item.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_categories_screen.dart';
@@ -185,6 +186,13 @@ class AppRouter {
         path: AppRoute.helpSupport.path,
         name: AppRoute.helpSupport.name,
         builder: (context, state) => const HelpAndSupportScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.expenseHistory.path,
+        name: AppRoute.expenseHistory.name,
+        builder: (context, state) => ExpenseHistoryScreen(
+          initialExpenses: state.extra as List<Expense>?,
+        ),
       ),
       GoRoute(
         path: AppRoute.addExpense.path,

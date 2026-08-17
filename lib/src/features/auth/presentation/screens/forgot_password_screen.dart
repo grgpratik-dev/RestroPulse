@@ -5,6 +5,8 @@ import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'widgets/password_recovery_header.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 typedef SendResetLink = Future<void> Function(String email);
 
@@ -49,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         leading: IconButton(
           tooltip: 'Back to sign in',
           onPressed: _backToLogin,
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const AppIcon(AppIcons.arrow_back_rounded),
         ),
       ),
       body: SafeArea(
@@ -97,7 +99,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             decoration: const InputDecoration(
               labelText: 'Email address',
               hintText: 'Enter your email',
-              prefixIcon: Icon(Icons.email_outlined),
+              prefixIcon: AppIcon(AppIcons.email_outlined),
             ),
             validator: _validateEmail,
             onFieldSubmitted: (_) => _sendResetLink(),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class LogoutTile extends StatelessWidget {
   const LogoutTile({required this.onTap, super.key});
@@ -26,7 +28,7 @@ class LogoutTile extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.logout_rounded, color: error, size: 21),
+              AppIcon(AppIcons.logout_rounded, color: error, size: 21),
               const SizedBox(width: AppSpacing.spaceXs),
               Text(
                 'Log Out',

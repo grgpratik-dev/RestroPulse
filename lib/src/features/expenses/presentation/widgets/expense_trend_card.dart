@@ -6,6 +6,8 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseTrendCard extends StatelessWidget {
   const ExpenseTrendCard({
@@ -166,8 +168,8 @@ class ExpenseTrendCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(
-                  Icons.bar_chart_rounded,
+                const AppIcon(
+                  AppIcons.bar_chart_rounded,
                   color: AppColors.expenseForeground,
                 ),
                 const SizedBox(width: AppSpacing.spaceXs),

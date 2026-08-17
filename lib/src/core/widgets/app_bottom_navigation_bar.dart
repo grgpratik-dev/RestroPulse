@@ -1,49 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
-import '../../../gen/assets.gen.dart';
+import 'app_svg_icon.dart';
 
 /// Describes a destination displayed by [AppBottomNavigationBar].
 ///
 
 class AppBottomNavigationItem {
-  const AppBottomNavigationItem({
-    required this.label,
-    required this.iconAsset,
-    required this.selectedIconAsset,
-  });
+  const AppBottomNavigationItem({required this.label, required this.iconAsset});
 
   final String label;
   final String iconAsset;
-  final String selectedIconAsset;
 }
 
 List<AppBottomNavigationItem> items = [
-  AppBottomNavigationItem(
-    label: 'Dashboard',
-    iconAsset: Assets.icons.navigation.dashboardOutlined,
-    selectedIconAsset: Assets.icons.navigation.dashboardFilled,
-  ),
+  AppBottomNavigationItem(label: 'Dashboard', iconAsset: AppIcons.dashboard),
   AppBottomNavigationItem(
     label: 'Sales',
-    iconAsset: Assets.icons.navigation.salesOutlined,
-    selectedIconAsset: Assets.icons.navigation.salesFilled,
+    iconAsset: AppIcons.receipt_long_outlined,
   ),
   AppBottomNavigationItem(
     label: 'Expenses',
-    iconAsset: Assets.icons.navigation.expensesOutlined,
-    selectedIconAsset: Assets.icons.navigation.expensesFilled,
+    iconAsset: AppIcons.account_balance_wallet_outlined,
   ),
   AppBottomNavigationItem(
     label: 'Menu',
-    iconAsset: Assets.icons.navigation.menuOutlined,
-    selectedIconAsset: Assets.icons.navigation.menuFilled,
+    iconAsset: AppIcons.restaurant_menu_rounded,
   ),
   AppBottomNavigationItem(
     label: 'Reports',
-    iconAsset: Assets.icons.navigation.reportsOutlined,
-    selectedIconAsset: Assets.icons.navigation.reportsFilled,
+    iconAsset: AppIcons.analytics_outlined,
   ),
 ];
 
@@ -65,7 +52,6 @@ class AppBottomNavigationBar extends StatelessWidget {
         for (final item in items)
           BottomNavigationBarItem(
             icon: _NavigationSvg(asset: item.iconAsset),
-            activeIcon: _NavigationSvg(asset: item.selectedIconAsset),
             label: item.label,
           ),
       ],
@@ -90,12 +76,7 @@ class _NavigationSvg extends StatelessWidget {
 
     return Transform.translate(
       offset: const Offset(0, 4),
-      child: SvgPicture.asset(
-        asset,
-        width: 24,
-        height: 24,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      ),
+      child: AppSvgIcon(asset: asset, size: 24, color: color),
     );
   }
 }

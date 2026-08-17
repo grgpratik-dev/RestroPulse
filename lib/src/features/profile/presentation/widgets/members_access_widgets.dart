@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MembersSummaryCard extends StatelessWidget {
   const MembersSummaryCard({
@@ -120,8 +122,8 @@ class RestaurantJoinCodeCard extends StatelessWidget {
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
-                child: const Icon(
-                  Icons.vpn_key_outlined,
+                child: const AppIcon(
+                  AppIcons.vpn_key_outlined,
                   color: AppColors.primary,
                   size: 22,
                 ),
@@ -190,13 +192,13 @@ class RestaurantJoinCodeCard extends StatelessWidget {
                 FilledButton.icon(
                   key: const ValueKey('copy-join-code-button'),
                   onPressed: onCopy,
-                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  icon: const AppIcon(AppIcons.copy_rounded, size: 18),
                   label: const Text('Copy code'),
                 ),
                 OutlinedButton.icon(
                   key: const ValueKey('regenerate-join-code-button'),
                   onPressed: onRegenerate,
-                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                  icon: const AppIcon(AppIcons.refresh_rounded, size: 18),
                   label: const Text('Regenerate'),
                 ),
                 TextButton(onPressed: onToggle, child: const Text('Disable')),
@@ -206,7 +208,7 @@ class RestaurantJoinCodeCard extends StatelessWidget {
             FilledButton.icon(
               key: const ValueKey('generate-join-code-button'),
               onPressed: onToggle,
-              icon: const Icon(Icons.add_rounded),
+              icon: const AppIcon(AppIcons.add_rounded),
               label: const Text('Generate join code'),
             ),
         ],
@@ -248,7 +250,7 @@ class PendingAccessRequestCard extends StatelessWidget {
               const CircleAvatar(
                 backgroundColor: AppColors.surface,
                 foregroundColor: AppColors.warning,
-                child: Icon(Icons.person_outline_rounded),
+                child: AppIcon(AppIcons.person_outline_rounded),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
               Expanded(
@@ -344,8 +346,10 @@ class RestaurantMemberTile extends StatelessWidget {
       leading: CircleAvatar(
         backgroundColor: isOwner ? AppColors.mintChip : AppColors.infoSurface,
         foregroundColor: isOwner ? AppColors.primary : AppColors.info,
-        child: Icon(
-          isOwner ? Icons.admin_panel_settings_outlined : Icons.person_outline,
+        child: AppIcon(
+          isOwner
+              ? AppIcons.admin_panel_settings_outlined
+              : AppIcons.person_outline,
         ),
       ),
       title: Text(

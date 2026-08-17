@@ -7,6 +7,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/menu_item.dart';
 import 'menu_image_provider.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemCard extends StatelessWidget {
   const MenuItemCard({
@@ -127,7 +129,7 @@ class MenuItemCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                  icon: const Icon(Icons.more_vert_rounded),
+                  icon: const AppIcon(AppIcons.more_vert_rounded),
                 ),
               ],
             ),
@@ -152,8 +154,8 @@ class _MenuImage extends StatelessWidget {
         child: path == null
             ? ColoredBox(
                 color: AppColors.mintSoft,
-                child: const Icon(
-                  Icons.restaurant_menu_rounded,
+                child: const AppIcon(
+                  AppIcons.restaurant_menu_rounded,
                   color: AppColors.primary,
                   size: 30,
                 ),

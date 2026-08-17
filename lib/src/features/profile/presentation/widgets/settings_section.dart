@@ -3,6 +3,8 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
@@ -28,10 +30,7 @@ class SettingsSection extends StatelessWidget {
           ),
           child: Text(
             title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
         Container(
@@ -57,7 +56,7 @@ class SettingsSection extends StatelessWidget {
                 if (index != children.length - 1)
                   AppDivider(
                     height: 1,
-                    indent: 68,
+                    indent: 64,
                     endIndent: AppSpacing.spaceMd,
                     color: colorScheme.outlineVariant.withValues(alpha: 0.52),
                   ),
@@ -79,7 +78,7 @@ class SettingsTile extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
@@ -103,13 +102,13 @@ class SettingsTile extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: AppColors.splashAccent.withValues(alpha: 0.42),
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: Icon(icon, color: AppColors.primary, size: 21),
+                  child: AppIcon(icon, color: AppColors.primary, size: 18),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
                 Expanded(
@@ -119,9 +118,8 @@ class SettingsTile extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           color: colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -130,8 +128,6 @@ class SettingsTile extends StatelessWidget {
                           subtitle!,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
-                            fontSize: 13,
-                            height: 1.25,
                           ),
                         ),
                       ],
@@ -139,8 +135,8 @@ class SettingsTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.spaceXs),
-                Icon(
-                  Icons.chevron_right_rounded,
+                AppIcon(
+                  AppIcons.chevron_right_rounded,
                   color: colorScheme.onSurfaceVariant,
                 ),
               ],

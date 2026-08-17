@@ -6,6 +6,8 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../widgets/menu_category_widgets.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuCategoriesScreen extends StatefulWidget {
   const MenuCategoriesScreen({super.key});
@@ -45,7 +47,7 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
         key: const ValueKey('menu-category-add-button'),
         tooltip: 'Add category',
         onPressed: _editCategory,
-        child: const Icon(Icons.add_rounded),
+        child: const AppIcon(AppIcons.add_rounded),
       ),
       body: SafeArea(
         top: false,
@@ -153,7 +155,7 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
         title: 'Delete ${category.name}?',
         message: 'This category will be removed from your menu organization.',
         confirmLabel: 'Delete',
-        icon: Icons.delete_outline_rounded,
+        icon: AppIcons.delete_outline_rounded,
         isDestructive: true,
         confirmButtonKey: const ValueKey('confirm-delete-category-button'),
       ),

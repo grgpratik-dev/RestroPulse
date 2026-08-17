@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/app/theme/app_typography.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RevenueSummaryCard extends StatelessWidget {
   const RevenueSummaryCard({required this.hasData, super.key});
@@ -19,15 +22,16 @@ class RevenueSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: AppColors.splashAccent.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
-            child: const Icon(
-              Icons.payments_outlined,
+            child: const AppIcon(
+              AppIcons.payments_outlined,
               color: AppColors.primary,
+              size: 18,
             ),
           ),
           const SizedBox(width: AppSpacing.spaceSm),
@@ -45,8 +49,8 @@ class RevenueSummaryCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.space2xs),
                 Text(
                   hasData ? 'Rs 28,450' : '—',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
+                  style: AppTypography.metricMedium.copyWith(
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
               ],

@@ -6,6 +6,8 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_logo_selector.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class CreateRestaurantScreen extends StatefulWidget {
   const CreateRestaurantScreen({this.onCreated, super.key});
@@ -68,8 +70,8 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.verified_user_outlined,
+                              AppIcon(
+                                AppIcons.verified_user_outlined,
                                 color: AppColors.primary,
                                 size: 17,
                               ),
@@ -123,7 +125,7 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         autofillHints: const [AutofillHints.organizationName],
                         decoration: const InputDecoration(
                           hintText: 'e.g. Boys to Serve',
-                          prefixIcon: Icon(Icons.storefront_outlined),
+                          prefixIcon: AppIcon(AppIcons.storefront_outlined),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -148,7 +150,7 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(
                           hintText: 'e.g. Pokhara, Nepal',
-                          prefixIcon: Icon(Icons.location_on_outlined),
+                          prefixIcon: AppIcon(AppIcons.location_on_outlined),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -170,9 +172,9 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         initialValue: 'NPR (Rs)',
                         readOnly: true,
                         decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.payments_outlined),
-                          suffixIcon: Icon(
-                            Icons.lock_outline_rounded,
+                          prefixIcon: AppIcon(AppIcons.currency),
+                          suffixIcon: AppIcon(
+                            AppIcons.lock_outline_rounded,
                             size: 19,
                           ),
                           helperText:
@@ -233,12 +235,12 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
               ),
               const SizedBox(height: AppSpacing.spaceSm),
               ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
+                leading: const AppIcon(AppIcons.photo_library_outlined),
                 title: const Text('Choose from gallery'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
+                leading: const AppIcon(AppIcons.camera_alt_outlined),
                 title: const Text('Take a photo'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),

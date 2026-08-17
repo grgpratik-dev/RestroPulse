@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/app/theme/app_typography.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
 
@@ -29,11 +30,7 @@ class TodaySalesSummaryCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.space2xs),
           Text(
             'Rs 28,450',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              color: AppColors.surface,
-              fontSize: 31,
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypography.metricLarge.copyWith(color: AppColors.surface),
           ),
           const SizedBox(height: AppSpacing.spaceXs),
           Text(
@@ -98,10 +95,7 @@ class _SummaryMetric extends StatelessWidget {
         const SizedBox(height: AppSpacing.space2xs),
         Text(
           value,
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: AppColors.surface,
-            fontWeight: FontWeight.w800,
-          ),
+          style: theme.textTheme.titleLarge?.copyWith(color: AppColors.surface),
         ),
       ],
     );

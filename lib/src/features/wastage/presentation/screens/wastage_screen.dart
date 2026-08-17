@@ -7,6 +7,8 @@ import '../../domain/models/wastage.dart';
 import '../widgets/wastage_cards.dart';
 import '../widgets/wastage_states.dart';
 import 'wastage_details_screen.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum WastageViewState { loaded, noPeriodData, empty, loading, error }
 
@@ -84,7 +86,7 @@ class _WastageScreenState extends State<WastageScreen> {
     }
     if (widget.viewState == WastageViewState.error) {
       return WastageStateMessage(
-        icon: Icons.cloud_off_rounded,
+        icon: AppIcons.cloud_off_rounded,
         title: "Couldn't load wastage data",
         message: 'Check your connection and try again.',
         actionLabel: 'Try Again',
@@ -102,7 +104,7 @@ class _WastageScreenState extends State<WastageScreen> {
     }
     if (widget.viewState == WastageViewState.noPeriodData) {
       return WastageStateMessage(
-        icon: Icons.event_available_outlined,
+        icon: AppIcons.event_available_outlined,
         title: 'No wastage recorded in this period',
         message: "That's a good sign, or try another time range.",
         actionLabel: 'Record Wastage',
@@ -126,7 +128,7 @@ class _WastageScreenState extends State<WastageScreen> {
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: _recordWastage,
-            icon: const Icon(Icons.add_rounded),
+            icon: const AppIcon(AppIcons.add_rounded),
             label: const Text('Record Wastage'),
           ),
         ),

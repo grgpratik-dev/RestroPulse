@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import 'dashboard_metric_card.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class DashboardMetricsGrid extends StatelessWidget {
   const DashboardMetricsGrid({
@@ -23,7 +24,7 @@ class DashboardMetricsGrid extends StatelessWidget {
             children: [
               Expanded(
                 child: DashboardMetricCard(
-                  icon: Icons.receipt_long_outlined,
+                  icon: AppIcons.receipt_long_outlined,
                   title: 'Orders',
                   value: isEmpty ? '—' : '142',
                   comparison: isEmpty ? null : '↑ 7.2%',
@@ -33,7 +34,7 @@ class DashboardMetricsGrid extends StatelessWidget {
               const SizedBox(width: AppSpacing.spaceSm),
               Expanded(
                 child: DashboardMetricCard(
-                  icon: Icons.payments_outlined,
+                  icon: AppIcons.payments_outlined,
                   title: 'Avg. Order',
                   value: isEmpty ? '—' : 'Rs 201',
                   comparison: isEmpty ? null : '↑ 4.8%',
@@ -50,7 +51,7 @@ class DashboardMetricsGrid extends StatelessWidget {
             children: [
               Expanded(
                 child: DashboardMetricCard(
-                  icon: Icons.trending_up_rounded,
+                  icon: AppIcons.trending_up_rounded,
                   title: 'Est. Profit',
                   value: isEmpty
                       ? '—'
@@ -65,7 +66,7 @@ class DashboardMetricsGrid extends StatelessWidget {
               const SizedBox(width: AppSpacing.spaceSm),
               Expanded(
                 child: DashboardMetricCard(
-                  icon: Icons.restaurant_outlined,
+                  icon: AppIcons.restaurant_outlined,
                   title: 'Food Cost',
                   value: isEmpty || isPartial ? '—' : '28.4%',
                   subtitle: isEmpty || isPartial ? null : 'Target < 30%',

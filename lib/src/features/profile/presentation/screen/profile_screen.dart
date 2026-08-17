@@ -10,6 +10,8 @@ import '../widgets/logout_confirmation_dialog.dart';
 import '../widgets/logout_tile.dart';
 import '../widgets/profile_header_card.dart';
 import '../widgets/settings_section.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onLogout});
@@ -20,13 +22,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Profile',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        title: const Text('Profile'),
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
@@ -49,25 +45,25 @@ class ProfileScreen extends StatelessWidget {
               title: 'Restaurant',
               children: [
                 SettingsTile(
-                  icon: Icons.group_outlined,
+                  icon: AppIcons.group_outlined,
                   title: 'Members & Access',
                   subtitle: '2 members · 1 pending request',
                   onTap: () => context.pushNamed(AppRoute.membersAccess.name),
                 ),
                 SettingsTile(
-                  icon: Icons.account_balance_wallet_outlined,
+                  icon: AppIcons.currency,
                   title: 'Currency',
                   subtitle: 'NPR (Rs)',
                   onTap: () => _showCurrencySheet(context),
                 ),
                 SettingsTile(
-                  icon: Icons.restaurant_menu_rounded,
+                  icon: AppIcons.restaurant_menu_rounded,
                   title: 'Menu Categories',
                   subtitle: 'Manage food and drink categories',
                   onTap: () => context.pushNamed(AppRoute.menuCategories.name),
                 ),
                 SettingsTile(
-                  icon: Icons.receipt_long_outlined,
+                  icon: AppIcons.expenseCategories,
                   title: 'Expense Categories',
                   subtitle: 'Manage expense classifications',
                   onTap: () =>
@@ -80,14 +76,14 @@ class ProfileScreen extends StatelessWidget {
               title: 'Account',
               children: [
                 SettingsTile(
-                  icon: Icons.person_outline_rounded,
+                  icon: AppIcons.person_outline_rounded,
                   title: 'Personal Information',
                   subtitle: 'Name and account details',
                   onTap: () =>
                       context.pushNamed(AppRoute.personalInformation.name),
                 ),
                 SettingsTile(
-                  icon: Icons.lock_outline_rounded,
+                  icon: AppIcons.lock_outline_rounded,
                   title: 'Change Password',
                   onTap: () => context.pushNamed(AppRoute.changePassword.name),
                 ),
@@ -98,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
               title: 'Preferences',
               children: [
                 SettingsTile(
-                  icon: Icons.notifications_none_rounded,
+                  icon: AppIcons.notifications_none_rounded,
                   title: 'Notifications',
                   subtitle: 'Reports, reminders and alerts',
                   onTap: () => _showPlaceholder(context, 'Notifications'),
@@ -110,22 +106,22 @@ class ProfileScreen extends StatelessWidget {
               title: 'Support',
               children: [
                 SettingsTile(
-                  icon: Icons.help_outline_rounded,
+                  icon: AppIcons.help_outline_rounded,
                   title: 'Help & Support',
                   onTap: () => context.pushNamed(AppRoute.helpSupport.name),
                 ),
                 SettingsTile(
-                  icon: Icons.description_outlined,
+                  icon: AppIcons.description_outlined,
                   title: 'Terms of Service',
                   onTap: () => _showPlaceholder(context, 'Terms of service'),
                 ),
                 SettingsTile(
-                  icon: Icons.privacy_tip_outlined,
+                  icon: AppIcons.privacy_tip_outlined,
                   title: 'Privacy Policy',
                   onTap: () => _showPlaceholder(context, 'Privacy policy'),
                 ),
                 SettingsTile(
-                  icon: Icons.info_outline_rounded,
+                  icon: AppIcons.info_outline_rounded,
                   title: 'About RestroPulse',
                   subtitle: 'Version 1.0.0',
                   onTap: () => _showAboutDialog(context),
@@ -203,8 +199,8 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     title: const Text('NPR (Rs)'),
                     subtitle: const Text('Nepalese Rupee'),
-                    trailing: const Icon(
-                      Icons.check_circle_rounded,
+                    trailing: const AppIcon(
+                      AppIcons.check_circle_rounded,
                       color: AppColors.primary,
                     ),
                   ),
@@ -225,7 +221,7 @@ class ProfileScreen extends StatelessWidget {
         message:
             'A simple restaurant performance and analytics companion.\n\nVersion 1.0.0',
         confirmLabel: 'Close',
-        icon: Icons.storefront_rounded,
+        icon: AppIcons.storefront_rounded,
         showCancelButton: false,
       ),
     );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantAccessOptionCard extends StatelessWidget {
   const RestaurantAccessOptionCard({
@@ -16,7 +18,7 @@ class RestaurantAccessOptionCard extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final String icon;
   final String title;
   final String roleLabel;
   final String description;
@@ -61,7 +63,7 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
-                      child: Icon(icon, color: accent, size: 26),
+                      child: AppIcon(icon, color: accent, size: 26),
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
                     Expanded(
@@ -112,10 +114,10 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
+                    AppIcon(
                       isViewer
-                          ? Icons.visibility_outlined
-                          : Icons.verified_user_outlined,
+                          ? AppIcons.visibility_outlined
+                          : AppIcons.verified_user_outlined,
                       color: accent,
                       size: 18,
                     ),
@@ -143,7 +145,11 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.space2xs),
-                    Icon(Icons.arrow_forward_rounded, color: accent, size: 19),
+                    AppIcon(
+                      AppIcons.arrow_forward_rounded,
+                      color: accent,
+                      size: 19,
+                    ),
                   ],
                 ),
               ],

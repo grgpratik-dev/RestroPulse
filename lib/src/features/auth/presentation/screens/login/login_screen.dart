@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/app_name.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
+import 'package:restropulse/src/core/widgets/app_name.dart';
 
 import '../../../../../app/router/app_route.dart';
 import '../widgets/ambient_glow_widget.dart';
 import '../widgets/fields_label_widget.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 part '../widgets/brand_header.dart';
 part '../widgets/section_divider.dart';
@@ -75,9 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 'Welcome back',
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                style: theme.textTheme.displaySmall,
                               ),
                               const SizedBox(height: AppSpacing.spaceXs),
                               Text(
@@ -100,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     autocorrect: false,
                                     decoration: InputDecoration(
                                       hintText: 'Enter your email',
-                                      prefixIcon: const Icon(
-                                        Icons.email_outlined,
+                                      prefixIcon: const AppIcon(
+                                        AppIcons.email_outlined,
                                       ),
                                     ),
                                   ),
@@ -109,9 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const FieldLabel('Password'),
                                   const SizedBox(height: AppSpacing.spaceXs),
                                   TextFormField(
-                                    key: const ValueKey(
-                                      'login-password-field',
-                                    ),
+                                    key: const ValueKey('login-password-field'),
                                     obscureText: _obscurePassword,
                                     textInputAction: TextInputAction.done,
                                     autofillHints: const [
@@ -121,8 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     autocorrect: false,
                                     decoration: InputDecoration(
                                       hintText: 'Enter your password',
-                                      prefixIcon: const Icon(
-                                        Icons.lock_outline_rounded,
+                                      prefixIcon: const AppIcon(
+                                        AppIcons.lock_outline_rounded,
                                       ),
                                       suffixIcon: IconButton(
                                         key: const ValueKey(
@@ -137,10 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 !_obscurePassword;
                                           });
                                         },
-                                        icon: Icon(
+                                        icon: AppIcon(
                                           _obscurePassword
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility_outlined,
+                                              ? AppIcons.visibility_off_outlined
+                                              : AppIcons.visibility_outlined,
                                         ),
                                       ),
                                     ),
@@ -158,9 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const SizedBox(height: AppSpacing.spaceMd),
                                   SizedBox(
-                                    key: const ValueKey(
-                                      'login-submit-button',
-                                    ),
+                                    key: const ValueKey('login-submit-button'),
                                     width: double.infinity,
                                     height: 54,
                                     child: ElevatedButton(
@@ -216,23 +212,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                               const SizedBox(height: AppSpacing.spaceLg),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  Text(
-                                    'New to RestroPulse?',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontSize: 14,
+                              Center(
+                                child: Wrap(
+                                  alignment: WrapAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    Text(
+                                      'New to RestroPulse?',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(fontSize: 14),
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      context.goNamed(AppRoute.register.name);
-                                    },
-                                    child: const Text('Create account'),
-                                  ),
-                                ],
+                                    TextButton(
+                                      onPressed: () {
+                                        context.goNamed(AppRoute.register.name);
+                                      },
+                                      child: const Text('Create account'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/gen/fonts.gen.dart';
 
 import 'app_colors.dart';
@@ -31,7 +30,10 @@ abstract final class AppTheme {
       brightness: Brightness.light,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.background,
-      textTheme: AppTypography.textTheme,
+      textTheme: AppTypography.textTheme.apply(
+        bodyColor: colorScheme.onSurface,
+        displayColor: colorScheme.onSurface,
+      ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -39,6 +41,9 @@ abstract final class AppTheme {
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
+        titleTextStyle: AppTypography.headlineSmall.copyWith(
+          color: colorScheme.onSurface,
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -64,11 +69,19 @@ abstract final class AppTheme {
           borderRadius: buttonRadius,
           borderSide: BorderSide(color: colorScheme.error, width: 2),
         ),
+        hintStyle: AppTypography.bodyLarge.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        labelStyle: AppTypography.bodyMedium.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        errorStyle: AppTypography.bodySmall.copyWith(color: colorScheme.error),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(48),
           shape: const RoundedRectangleBorder(borderRadius: buttonRadius),
+          textStyle: AppTypography.labelLarge,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -76,7 +89,7 @@ abstract final class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(48),
-          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          textStyle: AppTypography.labelLarge,
           shape: const RoundedRectangleBorder(borderRadius: buttonRadius),
         ),
       ),
@@ -85,27 +98,64 @@ abstract final class AppTheme {
           minimumSize: const Size.fromHeight(48),
           shape: const RoundedRectangleBorder(borderRadius: buttonRadius),
           side: BorderSide(color: colorScheme.outline),
+          textStyle: AppTypography.labelLarge,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           shape: const RoundedRectangleBorder(borderRadius: buttonRadius),
+          textStyle: AppTypography.labelLarge,
         ),
+      ),
+      listTileTheme: ListTileThemeData(
+        titleTextStyle: AppTypography.titleMedium.copyWith(
+          color: colorScheme.onSurface,
+        ),
+        subtitleTextStyle: AppTypography.bodyMedium.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        leadingAndTrailingTextStyle: AppTypography.labelLarge.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        labelStyle: AppTypography.labelMedium.copyWith(
+          color: colorScheme.onSurface,
+        ),
+        secondaryLabelStyle: AppTypography.labelMedium.copyWith(
+          color: colorScheme.onPrimary,
+        ),
+      ),
+      tabBarTheme: const TabBarThemeData(
+        labelStyle: AppTypography.labelLarge,
+        unselectedLabelStyle: AppTypography.labelLarge,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        selectedLabelStyle: AppTypography.labelSmall,
+        unselectedLabelStyle: AppTypography.labelSmall,
       ),
       cardTheme: const CardThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(AppRadius.xl)),
         ),
       ),
-      dialogTheme: const DialogThemeData(
-        shape: RoundedRectangleBorder(
+      dialogTheme: DialogThemeData(
+        titleTextStyle: AppTypography.titleLarge.copyWith(
+          color: colorScheme.onSurface,
+        ),
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(AppRadius.md)),
         ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: colorScheme.inverseSurface,
-        contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: colorScheme.onInverseSurface,
+        ),
         shape: const RoundedRectangleBorder(borderRadius: buttonRadius),
       ),
       dividerTheme: DividerThemeData(

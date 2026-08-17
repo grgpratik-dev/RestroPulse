@@ -3,6 +3,8 @@ import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class DashboardLoadingSkeleton extends StatelessWidget {
   const DashboardLoadingSkeleton({super.key});
@@ -56,8 +58,8 @@ class DashboardErrorCard extends StatelessWidget {
               color: theme.colorScheme.errorContainer,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.cloud_off_outlined,
+            child: AppIcon(
+              AppIcons.cloud_off_outlined,
               color: theme.colorScheme.onErrorContainer,
             ),
           ),
