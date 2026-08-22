@@ -129,7 +129,11 @@ class MenuItemCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                  icon: SvgPicture.asset(AppIcons.more_vert_rounded),
+                  icon: SvgPicture.asset(
+                    AppIcons.more_vert_rounded,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
               ],
             ),
@@ -154,13 +158,15 @@ class _MenuImage extends StatelessWidget {
         child: path == null
             ? ColoredBox(
                 color: AppColors.mintSoft,
-                child: SvgPicture.asset(
-                  AppIcons.restaurant_menu_rounded,
-                  width: 30,
-                  height: 30,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.primary,
-                    BlendMode.srcIn,
+                child: Center(
+                  child: SvgPicture.asset(
+                    AppIcons.restaurant_menu_rounded,
+                    width: 30,
+                    height: 30,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.primary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               )

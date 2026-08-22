@@ -82,8 +82,8 @@ class MenuPhotoPicker extends StatelessWidget {
                           )
                         : SvgPicture.asset(
                             AppIcons.add_photo_alternate_outlined,
-                            width: 19,
-                            height: 19,
+                            width: 20,
+                            height: 20,
                           ),
                     label: Text(path == null ? 'Add Photo' : 'Change Photo'),
                   ),
@@ -199,6 +199,8 @@ class MenuCostWarning extends StatelessWidget {
         children: [
           SvgPicture.asset(
             AppIcons.warning_amber_rounded,
+            width: 20,
+            height: 20,
             colorFilter: const ColorFilter.mode(
               AppColors.warningStrong,
               BlendMode.srcIn,

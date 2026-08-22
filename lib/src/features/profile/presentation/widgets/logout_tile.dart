@@ -31,8 +31,8 @@ class LogoutTile extends StatelessWidget {
               SvgPicture.asset(
                 AppIcons.logout_rounded,
                 colorFilter: ColorFilter.mode(error, BlendMode.srcIn),
-                width: 21,
-                height: 21,
+                width: 20,
+                height: 20,
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Text(

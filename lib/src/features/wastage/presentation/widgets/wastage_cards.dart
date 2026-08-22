@@ -281,6 +281,8 @@ class MostWastedItemsSection extends StatelessWidget {
                     index == 0
                         ? AppIcons.set_meal_outlined
                         : AppIcons.eco_outlined,
+                    width: 24,
+                    height: 24,
                     colorFilter: const ColorFilter.mode(
                       AppColors.warning,
                       BlendMode.srcIn,
@@ -343,6 +345,8 @@ class RecentWastageSection extends StatelessWidget {
                       backgroundColor: AppColors.warningMuted,
                       child: SvgPicture.asset(
                         AppIcons.delete_sweep_outlined,
+                        width: 24,
+                        height: 24,
                         colorFilter: const ColorFilter.mode(
                           AppColors.warning,
                           BlendMode.srcIn,

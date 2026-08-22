@@ -51,6 +51,8 @@ class AppPasswordField extends StatelessWidget {
             obscureText
                 ? AppIcons.visibility_off_outlined
                 : AppIcons.visibility_outlined,
+            width: 22,
+            height: 22,
           ),
         ),
       ),

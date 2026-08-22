@@ -153,6 +153,7 @@ class ExpenseHistoryEmptyState extends StatelessWidget {
             Container(
               width: 60,
               height: 60,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: AppColors.expenseSurface,
                 borderRadius: BorderRadius.circular(AppRadius.lg),

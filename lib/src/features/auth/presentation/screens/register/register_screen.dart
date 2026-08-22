@@ -92,6 +92,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: 'Enter full name',
                                   prefixIcon: SvgPicture.asset(
                                     AppIcons.person_outline_rounded,
+                                    width: 22,
+                                    height: 22,
                                   ),
                                 ),
                               ),
@@ -108,6 +110,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: 'Enter email address',
                                   prefixIcon: SvgPicture.asset(
                                     AppIcons.email_outlined,
+                                    width: 22,
+                                    height: 22,
                                   ),
                                 ),
                               ),
@@ -127,6 +131,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: 'Create a password',
                                   prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline_rounded,
+                                    width: 22,
+                                    height: 22,
                                   ),
                                   suffixIcon: IconButton(
                                     tooltip: _obscurePassword
@@ -141,6 +147,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       _obscurePassword
                                           ? AppIcons.visibility_off_outlined
                                           : AppIcons.visibility_outlined,
+                                      width: 22,
+                                      height: 22,
                                     ),
                                   ),
                                 ),
@@ -161,6 +169,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   hintText: 'Re-enter your password',
                                   prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline,
+                                    width: 22,
+                                    height: 22,
                                   ),
                                   suffixIcon: IconButton(
                                     tooltip: _obscureConfirmation
@@ -176,6 +186,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       _obscureConfirmation
                                           ? AppIcons.visibility_off_outlined
                                           : AppIcons.visibility_outlined,
+                                      width: 22,
+                                      height: 22,
                                     ),
                                   ),
                                 ),

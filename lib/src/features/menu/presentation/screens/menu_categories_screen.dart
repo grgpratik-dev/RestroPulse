@@ -47,7 +47,7 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
         key: const ValueKey('menu-category-add-button'),
         tooltip: 'Add category',
         onPressed: _editCategory,
-        child: SvgPicture.asset(AppIcons.add_rounded),
+        child: SvgPicture.asset(AppIcons.add_rounded, width: 30, height: 30),
       ),
       body: SafeArea(
         top: false,

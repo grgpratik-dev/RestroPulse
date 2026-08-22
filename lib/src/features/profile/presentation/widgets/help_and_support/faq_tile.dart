@@ -57,6 +57,8 @@ class FaqTile extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     child: SvgPicture.asset(
                       AppIcons.keyboard_arrow_down_rounded,
+                      width: 20,
+                      height: 20,
                       colorFilter: const ColorFilter.mode(
                         AppColors.primary,
                         BlendMode.srcIn,

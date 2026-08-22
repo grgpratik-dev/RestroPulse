@@ -59,6 +59,7 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                     Container(
                       width: 48,
                       height: 48,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -154,8 +155,8 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                     SvgPicture.asset(
                       AppIcons.arrow_forward_rounded,
                       colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
-                      width: 19,
-                      height: 19,
+                      width: 20,
+                      height: 20,
                     ),
                   ],
                 ),

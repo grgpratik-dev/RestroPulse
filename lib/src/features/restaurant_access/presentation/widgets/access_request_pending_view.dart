@@ -23,6 +23,7 @@ class AccessRequestPendingView extends StatelessWidget {
               Container(
                 width: 76,
                 height: 76,
+                alignment: Alignment.center,
                 decoration: const BoxDecoration(
                   color: AppColors.infoSurface,
                   shape: BoxShape.circle,

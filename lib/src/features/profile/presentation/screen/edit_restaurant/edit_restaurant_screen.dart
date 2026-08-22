@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_spacing.dart';
-import '../widgets/profile_form_widgets.dart';
+import '../../../../../app/theme/app_colors.dart';
+import '../../../../../app/theme/app_spacing.dart';
+import '../../widgets/profile_form_widgets.dart';
 
 class EditRestaurantScreen extends StatefulWidget {
   const EditRestaurantScreen({this.onSaved, super.key});

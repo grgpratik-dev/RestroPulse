@@ -170,6 +170,8 @@ class ExpenseTrendCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   AppIcons.bar_chart_rounded,
+                  width: 20,
+                  height: 20,
                   colorFilter: const ColorFilter.mode(
                     AppColors.expenseForeground,
                     BlendMode.srcIn,

@@ -510,14 +510,15 @@ class _OperationalHighlightRow extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: AppColors.mintSoft,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: SvgPicture.asset(
                 icon,
-                width: 21,
-                height: 21,
+                width: 20,
+                height: 20,
                 colorFilter: const ColorFilter.mode(
                   AppColors.primary,
                   BlendMode.srcIn,
@@ -634,6 +635,7 @@ class BusinessInsightsSection extends StatelessWidget {
                 Container(
                   width: 42,
                   height: 42,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: AppColors.mintSoft,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -824,8 +826,8 @@ class _ReportCard extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 icon,
-                width: 21,
-                height: 21,
+                width: 20,
+                height: 20,
                 colorFilter: const ColorFilter.mode(
                   AppColors.primary,
                   BlendMode.srcIn,
@@ -1133,6 +1135,8 @@ class _MissingData extends StatelessWidget {
         children: [
           SvgPicture.asset(
             AppIcons.info_outline_rounded,
+            width: 20,
+            height: 20,
             colorFilter: const ColorFilter.mode(
               AppColors.warning,
               BlendMode.srcIn,

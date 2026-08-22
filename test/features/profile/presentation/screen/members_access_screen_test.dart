@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/members_access_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/members_access/members_access_screen.dart';
 
 void main() {
   testWidgets('manages one join code and pending viewer requests', (

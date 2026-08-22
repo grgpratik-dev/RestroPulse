@@ -22,6 +22,7 @@ class MenuItemHeader extends StatelessWidget {
         Container(
           width: 84,
           height: 84,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: AppColors.mintSoft,
             borderRadius: BorderRadius.circular(18),
@@ -310,8 +311,8 @@ class MenuClassificationCard extends StatelessWidget {
               children: [
                 SvgPicture.asset(
                   AppIcons.lightbulb_outline_rounded,
-                  width: 21,
-                  height: 21,
+                  width: 20,
+                  height: 20,
                   colorFilter: const ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,

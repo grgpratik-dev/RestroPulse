@@ -49,7 +49,11 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
             key: const ValueKey('sales-history-calendar'),
             tooltip: 'Choose date',
             onPressed: _pickDate,
-            icon: SvgPicture.asset(AppIcons.calendar_month_outlined),
+            icon: SvgPicture.asset(
+              AppIcons.calendar_month_outlined,
+              width: 24,
+              height: 24,
+            ),
           ),
           const SizedBox(width: AppSpacing.spaceXs),
         ],
@@ -151,6 +155,7 @@ class _NoSalesForDate extends StatelessWidget {
           Container(
             width: 64,
             height: 64,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: AppColors.splashAccent.withValues(alpha: .42),
               borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -184,7 +189,11 @@ class _NoSalesForDate extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceLg),
           OutlinedButton.icon(
             onPressed: onChooseDate,
-            icon: SvgPicture.asset(AppIcons.calendar_month_outlined),
+            icon: SvgPicture.asset(
+              AppIcons.calendar_month_outlined,
+              width: 20,
+              height: 20,
+            ),
             label: const Text('Choose another date'),
           ),
         ],

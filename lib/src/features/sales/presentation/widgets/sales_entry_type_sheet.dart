@@ -110,12 +110,15 @@ class _EntryOption extends StatelessWidget {
               Container(
                 width: 48,
                 height: 48,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: emphasized ? AppColors.primary : AppColors.mintSoft,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: SvgPicture.asset(
                   icon,
+                  width: 26,
+                  height: 26,
                   colorFilter: ColorFilter.mode(
                     emphasized ? Colors.white : AppColors.primary,
                     BlendMode.srcIn,
@@ -171,7 +174,11 @@ class _EntryOption extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
-              SvgPicture.asset(AppIcons.chevron_right_rounded),
+              SvgPicture.asset(
+                AppIcons.chevron_right_rounded,
+                width: 20,
+                height: 20,
+              ),
             ],
           ),
         ),

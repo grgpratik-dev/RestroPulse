@@ -79,8 +79,8 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                       AppColors.info,
                                       BlendMode.srcIn,
                                     ),
-                                    width: 17,
-                                    height: 17,
+                                    width: 18,
+                                    height: 18,
                                   ),
                                   const SizedBox(width: AppSpacing.spaceXs),
                                   const Text(
@@ -128,8 +128,8 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                     AppColors.info,
                                     BlendMode.srcIn,
                                   ),
-                                  width: 21,
-                                  height: 21,
+                                  width: 20,
+                                  height: 20,
                                 ),
                                 const SizedBox(width: AppSpacing.spaceSm),
                                 Expanded(
@@ -181,12 +181,16 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                     hintText: 'e.g. RP-7K9M2',
                                     prefixIcon: SvgPicture.asset(
                                       AppIcons.vpn_key_outlined,
+                                      width: 22,
+                                      height: 22,
                                     ),
                                     suffixIcon: IconButton(
                                       tooltip: 'Paste invitation code',
                                       onPressed: _pasteCode,
                                       icon: SvgPicture.asset(
                                         AppIcons.content_paste_rounded,
+                                        width: 22,
+                                        height: 22,
                                       ),
                                     ),
                                   ),

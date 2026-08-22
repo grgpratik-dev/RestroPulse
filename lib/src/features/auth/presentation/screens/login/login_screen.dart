@@ -102,6 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       hintText: 'Enter your email',
                                       prefixIcon: SvgPicture.asset(
                                         AppIcons.email_outlined,
+                                        width: 22,
+                                        height: 22,
                                       ),
                                     ),
                                   ),
@@ -121,6 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       hintText: 'Enter your password',
                                       prefixIcon: SvgPicture.asset(
                                         AppIcons.lock_outline_rounded,
+                                        width: 22,
+                                        height: 22,
                                       ),
                                       suffixIcon: IconButton(
                                         key: const ValueKey(
@@ -139,6 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           _obscurePassword
                                               ? AppIcons.visibility_off_outlined
                                               : AppIcons.visibility_outlined,
+                                          width: 22,
+                                          height: 22,
                                         ),
                                       ),
                                     ),

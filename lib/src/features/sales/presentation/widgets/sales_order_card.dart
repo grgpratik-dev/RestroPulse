@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/sales_order.dart';
 import 'order_channel_icon.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class SalesOrderCard extends StatelessWidget {
   const SalesOrderCard({required this.order, required this.onTap, super.key});
@@ -59,6 +59,8 @@ class SalesOrderCard extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 40,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(AppSpacing.space2xs),
                     decoration: BoxDecoration(
                       color: channelColor.withValues(alpha: .1),
                       borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -144,8 +146,8 @@ class SalesOrderCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.space2xs),
                   SvgPicture.asset(
                     AppIcons.chevron_right_rounded,
-                    width: 21,
-                    height: 21,
+                    width: 20,
+                    height: 20,
                     colorFilter: ColorFilter.mode(
                       theme.colorScheme.onSurfaceVariant,
                       BlendMode.srcIn,

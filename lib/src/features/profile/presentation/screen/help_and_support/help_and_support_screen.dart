@@ -204,6 +204,7 @@ class _HelpHeader extends StatelessWidget {
             Container(
               width: 48,
               height: 48,
+              alignment: Alignment.center,
               decoration: const BoxDecoration(
                 color: AppColors.surface,
                 shape: BoxShape.circle,

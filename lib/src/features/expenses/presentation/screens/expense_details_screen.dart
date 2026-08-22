@@ -44,7 +44,11 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, ExpenseDetailsResult.updated(_expense)),
-          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(
+            AppIcons.arrow_back_rounded,
+            width: 24,
+            height: 24,
+          ),
         ),
         title: const Text('Expense Details'),
         actions: [
@@ -127,7 +131,11 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.delete_outline_rounded,
+                width: 24,
+                height: 24,
+              ),
               label: const Text('Delete Expense'),
             ),
           ],

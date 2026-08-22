@@ -224,6 +224,8 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                     labelText: 'Date',
                     suffixIcon: SvgPicture.asset(
                       AppIcons.calendar_today_outlined,
+                      width: 22,
+                      height: 22,
                     ),
                   ),
                   child: Text(DateFormat('MMM d, yyyy').format(_date)),

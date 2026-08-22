@@ -103,7 +103,11 @@ class MenuCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: SvgPicture.asset(AppIcons.more_vert_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.more_vert_rounded,
+                width: 24,
+                height: 24,
+              ),
             ),
           ],
         ),
@@ -186,7 +190,11 @@ class _MenuCategoryEditorSheetState extends State<MenuCategoryEditorSheet> {
                 decoration: InputDecoration(
                   labelText: 'Category name',
                   hintText: 'e.g. Desserts',
-                  prefixIcon: SvgPicture.asset(AppIcons.category_outlined),
+                  prefixIcon: SvgPicture.asset(
+                    AppIcons.category_outlined,
+                    width: 22,
+                    height: 22,
+                  ),
                 ),
                 onFieldSubmitted: (_) => _submit(),
                 validator: (value) {

@@ -99,8 +99,12 @@ class ProfileHeaderCard extends StatelessWidget {
                   ),
                   icon: SvgPicture.asset(
                     AppIcons.edit_outlined,
-                    width: 17,
-                    height: 17,
+                    width: 18,
+                    height: 18,
+                    colorFilter: ColorFilter.mode(
+                      AppColors.primary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   label: const Text('Edit Restaurant'),
                 ),
@@ -124,6 +128,8 @@ class _RestaurantAvatar extends StatelessWidget {
       child: Container(
         width: 64,
         height: 64,
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(AppSpacing.spaceXs),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),

@@ -54,7 +54,7 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
         backgroundColor: AppColors.expenseAccent,
         foregroundColor: AppColors.surface,
         onPressed: _addCategory,
-        child: SvgPicture.asset(AppIcons.add_rounded),
+        child: SvgPicture.asset(AppIcons.add_rounded, width: 30, height: 30),
       ),
       body: SafeArea(
         top: false,

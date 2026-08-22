@@ -152,6 +152,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             children: [
               SvgPicture.asset(
                 AppIcons.insights_outlined,
+                width: 20,
+                height: 20,
                 colorFilter: const ColorFilter.mode(
                   AppColors.expenseForeground,
                   BlendMode.srcIn,

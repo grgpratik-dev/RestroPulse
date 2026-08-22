@@ -34,6 +34,7 @@ class AttentionInsightCard extends StatelessWidget {
           Container(
             width: 42,
             height: 42,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.8),
               shape: BoxShape.circle,
@@ -42,6 +43,8 @@ class AttentionInsightCard extends StatelessWidget {
               isHealthy
                   ? AppIcons.check_circle_outline_rounded
                   : AppIcons.warning_amber_rounded,
+              width: 24,
+              height: 24,
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
           ),

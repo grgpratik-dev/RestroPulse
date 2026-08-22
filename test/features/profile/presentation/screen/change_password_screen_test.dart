@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/change_password_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/change_password/change_password_screen.dart';
 
 void main() {
   testWidgets('validates and submits a matching secure password', (

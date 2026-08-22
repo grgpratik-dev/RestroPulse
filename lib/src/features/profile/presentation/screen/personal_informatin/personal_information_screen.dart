@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_spacing.dart';
-import '../widgets/profile_form_widgets.dart';
+import '../../../../../app/theme/app_colors.dart';
+import '../../../../../app/theme/app_spacing.dart';
+import '../../widgets/profile_form_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -128,8 +128,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       labelText: 'Current role',
                       suffixIcon: SvgPicture.asset(
                         AppIcons.lock_outline_rounded,
-                        width: 19,
-                        height: 19,
+                        width: 20,
+                        height: 20,
                       ),
                     ),
                   ),

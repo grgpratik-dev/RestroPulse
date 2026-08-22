@@ -24,6 +24,8 @@ class RevenueSummaryCard extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(AppSpacing.space2xs),
             decoration: BoxDecoration(
               color: AppColors.splashAccent.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(AppRadius.sm),

@@ -27,6 +27,7 @@ class PasswordRecoveryHeader extends StatelessWidget {
         Container(
           width: 72,
           height: 72,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: success ? AppColors.successSurface : AppColors.mintSurface,
             borderRadius: BorderRadius.circular(AppRadius.xl),

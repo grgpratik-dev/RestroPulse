@@ -23,7 +23,11 @@ class RestaurantAccessAppBar extends StatelessWidget
           ? IconButton(
               tooltip: 'Back',
               onPressed: () => Navigator.of(context).maybePop(),
-              icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.arrow_back_rounded,
+                width: 24,
+                height: 24,
+              ),
             )
           : null,
       toolbarHeight: preferredSize.height,

@@ -51,7 +51,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         leading: IconButton(
           tooltip: 'Back to sign in',
           onPressed: _backToLogin,
-          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(
+            AppIcons.arrow_back_rounded,
+            width: 24,
+            height: 24,
+          ),
         ),
       ),
       body: SafeArea(
@@ -99,7 +103,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             decoration: InputDecoration(
               labelText: 'Email address',
               hintText: 'Enter your email',
-              prefixIcon: SvgPicture.asset(AppIcons.email_outlined),
+              prefixIcon: SvgPicture.asset(
+                AppIcons.email_outlined,
+                width: 22,
+                height: 22,
+              ),
             ),
             validator: _validateEmail,
             onFieldSubmitted: (_) => _sendResetLink(),

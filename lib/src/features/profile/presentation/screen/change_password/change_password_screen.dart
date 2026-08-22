@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_password_widgets.dart';
-import '../widgets/profile_form_widgets.dart';
+import '../../../../../app/theme/app_colors.dart';
+import '../../../../../app/theme/app_spacing.dart';
+import '../../../../../core/widgets/app_password_widgets.dart';
+import '../../widgets/profile_form_widgets.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({this.onPasswordChanged, super.key});

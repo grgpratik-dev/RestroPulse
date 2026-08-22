@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
+import 'package:restropulse/src/features/menu/presentation/widgets/menu_item_card.dart';
 
 void main() {
   testWidgets('menu supports category filtering and a confirmed delete flow', (
@@ -41,8 +42,15 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('menu-category-Burgers')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Chicken Burger'), findsOneWidget);
-    expect(find.text('Chicken Momo'), findsNothing);
+    final menuCards = find.byType(MenuItemCard);
+    expect(
+      find.descendant(of: menuCards, matching: find.text('Chicken Burger')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: menuCards, matching: find.text('Chicken Momo')),
+      findsNothing,
+    );
 
     await tester.tap(find.byTooltip('Item actions').first);
     await tester.pumpAndSettle();

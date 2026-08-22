@@ -20,10 +20,10 @@ import 'package:restropulse/src/features/menu/presentation/screens/menu_item_for
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/change_password_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/members_access_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/personal_information_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant/edit_restaurant_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/change_password/change_password_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/members_access/members_access_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/personal_informatin/personal_information_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';

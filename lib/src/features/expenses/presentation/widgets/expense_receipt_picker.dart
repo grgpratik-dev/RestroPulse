@@ -35,11 +35,15 @@ class ExpenseReceiptPicker extends StatelessWidget {
                   child: path == null
                       ? ColoredBox(
                           color: Colors.white,
-                          child: SvgPicture.asset(
-                            AppIcons.receipt_long_outlined,
-                            colorFilter: const ColorFilter.mode(
-                              AppColors.expenseForeground,
-                              BlendMode.srcIn,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              AppIcons.receipt_long_outlined,
+                              width: 30,
+                              height: 30,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.expenseForeground,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         )

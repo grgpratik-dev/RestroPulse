@@ -79,6 +79,8 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
               children: [
                 SvgPicture.asset(
                   AppIcons.info_outline_rounded,
+                  width: 20,
+                  height: 20,
                   colorFilter: const ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
@@ -108,7 +110,11 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             decoration: InputDecoration(
               labelText: 'Subject',
               hintText: 'Briefly describe the issue',
-              prefixIcon: SvgPicture.asset(AppIcons.short_text_rounded),
+              prefixIcon: SvgPicture.asset(
+                AppIcons.short_text_rounded,
+                width: 22,
+                height: 22,
+              ),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -140,7 +146,11 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
           const SizedBox(height: AppSpacing.spaceMd),
           OutlinedButton.icon(
             onPressed: _showAttachmentPlaceholder,
-            icon: SvgPicture.asset(AppIcons.attach_file_rounded),
+            icon: SvgPicture.asset(
+              AppIcons.attach_file_rounded,
+              width: 20,
+              height: 20,
+            ),
             label: const Text('Attach Screenshot (Optional)'),
           ),
           const SizedBox(height: AppSpacing.spaceLg),
@@ -174,6 +184,7 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             Container(
               width: 80,
               height: 80,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: AppColors.splashAccent.withValues(alpha: 0.48),
                 shape: BoxShape.circle,

@@ -76,8 +76,8 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                                   AppColors.primary,
                                   BlendMode.srcIn,
                                 ),
-                                width: 17,
-                                height: 17,
+                                width: 18,
+                                height: 18,
                               ),
                               const SizedBox(width: AppSpacing.spaceXs),
                               const Text(
@@ -131,6 +131,8 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                           hintText: 'e.g. Boys to Serve',
                           prefixIcon: SvgPicture.asset(
                             AppIcons.storefront_outlined,
+                            width: 22,
+                            height: 22,
                           ),
                         ),
                         validator: (value) {
@@ -158,6 +160,8 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                           hintText: 'e.g. Pokhara, Nepal',
                           prefixIcon: SvgPicture.asset(
                             AppIcons.location_on_outlined,
+                            width: 22,
+                            height: 22,
                           ),
                         ),
                         validator: (value) {
@@ -180,11 +184,15 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         initialValue: 'NPR (Rs)',
                         readOnly: true,
                         decoration: InputDecoration(
-                          prefixIcon: SvgPicture.asset(AppIcons.currency),
+                          prefixIcon: SvgPicture.asset(
+                            AppIcons.currency,
+                            width: 22,
+                            height: 22,
+                          ),
                           suffixIcon: SvgPicture.asset(
                             AppIcons.lock_outline_rounded,
-                            width: 19,
-                            height: 19,
+                            width: 20,
+                            height: 20,
                           ),
                           helperText:
                               'More currencies can be added from settings later.',
@@ -244,12 +252,20 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
               ),
               const SizedBox(height: AppSpacing.spaceSm),
               ListTile(
-                leading: SvgPicture.asset(AppIcons.photo_library_outlined),
+                leading: SvgPicture.asset(
+                  AppIcons.photo_library_outlined,
+                  width: 24,
+                  height: 24,
+                ),
                 title: const Text('Choose from gallery'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),
               ListTile(
-                leading: SvgPicture.asset(AppIcons.camera_alt_outlined),
+                leading: SvgPicture.asset(
+                  AppIcons.camera_alt_outlined,
+                  width: 24,
+                  height: 24,
+                ),
                 title: const Text('Take a photo'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),

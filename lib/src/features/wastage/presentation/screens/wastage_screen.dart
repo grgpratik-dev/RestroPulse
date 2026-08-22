@@ -128,7 +128,7 @@ class _WastageScreenState extends State<WastageScreen> {
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: _recordWastage,
-            icon: SvgPicture.asset(AppIcons.add_rounded),
+            icon: SvgPicture.asset(AppIcons.add_rounded, width: 20, height: 20),
             label: const Text('Record Wastage'),
           ),
         ),

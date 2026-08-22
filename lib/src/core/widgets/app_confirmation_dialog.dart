@@ -65,12 +65,19 @@ class AppConfirmationDialog extends StatelessWidget {
               Container(
                 width: 52,
                 height: 52,
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(AppSpacing.spaceXs),
                 decoration: BoxDecoration(
                   color: accent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   border: Border.all(color: accent.withValues(alpha: 0.14)),
                 ),
-                child: SvgPicture.asset(icon),
+                child: SvgPicture.asset(
+                  icon,
+                  width: 28,
+                  height: 28,
+                  colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                ),
               ),
               const SizedBox(height: AppSpacing.spaceLg),
               Text(

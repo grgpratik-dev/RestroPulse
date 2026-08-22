@@ -39,7 +39,11 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, WastageDetailsResult.updated(_entry)),
-          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(
+            AppIcons.arrow_back_rounded,
+            width: 24,
+            height: 24,
+          ),
         ),
         title: const Text('Wastage Details'),
         actions: [
@@ -120,7 +124,11 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.delete_outline_rounded,
+                width: 24,
+                height: 24,
+              ),
               label: const Text('Delete Entry'),
             ),
           ],

@@ -13,6 +13,8 @@ import '../widgets/profile_header_card.dart';
 import '../widgets/settings_section.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
+part '../widgets/settings_tile.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onLogout});
 
@@ -201,6 +203,8 @@ class ProfileScreen extends StatelessWidget {
                     subtitle: const Text('Nepalese Rupee'),
                     trailing: SvgPicture.asset(
                       AppIcons.check_circle_rounded,
+                      width: 20,
+                      height: 20,
                       colorFilter: const ColorFilter.mode(
                         AppColors.primary,
                         BlendMode.srcIn,

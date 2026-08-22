@@ -42,6 +42,8 @@ class AppStateMessage extends StatelessWidget {
                 backgroundColor: iconBackgroundColor ?? colors.primaryContainer,
                 child: SvgPicture.asset(
                   icon,
+                  width: 32,
+                  height: 32,
                   colorFilter: ColorFilter.mode(
                     iconColor ?? colors.primary,
                     BlendMode.srcIn,

@@ -99,7 +99,11 @@ class OrderMenuBrowser extends StatelessWidget {
           onChanged: onSearchChanged,
           decoration: InputDecoration(
             hintText: 'Search menu items',
-            prefixIcon: SvgPicture.asset(AppIcons.search_rounded),
+            prefixIcon: SvgPicture.asset(
+              AppIcons.search_rounded,
+              width: 22,
+              height: 22,
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.spaceSm),
@@ -255,14 +259,22 @@ class OrderTotalsCard extends StatelessWidget {
               Expanded(
                 child: TextButton.icon(
                   onPressed: onAddDiscount,
-                  icon: SvgPicture.asset(AppIcons.sell_outlined),
+                  icon: SvgPicture.asset(
+                    AppIcons.sell_outlined,
+                    width: 20,
+                    height: 20,
+                  ),
                   label: Text(discount > 0 ? 'Edit Discount' : 'Add Discount'),
                 ),
               ),
               Expanded(
                 child: TextButton.icon(
                   onPressed: onAddNote,
-                  icon: SvgPicture.asset(AppIcons.note_add_outlined),
+                  icon: SvgPicture.asset(
+                    AppIcons.note_add_outlined,
+                    width: 20,
+                    height: 20,
+                  ),
                   label: const Text('Add Note'),
                 ),
               ),
@@ -309,12 +321,15 @@ class _MenuItemCard extends StatelessWidget {
               Container(
                 width: 42,
                 height: 42,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.splashAccent.withValues(alpha: .38),
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: SvgPicture.asset(
                   AppIcons.restaurant_menu_rounded,
+                  width: 24,
+                  height: 24,
                   colorFilter: const ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
@@ -351,6 +366,8 @@ class _MenuItemCard extends StatelessWidget {
               else
                 SvgPicture.asset(
                   AppIcons.add_circle_rounded,
+                  width: 24,
+                  height: 24,
                   colorFilter: const ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
@@ -411,7 +428,11 @@ class _SelectedItemRow extends StatelessWidget {
             tooltip: 'Decrease ${item.name}',
             onPressed: onDecrement,
             visualDensity: VisualDensity.compact,
-            icon: SvgPicture.asset(AppIcons.remove_rounded),
+            icon: SvgPicture.asset(
+              AppIcons.remove_rounded,
+              width: 18,
+              height: 18,
+            ),
           ),
           SizedBox(
             width: 34,
@@ -425,13 +446,15 @@ class _SelectedItemRow extends StatelessWidget {
             tooltip: 'Increase ${item.name}',
             onPressed: onIncrement,
             visualDensity: VisualDensity.compact,
-            icon: SvgPicture.asset(AppIcons.add_rounded),
+            icon: SvgPicture.asset(AppIcons.add_rounded, width: 18, height: 18),
           ),
           IconButton(
             tooltip: 'Remove ${item.name}',
             onPressed: onRemove,
             icon: SvgPicture.asset(
               AppIcons.close_rounded,
+              width: 18,
+              height: 18,
               colorFilter: ColorFilter.mode(
                 theme.colorScheme.error,
                 BlendMode.srcIn,

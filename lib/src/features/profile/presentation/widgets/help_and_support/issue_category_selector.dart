@@ -23,7 +23,11 @@ class IssueCategorySelector extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Issue Category',
         hintText: 'Select a category',
-        prefixIcon: SvgPicture.asset(AppIcons.category_outlined),
+        prefixIcon: SvgPicture.asset(
+          AppIcons.category_outlined,
+          width: 22,
+          height: 22,
+        ),
       ),
       items: [
         for (final item in items)

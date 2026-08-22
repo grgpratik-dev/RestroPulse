@@ -77,7 +77,11 @@ class AppPeriodSelector<T> extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceXs),
           Row(
             children: [
-              SvgPicture.asset(AppIcons.calendar_today_outlined),
+              SvgPicture.asset(
+                AppIcons.calendar_today_outlined,
+                width: 18,
+                height: 18,
+              ),
               const SizedBox(width: AppSpacing.space2xs),
               Expanded(
                 child: Text(

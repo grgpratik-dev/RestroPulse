@@ -45,16 +45,18 @@ class DashboardMetricCard extends StatelessWidget {
               Container(
                 width: 32,
                 height: 32,
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(AppSpacing.space2xs),
                 decoration: BoxDecoration(
                   color: status == MetricStatus.warning
                       ? AppColors.warningSoft
                       : AppColors.splashAccent.withValues(alpha: 0.36),
-                  borderRadius: BorderRadius.circular(AppRadius.xs),
+                  borderRadius: BorderRadius.circular(AppRadius.xxs),
                 ),
                 child: SvgPicture.asset(
                   icon,
-                  width: 17,
-                  height: 17,
+                  width: 18,
+                  height: 18,
                   colorFilter: ColorFilter.mode(statusColor, BlendMode.srcIn),
                 ),
               ),

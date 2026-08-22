@@ -118,6 +118,7 @@ class RestaurantJoinCodeCard extends StatelessWidget {
               Container(
                 width: 42,
                 height: 42,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -220,7 +221,11 @@ class RestaurantJoinCodeCard extends StatelessWidget {
             FilledButton.icon(
               key: const ValueKey('generate-join-code-button'),
               onPressed: onToggle,
-              icon: SvgPicture.asset(AppIcons.add_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.add_rounded,
+                width: 20,
+                height: 20,
+              ),
               label: const Text('Generate join code'),
             ),
         ],
@@ -262,7 +267,11 @@ class PendingAccessRequestCard extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: AppColors.surface,
                 foregroundColor: AppColors.warning,
-                child: SvgPicture.asset(AppIcons.person_outline_rounded),
+                child: SvgPicture.asset(
+                  AppIcons.person_outline_rounded,
+                  width: 24,
+                  height: 24,
+                ),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
               Expanded(
@@ -362,6 +371,8 @@ class RestaurantMemberTile extends StatelessWidget {
           isOwner
               ? AppIcons.admin_panel_settings_outlined
               : AppIcons.person_outline,
+          width: 24,
+          height: 24,
         ),
       ),
       title: Text(

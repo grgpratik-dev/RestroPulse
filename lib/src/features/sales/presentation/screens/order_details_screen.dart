@@ -32,7 +32,11 @@ class OrderDetailsScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Edit order',
             onPressed: () => _editOrder(context),
-            icon: SvgPicture.asset(AppIcons.edit_outlined),
+            icon: SvgPicture.asset(
+              AppIcons.edit_outlined,
+              width: 24,
+              height: 24,
+            ),
           ),
         ],
       ),
@@ -126,7 +130,11 @@ class OrderDetailsScreen extends StatelessWidget {
                 foregroundColor: theme.colorScheme.error,
                 side: BorderSide(color: theme.colorScheme.error),
               ),
-              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.delete_outline_rounded,
+                width: 20,
+                height: 20,
+              ),
               label: const Text('Delete Order'),
             ),
           ],

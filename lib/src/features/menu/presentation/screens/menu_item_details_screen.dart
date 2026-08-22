@@ -65,7 +65,11 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.delete_outline_rounded,
+                width: 24,
+                height: 24,
+              ),
               label: const Text('Delete Menu Item'),
             ),
           ],

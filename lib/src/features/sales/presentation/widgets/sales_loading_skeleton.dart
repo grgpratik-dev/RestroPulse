@@ -86,6 +86,7 @@ class SalesOrdersEmptyState extends StatelessWidget {
           Container(
             width: 64,
             height: 64,
+            alignment: Alignment.center,
             decoration: const BoxDecoration(
               color: AppColors.surface,
               shape: BoxShape.circle,
@@ -120,7 +121,11 @@ class SalesOrdersEmptyState extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               onPressed: onRecordSales,
-              icon: SvgPicture.asset(AppIcons.add_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.add_rounded,
+                width: 20,
+                height: 20,
+              ),
               label: const Text('Record Sales'),
             ),
           ),

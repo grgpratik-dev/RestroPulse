@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/personal_information_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant/edit_restaurant_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/personal_informatin/personal_information_screen.dart';
 
 void main() {
   testWidgets('edits restaurant-specific information', (tester) async {

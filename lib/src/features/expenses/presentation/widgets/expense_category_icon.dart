@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
@@ -34,6 +35,7 @@ class ExpenseCategoryIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      padding: EdgeInsets.all(AppSpacing.space2xs),
       decoration: BoxDecoration(
         color: AppColors.expenseSurface,
         borderRadius: BorderRadius.circular(size * 0.27),

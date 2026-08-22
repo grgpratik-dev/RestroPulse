@@ -72,6 +72,7 @@ class ProfileImageEditor extends StatelessWidget {
               Container(
                 width: 96,
                 height: 96,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.mintSurface,
                   shape: isRestaurant ? BoxShape.rectangle : BoxShape.circle,
@@ -114,8 +115,8 @@ class ProfileImageEditor extends StatelessWidget {
                           AppColors.surface,
                           BlendMode.srcIn,
                         ),
-                        width: 19,
-                        height: 19,
+                        width: 20,
+                        height: 20,
                       ),
                     ),
                   ),
@@ -166,12 +167,20 @@ Future<void> showProfileImageOptions(
             ),
             const SizedBox(height: AppSpacing.spaceSm),
             ListTile(
-              leading: SvgPicture.asset(AppIcons.photo_library_outlined),
+              leading: SvgPicture.asset(
+                AppIcons.photo_library_outlined,
+                width: 24,
+                height: 24,
+              ),
               title: const Text('Choose from gallery'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),
             ListTile(
-              leading: SvgPicture.asset(AppIcons.camera_alt_outlined),
+              leading: SvgPicture.asset(
+                AppIcons.camera_alt_outlined,
+                width: 24,
+                height: 24,
+              ),
               title: const Text('Take a photo'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),

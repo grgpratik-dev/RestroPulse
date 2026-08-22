@@ -128,7 +128,11 @@ class ExpenseCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: SvgPicture.asset(AppIcons.more_vert_rounded),
+              icon: SvgPicture.asset(
+                AppIcons.more_vert_rounded,
+                width: 24,
+                height: 24,
+              ),
             ),
           ],
         ),

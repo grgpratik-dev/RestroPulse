@@ -52,6 +52,8 @@ class ReportExportOption extends StatelessWidget {
         onTap: onTap,
         leading: SvgPicture.asset(
           icon,
+          width: 24,
+          height: 24,
           colorFilter: const ColorFilter.mode(
             AppColors.primary,
             BlendMode.srcIn,
@@ -59,7 +61,11 @@ class ReportExportOption extends StatelessWidget {
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
         subtitle: Text(subtitle),
-        trailing: SvgPicture.asset(AppIcons.chevron_right_rounded),
+        trailing: SvgPicture.asset(
+          AppIcons.chevron_right_rounded,
+          width: 20,
+          height: 20,
+        ),
       ),
     );
   }

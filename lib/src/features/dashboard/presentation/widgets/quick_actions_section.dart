@@ -110,8 +110,8 @@ class _QuickAction extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 icon,
-                width: 23,
-                height: 23,
+                width: 24,
+                height: 24,
                 colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
               ),
               const SizedBox(height: AppSpacing.spaceXs),

@@ -38,6 +38,7 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
               Container(
                 width: 52,
                 height: 52,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.md),
@@ -48,8 +49,8 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                     AppColors.primary,
                     BlendMode.srcIn,
                   ),
-                  width: 27,
-                  height: 27,
+                  width: 28,
+                  height: 28,
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
@@ -125,8 +126,8 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                   AppColors.info,
                   BlendMode.srcIn,
                 ),
-                width: 19,
-                height: 19,
+                width: 20,
+                height: 20,
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(

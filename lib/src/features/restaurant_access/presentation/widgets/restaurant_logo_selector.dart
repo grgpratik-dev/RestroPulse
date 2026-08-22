@@ -31,12 +31,15 @@ class RestaurantLogoSelector extends StatelessWidget {
               Container(
                 width: 52,
                 height: 52,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: SvgPicture.asset(
                   AppIcons.add_photo_alternate_outlined,
+                  width: 28,
+                  height: 28,
                   colorFilter: const ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
@@ -67,6 +70,8 @@ class RestaurantLogoSelector extends StatelessWidget {
               ),
               SvgPicture.asset(
                 AppIcons.chevron_right_rounded,
+                width: 20,
+                height: 20,
                 colorFilter: const ColorFilter.mode(
                   AppColors.neutral600,
                   BlendMode.srcIn,

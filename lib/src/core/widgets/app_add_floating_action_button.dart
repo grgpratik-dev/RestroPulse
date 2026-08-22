@@ -30,6 +30,8 @@ class AppAddFloatingActionButton extends StatelessWidget {
         foregroundColor: Colors.white,
         child: SvgPicture.asset(
           AppIcons.add_rounded,
+          width: 30,
+          height: 30,
           colorFilter: const ColorFilter.mode(
             AppColors.kNeutral100,
             BlendMode.srcIn,

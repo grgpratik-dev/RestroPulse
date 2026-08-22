@@ -54,12 +54,15 @@ class DashboardErrorCard extends StatelessWidget {
           Container(
             width: 56,
             height: 56,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: theme.colorScheme.errorContainer,
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(
               AppIcons.cloud_off_outlined,
+              width: 32,
+              height: 32,
               colorFilter: ColorFilter.mode(
                 theme.colorScheme.onErrorContainer,
                 BlendMode.srcIn,

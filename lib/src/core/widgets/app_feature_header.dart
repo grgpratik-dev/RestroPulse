@@ -62,7 +62,7 @@ class AppFeatureHeader extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SvgPicture.asset(contextIcon),
+                      SvgPicture.asset(contextIcon, width: 18, height: 18),
                       const SizedBox(width: AppSpacing.spaceXs),
                       Text(
                         contextLabel!,

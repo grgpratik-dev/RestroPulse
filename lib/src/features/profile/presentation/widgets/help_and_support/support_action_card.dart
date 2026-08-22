@@ -54,14 +54,22 @@ class SupportActionCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceMd),
           OutlinedButton.icon(
             onPressed: onEmailSupport,
-            icon: SvgPicture.asset(AppIcons.email_outlined),
+            icon: SvgPicture.asset(
+              AppIcons.email_outlined,
+              width: 20,
+              height: 20,
+            ),
             label: const Text('Email Support'),
           ),
           const SizedBox(height: AppSpacing.spaceSm),
           FilledButton.icon(
             key: const ValueKey('report-problem-button'),
             onPressed: onReportProblem,
-            icon: SvgPicture.asset(AppIcons.bug_report_outlined),
+            icon: SvgPicture.asset(
+              AppIcons.bug_report_outlined,
+              width: 20,
+              height: 20,
+            ),
             label: const Text('Report a Problem'),
           ),
         ],
