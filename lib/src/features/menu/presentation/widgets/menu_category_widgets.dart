@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuCategorySummaryCard extends StatelessWidget {
   const MenuCategorySummaryCard({
@@ -103,7 +103,7 @@ class MenuCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: const AppIcon(AppIcons.more_vert_rounded),
+              icon: SvgPicture.asset(AppIcons.more_vert_rounded),
             ),
           ],
         ),
@@ -183,10 +183,10 @@ class _MenuCategoryEditorSheetState extends State<MenuCategoryEditorSheet> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Category name',
                   hintText: 'e.g. Desserts',
-                  prefixIcon: AppIcon(AppIcons.category_outlined),
+                  prefixIcon: SvgPicture.asset(AppIcons.category_outlined),
                 ),
                 onFieldSubmitted: (_) => _submit(),
                 validator: (value) {

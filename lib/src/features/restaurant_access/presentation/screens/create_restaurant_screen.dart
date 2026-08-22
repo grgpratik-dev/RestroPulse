@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
@@ -7,7 +8,6 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_logo_selector.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class CreateRestaurantScreen extends StatefulWidget {
   const CreateRestaurantScreen({this.onCreated, super.key});
@@ -67,16 +67,20 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                             color: AppColors.mintChip,
                             borderRadius: BorderRadius.circular(AppRadius.full),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppIcon(
+                              SvgPicture.asset(
                                 AppIcons.verified_user_outlined,
-                                color: AppColors.primary,
-                                size: 17,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
+                                width: 17,
+                                height: 17,
                               ),
-                              SizedBox(width: AppSpacing.spaceXs),
-                              Text(
+                              const SizedBox(width: AppSpacing.spaceXs),
+                              const Text(
                                 'Owner setup',
                                 style: TextStyle(
                                   color: AppColors.primary,
@@ -123,9 +127,11 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.organizationName],
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'e.g. Boys to Serve',
-                          prefixIcon: AppIcon(AppIcons.storefront_outlined),
+                          prefixIcon: SvgPicture.asset(
+                            AppIcons.storefront_outlined,
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -148,9 +154,11 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         controller: _locationController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'e.g. Pokhara, Nepal',
-                          prefixIcon: AppIcon(AppIcons.location_on_outlined),
+                          prefixIcon: SvgPicture.asset(
+                            AppIcons.location_on_outlined,
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -171,11 +179,12 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       TextFormField(
                         initialValue: 'NPR (Rs)',
                         readOnly: true,
-                        decoration: const InputDecoration(
-                          prefixIcon: AppIcon(AppIcons.currency),
-                          suffixIcon: AppIcon(
+                        decoration: InputDecoration(
+                          prefixIcon: SvgPicture.asset(AppIcons.currency),
+                          suffixIcon: SvgPicture.asset(
                             AppIcons.lock_outline_rounded,
-                            size: 19,
+                            width: 19,
+                            height: 19,
                           ),
                           helperText:
                               'More currencies can be added from settings later.',
@@ -235,12 +244,12 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
               ),
               const SizedBox(height: AppSpacing.spaceSm),
               ListTile(
-                leading: const AppIcon(AppIcons.photo_library_outlined),
+                leading: SvgPicture.asset(AppIcons.photo_library_outlined),
                 title: const Text('Choose from gallery'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),
               ListTile(
-                leading: const AppIcon(AppIcons.camera_alt_outlined),
+                leading: SvgPicture.asset(AppIcons.camera_alt_outlined),
                 title: const Text('Take a photo'),
                 onTap: () => Navigator.of(sheetContext).pop(),
               ),

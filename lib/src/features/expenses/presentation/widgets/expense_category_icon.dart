@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../core/widgets/app_svg_icon.dart';
 
 String expenseCategoryIconAsset(String category) => switch (category) {
   'Ingredients' => AppIcons.expenseIngredients,
@@ -38,10 +38,16 @@ class ExpenseCategoryIcon extends StatelessWidget {
         color: AppColors.expenseSurface,
         borderRadius: BorderRadius.circular(size * 0.27),
       ),
-      child: AppSvgIcon(
-        asset: expenseCategoryIconAsset(category),
-        color: AppColors.expenseForeground,
-        size: size * 0.45,
+      child: Center(
+        child: SvgPicture.asset(
+          expenseCategoryIconAsset(category),
+          width: size * 0.45,
+          height: size * 0.45,
+          colorFilter: const ColorFilter.mode(
+            AppColors.expenseForeground,
+            BlendMode.srcIn,
+          ),
+        ),
       ),
     );
   }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/app/theme/app_typography.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class RevenueSummaryCard extends StatelessWidget {
   const RevenueSummaryCard({required this.hasData, super.key});
@@ -16,7 +16,7 @@ class RevenueSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       borderRadius: AppRadius.lg,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,10 +28,14 @@ class RevenueSummaryCard extends StatelessWidget {
               color: AppColors.splashAccent.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
-            child: const AppIcon(
+            child: SvgPicture.asset(
               AppIcons.payments_outlined,
-              color: AppColors.primary,
-              size: 18,
+              width: 18,
+              height: 18,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.spaceSm),

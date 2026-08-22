@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_name.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantAccessAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -23,7 +23,7 @@ class RestaurantAccessAppBar extends StatelessWidget
           ? IconButton(
               tooltip: 'Back',
               onPressed: () => Navigator.of(context).maybePop(),
-              icon: const AppIcon(AppIcons.arrow_back_rounded),
+              icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
             )
           : null,
       toolbarHeight: preferredSize.height,

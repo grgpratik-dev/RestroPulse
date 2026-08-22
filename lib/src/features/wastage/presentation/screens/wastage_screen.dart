@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
@@ -8,7 +9,6 @@ import '../widgets/wastage_cards.dart';
 import '../widgets/wastage_states.dart';
 import 'wastage_details_screen.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum WastageViewState { loaded, noPeriodData, empty, loading, error }
 
@@ -128,7 +128,7 @@ class _WastageScreenState extends State<WastageScreen> {
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: _recordWastage,
-            icon: const AppIcon(AppIcons.add_rounded),
+            icon: SvgPicture.asset(AppIcons.add_rounded),
             label: const Text('Record Wastage'),
           ),
         ),

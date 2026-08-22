@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
@@ -7,7 +8,6 @@ import 'package:restropulse/src/features/profile/presentation/widgets/help_and_s
 
 import 'report_problem_screen.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class HelpAndSupportScreen extends StatefulWidget {
   const HelpAndSupportScreen({super.key});
@@ -208,10 +208,14 @@ class _HelpHeader extends StatelessWidget {
                 color: AppColors.surface,
                 shape: BoxShape.circle,
               ),
-              child: const AppIcon(
+              child: SvgPicture.asset(
                 AppIcons.support_agent_rounded,
-                color: AppColors.primary,
-                size: 26,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+                width: 26,
+                height: 26,
               ),
             ),
             const SizedBox(width: AppSpacing.spaceSm),

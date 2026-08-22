@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/report_data.dart';
 
 class PerformanceOverviewCard extends StatelessWidget {
@@ -20,7 +20,7 @@ class PerformanceOverviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       color: AppColors.primaryStrong,
       borderColor: AppColors.primaryStrong,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),

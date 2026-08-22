@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -150,9 +150,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
           child: Row(
             children: [
-              const AppIcon(
+              SvgPicture.asset(
                 AppIcons.insights_outlined,
-                color: AppColors.expenseForeground,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.expenseForeground,
+                  BlendMode.srcIn,
+                ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(

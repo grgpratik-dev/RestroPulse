@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/features/profile/presentation/widgets/help_and_support/issue_category_selector.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ReportProblemScreen extends StatefulWidget {
   const ReportProblemScreen({super.key});
@@ -77,9 +77,12 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppIcon(
+                SvgPicture.asset(
                   AppIcons.info_outline_rounded,
-                  color: AppColors.primary,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
                 Expanded(
@@ -102,10 +105,10 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             key: const ValueKey('issue-subject-field'),
             controller: _subjectController,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Subject',
               hintText: 'Briefly describe the issue',
-              prefixIcon: AppIcon(AppIcons.short_text_rounded),
+              prefixIcon: SvgPicture.asset(AppIcons.short_text_rounded),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -137,7 +140,7 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
           const SizedBox(height: AppSpacing.spaceMd),
           OutlinedButton.icon(
             onPressed: _showAttachmentPlaceholder,
-            icon: const AppIcon(AppIcons.attach_file_rounded),
+            icon: SvgPicture.asset(AppIcons.attach_file_rounded),
             label: const Text('Attach Screenshot (Optional)'),
           ),
           const SizedBox(height: AppSpacing.spaceLg),
@@ -175,10 +178,14 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
                 color: AppColors.splashAccent.withValues(alpha: 0.48),
                 shape: BoxShape.circle,
               ),
-              child: const AppIcon(
+              child: SvgPicture.asset(
                 AppIcons.check_rounded,
-                color: AppColors.primary,
-                size: 42,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+                width: 42,
+                height: 42,
               ),
             ),
             const SizedBox(height: AppSpacing.spaceLg),

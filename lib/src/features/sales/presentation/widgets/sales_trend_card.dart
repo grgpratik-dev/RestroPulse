@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
 class SalesTrendCard extends StatelessWidget {
@@ -25,7 +25,7 @@ class SalesTrendCard extends StatelessWidget {
     final theme = Theme.of(context);
     final dataset = _dataset;
 
-    return CustomContainer(
+    return AppCard(
       borderRadius: AppRadius.lg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

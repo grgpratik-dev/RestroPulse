@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/menu_item.dart';
 import 'menu_image_provider.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemCard extends StatelessWidget {
   const MenuItemCard({
@@ -35,7 +35,7 @@ class MenuItemCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: 'Open ${item.name} details',
-      child: CustomContainer(
+      child: AppCard(
         padding: EdgeInsets.zero,
         child: InkWell(
           onTap: onTap,
@@ -129,7 +129,7 @@ class MenuItemCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                  icon: const AppIcon(AppIcons.more_vert_rounded),
+                  icon: SvgPicture.asset(AppIcons.more_vert_rounded),
                 ),
               ],
             ),
@@ -154,10 +154,14 @@ class _MenuImage extends StatelessWidget {
         child: path == null
             ? ColoredBox(
                 color: AppColors.mintSoft,
-                child: const AppIcon(
+                child: SvgPicture.asset(
                   AppIcons.restaurant_menu_rounded,
-                  color: AppColors.primary,
-                  size: 30,
+                  width: 30,
+                  height: 30,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               )
             : Image(image: menuImageProvider(path!), fit: BoxFit.cover),

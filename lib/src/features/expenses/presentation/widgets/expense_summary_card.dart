@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../app/theme/app_typography.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
 
 class ExpenseSummaryCard extends StatelessWidget {
@@ -20,7 +20,7 @@ class ExpenseSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       color: AppColors.expenseForeground,
       borderColor: AppColors.expenseForeground,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),

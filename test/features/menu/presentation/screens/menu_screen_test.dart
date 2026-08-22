@@ -4,7 +4,7 @@ import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 
 void main() {
-  testWidgets('menu uses a confirmed delete flow without activation controls', (
+  testWidgets('menu supports category filtering and a confirmed delete flow', (
     tester,
   ) async {
     tester.view
@@ -26,16 +26,23 @@ void main() {
     expect(imageAssets, contains('assets/images/menu_chicken_burger.jpg'));
     expect(find.text('Active'), findsNothing);
     expect(find.text('Inactive'), findsNothing);
-    expect(
-      tester.getTopLeft(find.text('All Items')).dy,
-      lessThan(tester.getTopLeft(find.text('1M')).dy),
-    );
+    expect(find.text('All Items'), findsNothing);
+    expect(find.text('All Categories'), findsOneWidget);
+    expect(find.text('By Profitability'), findsNothing);
 
     await tester.tap(find.text('3M'));
     await tester.pumpAndSettle();
 
     expect(find.text('June–August 2026'), findsOneWidget);
     expect(find.text('372'), findsWidgets);
+
+    await tester.tap(find.byKey(const ValueKey('menu-category-filter')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('menu-category-Burgers')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Chicken Burger'), findsOneWidget);
+    expect(find.text('Chicken Momo'), findsNothing);
 
     await tester.tap(find.byTooltip('Item actions').first);
     await tester.pumpAndSettle();

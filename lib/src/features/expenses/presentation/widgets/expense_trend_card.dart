@@ -1,13 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseTrendCard extends StatelessWidget {
   const ExpenseTrendCard({
@@ -33,7 +33,7 @@ class ExpenseTrendCard extends StatelessWidget {
       ExpensePeriod.year => 'Highest month',
     };
 
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -168,9 +168,12 @@ class ExpenseTrendCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const AppIcon(
+                SvgPicture.asset(
                   AppIcons.bar_chart_rounded,
-                  color: AppColors.expenseForeground,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.expenseForeground,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spaceXs),
                 Expanded(

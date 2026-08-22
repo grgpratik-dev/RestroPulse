@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/report_data.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfitabilityReportCard extends StatelessWidget {
   const ProfitabilityReportCard({
@@ -422,7 +422,7 @@ class OperationalHighlightsCard extends StatelessWidget {
     final wastage = _wastageData(report.period);
     final orders = _orderBehaviour(report.period);
 
-    return CustomContainer(
+    return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spaceMd),
       child: Column(
         children: [
@@ -514,7 +514,15 @@ class _OperationalHighlightRow extends StatelessWidget {
                 color: AppColors.mintSoft,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
-              child: AppIcon(icon, color: AppColors.primary, size: 21),
+              child: SvgPicture.asset(
+                icon,
+                width: 21,
+                height: 21,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
             const SizedBox(width: AppSpacing.spaceSm),
             Expanded(
@@ -547,10 +555,14 @@ class _OperationalHighlightRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 3),
-            AppIcon(
+            SvgPicture.asset(
               AppIcons.chevron_right_rounded,
-              size: 20,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              width: 20,
+              height: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurfaceVariant,
+                BlendMode.srcIn,
+              ),
             ),
           ],
         ),
@@ -614,7 +626,7 @@ class BusinessInsightsSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.spaceSm),
         for (final insight in insights) ...[
-          CustomContainer(
+          AppCard(
             padding: const EdgeInsets.all(AppSpacing.spaceMd),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -626,10 +638,14 @@ class BusinessInsightsSection extends StatelessWidget {
                     color: AppColors.mintSoft,
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: AppIcon(
+                  child: SvgPicture.asset(
                     insight.$1,
-                    color: AppColors.primary,
-                    size: 22,
+                    width: 22,
+                    height: 22,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.primary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
@@ -800,13 +816,21 @@ class _ReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              AppIcon(icon, color: AppColors.primary, size: 21),
+              SvgPicture.asset(
+                icon,
+                width: 21,
+                height: 21,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(
                 child: Text(
@@ -1049,7 +1073,15 @@ class _InsightBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppIcon(icon, color: AppColors.primary, size: 20),
+          SvgPicture.asset(
+            icon,
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary,
+              BlendMode.srcIn,
+            ),
+          ),
           const SizedBox(width: AppSpacing.spaceXs),
           Expanded(
             child: Column(
@@ -1099,9 +1131,12 @@ class _MissingData extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.spaceMd),
       child: Row(
         children: [
-          const AppIcon(
+          SvgPicture.asset(
             AppIcons.info_outline_rounded,
-            color: AppColors.warning,
+            colorFilter: const ColorFilter.mode(
+              AppColors.warning,
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(width: AppSpacing.spaceSm),
           Expanded(child: Text(message)),

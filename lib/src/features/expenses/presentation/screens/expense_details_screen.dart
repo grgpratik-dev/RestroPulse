@@ -1,20 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_info_row.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_info_row.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseDetailsResult {
   const ExpenseDetailsResult.updated(this.expense) : deleted = false;
@@ -44,7 +44,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, ExpenseDetailsResult.updated(_expense)),
-          icon: const AppIcon(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
         ),
         title: const Text('Expense Details'),
         actions: [
@@ -85,7 +85,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.spaceLg),
-            CustomContainer(
+            AppCard(
               child: Column(
                 children: [
                   AppInfoRow(
@@ -127,7 +127,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const AppIcon(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
               label: const Text('Delete Expense'),
             ),
           ],

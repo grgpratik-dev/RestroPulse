@@ -238,6 +238,8 @@ For every task:
 
 If a larger architectural change appears necessary, surface it rather than silently redesigning the project.
 
+Do not automatically create widget/UI tests for every feature. Only add UI tests when the interaction is complex, critical, or reasonably regression-prone. Prioritize tests for business logic and state behavior.
+
 ## Verification
 
 After modifying Dart/Flutter code, run as applicable:

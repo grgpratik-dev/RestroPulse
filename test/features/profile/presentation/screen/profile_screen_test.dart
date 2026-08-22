@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_svg_icon.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 
 void main() {
@@ -29,11 +29,14 @@ void main() {
     expect(find.text('Select currency'), findsOneWidget);
     expect(find.text('Nepalese Rupee'), findsOneWidget);
     expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is AppSvgIcon &&
-            widget.asset == AppIcons.check_circle_rounded,
-      ),
+      find.byWidgetPredicate((widget) {
+        if (widget is! SvgPicture || widget.bytesLoader is! SvgAssetLoader) {
+          return false;
+        }
+
+        return (widget.bytesLoader as SvgAssetLoader).assetName ==
+            AppIcons.check_circle_rounded;
+      }),
       findsOneWidget,
     );
   });

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/order_detail_widgets.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({required this.order, super.key});
@@ -32,7 +32,7 @@ class OrderDetailsScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Edit order',
             onPressed: () => _editOrder(context),
-            icon: const AppIcon(AppIcons.edit_outlined),
+            icon: SvgPicture.asset(AppIcons.edit_outlined),
           ),
         ],
       ),
@@ -46,7 +46,7 @@ class OrderDetailsScreen extends StatelessWidget {
             AppSpacing.spaceXl,
           ),
           children: [
-            CustomContainer(
+            AppCard(
               color: AppColors.splashAccent.withValues(alpha: .26),
               borderColor: AppColors.primary.withValues(alpha: .12),
               borderRadius: AppRadius.lg,
@@ -68,7 +68,7 @@ class OrderDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
-            CustomContainer(
+            AppCard(
               borderRadius: AppRadius.lg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,7 +106,7 @@ class OrderDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
-            CustomContainer(
+            AppCard(
               borderRadius: AppRadius.lg,
               child: Column(
                 children: [
@@ -126,7 +126,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 foregroundColor: theme.colorScheme.error,
                 side: BorderSide(color: theme.colorScheme.error),
               ),
-              icon: const AppIcon(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
               label: const Text('Delete Order'),
             ),
           ],

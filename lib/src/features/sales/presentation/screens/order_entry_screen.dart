@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/order_composer_widgets.dart';
 
@@ -448,7 +448,7 @@ class _BatchHeader extends StatelessWidget {
     final currency = NumberFormat.decimalPattern();
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       color: AppColors.splashAccent.withValues(alpha: .28),
       borderColor: AppColors.primary.withValues(alpha: .12),
       borderRadius: AppRadius.lg,
@@ -497,7 +497,7 @@ class _SessionOrdersCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
 
-    return CustomContainer(
+    return AppCard(
       borderRadius: AppRadius.lg,
       child: ExpansionTile(
         tilePadding: EdgeInsets.zero,

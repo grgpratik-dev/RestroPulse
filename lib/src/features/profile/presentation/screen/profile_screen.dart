@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
@@ -11,7 +12,6 @@ import '../widgets/logout_tile.dart';
 import '../widgets/profile_header_card.dart';
 import '../widgets/settings_section.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onLogout});
@@ -199,9 +199,12 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     title: const Text('NPR (Rs)'),
                     subtitle: const Text('Nepalese Rupee'),
-                    trailing: const AppIcon(
+                    trailing: SvgPicture.asset(
                       AppIcons.check_circle_rounded,
-                      color: AppColors.primary,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),

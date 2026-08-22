@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AccessRequestPendingView extends StatelessWidget {
   const AccessRequestPendingView({super.key});
@@ -27,10 +27,14 @@ class AccessRequestPendingView extends StatelessWidget {
                   color: AppColors.infoSurface,
                   shape: BoxShape.circle,
                 ),
-                child: const AppIcon(
+                child: SvgPicture.asset(
                   AppIcons.hourglass_top_rounded,
-                  color: AppColors.info,
-                  size: 36,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.info,
+                    BlendMode.srcIn,
+                  ),
+                  width: 36,
+                  height: 36,
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceLg),
@@ -62,15 +66,19 @@ class AccessRequestPendingView extends StatelessWidget {
                   color: AppColors.warningSoft,
                   borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    AppIcon(
+                    SvgPicture.asset(
                       AppIcons.schedule_rounded,
-                      color: AppColors.warning,
-                      size: 18,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.warning,
+                        BlendMode.srcIn,
+                      ),
+                      width: 18,
+                      height: 18,
                     ),
-                    SizedBox(width: AppSpacing.spaceXs),
-                    Expanded(
+                    const SizedBox(width: AppSpacing.spaceXs),
+                    const Expanded(
                       child: Text(
                         'Waiting for owner approval',
                         style: TextStyle(

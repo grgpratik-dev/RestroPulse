@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
@@ -7,7 +8,6 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/sales_order.dart';
 import 'order_channel_icon.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SalesOrderCard extends StatelessWidget {
   const SalesOrderCard({required this.order, required this.onTap, super.key});
@@ -120,10 +120,14 @@ class SalesOrderCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AppIcon(
+                          SvgPicture.asset(
                             AppIcons.schedule_rounded,
-                            size: 14,
-                            color: theme.colorScheme.onSurfaceVariant,
+                            width: 14,
+                            height: 14,
+                            colorFilter: ColorFilter.mode(
+                              theme.colorScheme.onSurfaceVariant,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           const SizedBox(width: AppSpacing.space2xs),
                           Text(
@@ -138,10 +142,14 @@ class SalesOrderCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: AppSpacing.space2xs),
-                  AppIcon(
+                  SvgPicture.asset(
                     AppIcons.chevron_right_rounded,
-                    size: 21,
-                    color: theme.colorScheme.onSurfaceVariant,
+                    width: 21,
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      theme.colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ],
               ),

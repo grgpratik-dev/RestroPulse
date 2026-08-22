@@ -1,14 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoryBreakdown extends StatelessWidget {
   const ExpenseCategoryBreakdown({
@@ -47,7 +47,7 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacing.spaceSm),
-        CustomContainer(
+        AppCard(
           padding: const EdgeInsets.all(AppSpacing.spaceMd),
           child: Column(
             children: [
@@ -186,10 +186,14 @@ class _CategoryRow extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               const SizedBox(width: 4),
-              AppIcon(
+              SvgPicture.asset(
                 AppIcons.chevron_right_rounded,
-                size: 20,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurfaceVariant,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ),

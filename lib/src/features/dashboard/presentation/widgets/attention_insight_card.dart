@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class AttentionInsightCard extends StatelessWidget {
   const AttentionInsightCard({
@@ -24,7 +24,7 @@ class AttentionInsightCard extends StatelessWidget {
         ? AppColors.successSurface
         : AppColors.warningSoft;
 
-    return CustomContainer(
+    return AppCard(
       color: background,
       borderColor: color.withValues(alpha: 0.18),
       borderRadius: AppRadius.lg,
@@ -38,11 +38,11 @@ class AttentionInsightCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.8),
               shape: BoxShape.circle,
             ),
-            child: AppIcon(
+            child: SvgPicture.asset(
               isHealthy
                   ? AppIcons.check_circle_outline_rounded
                   : AppIcons.warning_amber_rounded,
-              color: color,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
           ),
           const SizedBox(width: AppSpacing.spaceSm),

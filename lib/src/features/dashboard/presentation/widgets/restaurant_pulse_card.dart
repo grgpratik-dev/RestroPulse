@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 import 'restaurant_pulse_heart.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantPulseCard extends StatelessWidget {
   const RestaurantPulseCard({
@@ -24,7 +24,7 @@ class RestaurantPulseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       color: hasData ? AppColors.primaryStrong : AppColors.surface,
       borderColor: hasData
           ? AppColors.primaryStrong
@@ -67,16 +67,20 @@ class RestaurantPulseCard extends StatelessWidget {
                       color: AppColors.surface,
                       borderRadius: BorderRadius.circular(AppRadius.full),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        AppIcon(
+                        SvgPicture.asset(
                           AppIcons.check_circle_rounded,
-                          color: AppColors.success,
-                          size: 18,
+                          width: 18,
+                          height: 18,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.success,
+                            BlendMode.srcIn,
+                          ),
                         ),
-                        SizedBox(width: AppSpacing.spaceXs),
-                        Flexible(
+                        const SizedBox(width: AppSpacing.spaceXs),
+                        const Flexible(
                           child: Text(
                             'Excellent Health',
                             style: TextStyle(
@@ -129,10 +133,14 @@ class RestaurantPulseCard extends StatelessWidget {
               color: AppColors.surface,
               shape: BoxShape.circle,
             ),
-            child: const AppIcon(
+            child: SvgPicture.asset(
               AppIcons.monitor_heart_outlined,
-              color: AppColors.primary,
-              size: 28,
+              width: 28,
+              height: 28,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

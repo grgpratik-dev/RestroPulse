@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class SalesLoadingSkeleton extends StatelessWidget {
   const SalesLoadingSkeleton({super.key});
@@ -34,13 +34,17 @@ class SalesErrorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       child: Column(
         children: [
-          AppIcon(
+          SvgPicture.asset(
             AppIcons.cloud_off_outlined,
-            size: 42,
-            color: theme.colorScheme.error,
+            width: 42,
+            height: 42,
+            colorFilter: ColorFilter.mode(
+              theme.colorScheme.error,
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(height: AppSpacing.spaceMd),
           Text(
@@ -74,7 +78,7 @@ class SalesOrdersEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       color: AppColors.splashAccent.withValues(alpha: .25),
       borderColor: AppColors.primary.withValues(alpha: .12),
       child: Column(
@@ -86,10 +90,14 @@ class SalesOrdersEmptyState extends StatelessWidget {
               color: AppColors.surface,
               shape: BoxShape.circle,
             ),
-            child: const AppIcon(
+            child: SvgPicture.asset(
               AppIcons.receipt_long_outlined,
-              size: 32,
-              color: AppColors.primary,
+              width: 32,
+              height: 32,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.spaceMd),
@@ -112,7 +120,7 @@ class SalesOrdersEmptyState extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               onPressed: onRecordSales,
-              icon: const AppIcon(AppIcons.add_rounded),
+              icon: SvgPicture.asset(AppIcons.add_rounded),
               label: const Text('Record Sales'),
             ),
           ),
@@ -129,7 +137,7 @@ class _SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContainer(
+    return AppCard(
       child: SizedBox(
         height: height,
         child: Column(

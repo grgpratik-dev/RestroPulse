@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/wastage.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageFormScreen extends StatefulWidget {
   const WastageFormScreen({this.entry, super.key});
@@ -220,9 +220,11 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 onTap: _pickDate,
                 borderRadius: BorderRadius.circular(16),
                 child: InputDecorator(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Date',
-                    suffixIcon: AppIcon(AppIcons.calendar_today_outlined),
+                    suffixIcon: SvgPicture.asset(
+                      AppIcons.calendar_today_outlined,
+                    ),
                   ),
                   child: Text(DateFormat('MMM d, yyyy').format(_date)),
                 ),

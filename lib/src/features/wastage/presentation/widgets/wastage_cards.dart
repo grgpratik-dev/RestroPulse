@@ -1,15 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_section_heading.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_section_heading.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/wastage.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageSummaryCard extends StatelessWidget {
   const WastageSummaryCard({required this.snapshot, super.key});
@@ -20,7 +20,7 @@ class WastageSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     final improving = snapshot.change < 0;
-    return CustomContainer(
+    return AppCard(
       color: AppColors.ink,
       borderColor: AppColors.ink,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),
@@ -109,7 +109,7 @@ class WastageTrendCard extends StatelessWidget {
       WastagePeriod.month => 'Highest wastage week',
       WastagePeriod.quarter => 'Highest wastage month',
     };
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -277,11 +277,14 @@ class MostWastedItemsSection extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: AppColors.warningMuted,
-                  child: AppIcon(
+                  child: SvgPicture.asset(
                     index == 0
                         ? AppIcons.set_meal_outlined
                         : AppIcons.eco_outlined,
-                    color: AppColors.warning,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.warning,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
@@ -336,11 +339,14 @@ class RecentWastageSection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       backgroundColor: AppColors.warningMuted,
-                      child: AppIcon(
+                      child: SvgPicture.asset(
                         AppIcons.delete_sweep_outlined,
-                        color: AppColors.warning,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.warning,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
@@ -370,7 +376,11 @@ class RecentWastageSection extends StatelessWidget {
                       'Rs ${currency.format(entries[index].estimatedLoss)}',
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    const AppIcon(AppIcons.chevron_right_rounded, size: 20),
+                    SvgPicture.asset(
+                      AppIcons.chevron_right_rounded,
+                      width: 20,
+                      height: 20,
+                    ),
                   ],
                 ),
               ),
@@ -402,7 +412,7 @@ class _Section extends StatelessWidget {
     children: [
       AppSectionHeading(title: title),
       const SizedBox(height: AppSpacing.spaceSm),
-      CustomContainer(child: child),
+      AppCard(child: child),
     ],
   );
 }

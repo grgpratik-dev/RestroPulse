@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import '../../../../core/widgets/app_card.dart';
 
 class SelectedDateSummaryCard extends StatelessWidget {
   const SelectedDateSummaryCard({
@@ -29,7 +29,7 @@ class SelectedDateSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     final theme = Theme.of(context);
-    return CustomContainer(
+    return AppCard(
       color: AppColors.splashAccent.withValues(alpha: .28),
       borderColor: AppColors.primary.withValues(alpha: .12),
       borderRadius: AppRadius.lg,
@@ -38,10 +38,14 @@ class SelectedDateSummaryCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const AppIcon(
+              SvgPicture.asset(
                 AppIcons.calendar_today_outlined,
-                color: AppColors.primary,
-                size: 18,
+                width: 18,
+                height: 18,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Text(

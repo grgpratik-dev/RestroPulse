@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
@@ -7,7 +8,6 @@ import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../domain/models/menu_item.dart';
 import '../widgets/menu_item_detail_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemDetailsScreen extends StatefulWidget {
   const MenuItemDetailsScreen({
@@ -65,7 +65,7 @@ class _MenuItemDetailsScreenState extends State<MenuItemDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const AppIcon(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
               label: const Text('Delete Menu Item'),
             ),
           ],

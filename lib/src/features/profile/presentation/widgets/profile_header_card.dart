@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({required this.onEdit, super.key});
@@ -63,10 +63,14 @@ class ProfileHeaderCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.space2xs),
                 Row(
                   children: [
-                    AppIcon(
+                    SvgPicture.asset(
                       AppIcons.location_on_outlined,
-                      size: 16,
-                      color: colorScheme.onSurfaceVariant,
+                      colorFilter: ColorFilter.mode(
+                        colorScheme.onSurfaceVariant,
+                        BlendMode.srcIn,
+                      ),
+                      width: 16,
+                      height: 16,
                     ),
                     const SizedBox(width: AppSpacing.space2xs),
                     Flexible(
@@ -93,7 +97,11 @@ class ProfileHeaderCard extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.28),
                     ),
                   ),
-                  icon: const AppIcon(AppIcons.edit_outlined, size: 17),
+                  icon: SvgPicture.asset(
+                    AppIcons.edit_outlined,
+                    width: 17,
+                    height: 17,
+                  ),
                   label: const Text('Edit Restaurant'),
                 ),
               ],
@@ -121,10 +129,14 @@ class _RestaurantAvatar extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
         ),
-        child: const AppIcon(
+        child: SvgPicture.asset(
           AppIcons.storefront_rounded,
-          color: AppColors.primary,
-          size: 28,
+          colorFilter: const ColorFilter.mode(
+            AppColors.primary,
+            BlendMode.srcIn,
+          ),
+          width: 28,
+          height: 28,
         ),
       ),
     );

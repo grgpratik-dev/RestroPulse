@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
 import '../../domain/models/expense.dart';
 import 'expense_category_icon.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RecentExpensesList extends StatelessWidget {
   const RecentExpensesList({
@@ -37,12 +37,16 @@ class RecentExpensesList extends StatelessWidget {
             ),
             TextButton(
               onPressed: onViewHistory,
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('View all'),
                   SizedBox(width: 2),
-                  AppIcon(AppIcons.arrow_forward_rounded, size: 18),
+                  SvgPicture.asset(
+                    AppIcons.arrow_forward_rounded,
+                    width: 18,
+                    height: 18,
+                  ),
                 ],
               ),
             ),
@@ -50,7 +54,7 @@ class RecentExpensesList extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.spaceSm),
         if (expenses.isEmpty)
-          const CustomContainer(
+          const AppCard(
             child: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.spaceLg),
@@ -59,7 +63,7 @@ class RecentExpensesList extends StatelessWidget {
             ),
           )
         else
-          CustomContainer(
+          AppCard(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.spaceSm,
               vertical: AppSpacing.spaceXs,
@@ -135,7 +139,11 @@ class _ExpenseRow extends StatelessWidget {
               'Rs ${currency.format(expense.amount)}',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
-            const AppIcon(AppIcons.chevron_right_rounded, size: 20),
+            SvgPicture.asset(
+              AppIcons.chevron_right_rounded,
+              width: 20,
+              height: 20,
+            ),
           ],
         ),
       ),

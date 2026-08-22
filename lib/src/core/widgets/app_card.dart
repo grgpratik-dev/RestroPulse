@@ -4,8 +4,8 @@ import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
 
-class CustomContainer extends StatelessWidget {
-  const CustomContainer({
+class AppCard extends StatelessWidget {
+  const AppCard({
     required this.child,
     this.padding = const EdgeInsets.all(AppSpacing.spaceMd),
     this.color = AppColors.surface,

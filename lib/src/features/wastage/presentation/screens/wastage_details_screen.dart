@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_info_row.dart';
 import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_info_row.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/wastage.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class WastageDetailsResult {
   const WastageDetailsResult.updated(this.entry) : deleted = false;
@@ -39,7 +39,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
         leading: IconButton(
           onPressed: () =>
               Navigator.pop(context, WastageDetailsResult.updated(_entry)),
-          icon: const AppIcon(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
         ),
         title: const Text('Wastage Details'),
         actions: [
@@ -55,13 +55,17 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
             Center(
               child: Column(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 36,
                     backgroundColor: AppColors.warningMuted,
-                    child: AppIcon(
+                    child: SvgPicture.asset(
                       AppIcons.delete_sweep_outlined,
-                      color: AppColors.warning,
-                      size: 36,
+                      width: 36,
+                      height: 36,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.warning,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
@@ -84,7 +88,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.spaceLg),
-            CustomContainer(
+            AppCard(
               child: Column(
                 children: [
                   AppInfoRow(label: 'Reason', value: _entry.reason.label),
@@ -116,7 +120,7 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
                 foregroundColor: Theme.of(context).colorScheme.error,
                 side: BorderSide(color: Theme.of(context).colorScheme.error),
               ),
-              icon: const AppIcon(AppIcons.delete_outline_rounded),
+              icon: SvgPicture.asset(AppIcons.delete_outline_rounded),
               label: const Text('Delete Entry'),
             ),
           ],

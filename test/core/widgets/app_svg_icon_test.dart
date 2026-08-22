@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
 import 'package:restropulse/src/features/expenses/presentation/widgets/expense_category_icon.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
@@ -28,35 +27,40 @@ void main() {
     expect(assets.every((asset) => asset.endsWith('.svg')), isTrue);
   });
 
-  testWidgets(
-    'category and order assets render through the shared SVG widget',
-    (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Row(
-              children: [
-                ExpenseCategoryIcon(category: 'Ingredients'),
-                OrderChannelIcon(channel: OrderChannel.delivery),
-              ],
-            ),
+  testWidgets('category and order assets render as SVG pictures', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Row(
+            children: [
+              ExpenseCategoryIcon(category: 'Ingredients'),
+              OrderChannelIcon(channel: OrderChannel.delivery),
+            ],
           ),
         ),
-      );
+      ),
+    );
 
-      expect(find.byType(SvgPicture), findsNWidgets(2));
-      expect(tester.takeException(), isNull);
-    },
-  );
+    expect(find.byType(SvgPicture), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('keeps artwork compact inside a tightly constrained icon slot', (
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: SizedBox.square(
           dimension: 48,
-          child: AppIcon(AppIcons.email_outlined),
+          child: Center(
+            child: SvgPicture.asset(
+              AppIcons.email_outlined,
+              width: 24,
+              height: 24,
+            ),
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
@@ -7,7 +8,6 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import '../widgets/ambient_glow_widget.dart';
 import '../widgets/fields_label_widget.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Enter full name',
-                                  prefixIcon: const AppIcon(
+                                  prefixIcon: SvgPicture.asset(
                                     AppIcons.person_outline_rounded,
                                   ),
                                 ),
@@ -106,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Enter email address',
-                                  prefixIcon: const AppIcon(
+                                  prefixIcon: SvgPicture.asset(
                                     AppIcons.email_outlined,
                                   ),
                                 ),
@@ -125,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Create a password',
-                                  prefixIcon: const AppIcon(
+                                  prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline_rounded,
                                   ),
                                   suffixIcon: IconButton(
@@ -137,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         _obscurePassword = !_obscurePassword;
                                       });
                                     },
-                                    icon: AppIcon(
+                                    icon: SvgPicture.asset(
                                       _obscurePassword
                                           ? AppIcons.visibility_off_outlined
                                           : AppIcons.visibility_outlined,
@@ -159,7 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   fillColor: colorScheme.surface,
                                   hintText: 'Re-enter your password',
-                                  prefixIcon: const AppIcon(
+                                  prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline,
                                   ),
                                   suffixIcon: IconButton(
@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             !_obscureConfirmation;
                                       });
                                     },
-                                    icon: AppIcon(
+                                    icon: SvgPicture.asset(
                                       _obscureConfirmation
                                           ? AppIcons.visibility_off_outlined
                                           : AppIcons.visibility_outlined,

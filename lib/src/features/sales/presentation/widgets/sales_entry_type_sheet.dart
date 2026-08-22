@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum SalesEntryType { singleOrder, batchEntry }
 
@@ -114,9 +114,12 @@ class _EntryOption extends StatelessWidget {
                   color: emphasized ? AppColors.primary : AppColors.mintSoft,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: AppIcon(
+                child: SvgPicture.asset(
                   icon,
-                  color: emphasized ? Colors.white : AppColors.primary,
+                  colorFilter: ColorFilter.mode(
+                    emphasized ? Colors.white : AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
@@ -168,7 +171,7 @@ class _EntryOption extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
-              const AppIcon(AppIcons.chevron_right_rounded),
+              SvgPicture.asset(AppIcons.chevron_right_rounded),
             ],
           ),
         ),

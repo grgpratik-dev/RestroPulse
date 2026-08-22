@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/expense.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategorySummaryCard extends StatelessWidget {
   const ExpenseCategorySummaryCard({
@@ -128,7 +128,7 @@ class ExpenseCategoryTile extends StatelessWidget {
                     ),
                   ),
               ],
-              icon: const AppIcon(AppIcons.more_vert_rounded),
+              icon: SvgPicture.asset(AppIcons.more_vert_rounded),
             ),
           ],
         ),

@@ -2,7 +2,7 @@
 
 The application icons in this directory come from the free Hugeicons
 stroke-rounded collection and use its consistent 24 × 24 grid and 1.5px
-rounded strokes. They are rendered through `AppIcon`/`AppSvgIcon`.
+rounded strokes. They are rendered directly with `SvgPicture.asset`.
 
 - Source: https://github.com/hugeicons/hugeicons-static
 - Author: Hugeicons

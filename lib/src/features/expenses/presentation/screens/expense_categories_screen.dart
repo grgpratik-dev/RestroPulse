@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
@@ -8,7 +9,6 @@ import '../../../../core/widgets/app_divider.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoriesScreen extends StatefulWidget {
   const ExpenseCategoriesScreen({super.key});
@@ -54,7 +54,7 @@ class _ExpenseCategoriesScreenState extends State<ExpenseCategoriesScreen> {
         backgroundColor: AppColors.expenseAccent,
         foregroundColor: AppColors.surface,
         onPressed: _addCategory,
-        child: const AppIcon(AppIcons.add_rounded),
+        child: SvgPicture.asset(AppIcons.add_rounded),
       ),
       body: SafeArea(
         top: false,

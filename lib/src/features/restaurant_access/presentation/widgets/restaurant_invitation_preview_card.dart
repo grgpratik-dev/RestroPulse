@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantInvitationPreviewCard extends StatelessWidget {
   const RestaurantInvitationPreviewCard({required this.onRequest, super.key});
@@ -42,10 +42,14 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: const AppIcon(
+                child: SvgPicture.asset(
                   AppIcons.storefront_rounded,
-                  color: AppColors.primary,
-                  size: 27,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
+                  width: 27,
+                  height: 27,
                 ),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
@@ -70,10 +74,14 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const AppIcon(
+              SvgPicture.asset(
                 AppIcons.verified_rounded,
-                color: AppColors.primary,
-                size: 22,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+                width: 22,
+                height: 22,
               ),
             ],
           ),
@@ -111,10 +119,14 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AppIcon(
+              SvgPicture.asset(
                 AppIcons.visibility_outlined,
-                color: AppColors.info,
-                size: 19,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.info,
+                  BlendMode.srcIn,
+                ),
+                width: 19,
+                height: 19,
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(

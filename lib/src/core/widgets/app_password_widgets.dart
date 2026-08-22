@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AppPasswordField extends StatelessWidget {
   const AppPasswordField({
@@ -47,7 +47,7 @@ class AppPasswordField extends StatelessWidget {
         suffixIcon: IconButton(
           tooltip: obscureText ? 'Show $label' : 'Hide $label',
           onPressed: onVisibilityChanged,
-          icon: AppIcon(
+          icon: SvgPicture.asset(
             obscureText
                 ? AppIcons.visibility_off_outlined
                 : AppIcons.visibility_outlined,
@@ -118,10 +118,11 @@ class _PasswordRequirement extends StatelessWidget {
     final color = isMet ? AppColors.success : AppColors.neutral500;
     return Row(
       children: [
-        AppIcon(
+        SvgPicture.asset(
           isMet ? AppIcons.check_circle_rounded : AppIcons.circle_outlined,
-          color: color,
-          size: 18,
+          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          width: 16,
+          height: 16,
         ),
         const SizedBox(width: AppSpacing.spaceXs),
         Text(

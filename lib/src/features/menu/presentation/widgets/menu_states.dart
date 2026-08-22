@@ -26,21 +26,6 @@ class MenuEmptyState extends StatelessWidget {
   }
 }
 
-class MenuNoResultsState extends StatelessWidget {
-  const MenuNoResultsState({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppStateMessage(
-      icon: AppIcons.search_off_rounded,
-      title: 'No menu items found',
-      message: 'Try another name, category, or performance filter.',
-      verticalPadding: AppSpacing.space2xl,
-      maxWidth: 320,
-    );
-  }
-}
-
 class MenuErrorState extends StatelessWidget {
   const MenuErrorState({required this.onRetry, super.key});
 

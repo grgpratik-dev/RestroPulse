@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
@@ -6,7 +7,6 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'widgets/password_recovery_header.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 typedef SendResetLink = Future<void> Function(String email);
 
@@ -51,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         leading: IconButton(
           tooltip: 'Back to sign in',
           onPressed: _backToLogin,
-          icon: const AppIcon(AppIcons.arrow_back_rounded),
+          icon: SvgPicture.asset(AppIcons.arrow_back_rounded),
         ),
       ),
       body: SafeArea(
@@ -96,10 +96,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Email address',
               hintText: 'Enter your email',
-              prefixIcon: AppIcon(AppIcons.email_outlined),
+              prefixIcon: SvgPicture.asset(AppIcons.email_outlined),
             ),
             validator: _validateEmail,
             onFieldSubmitted: (_) => _sendResetLink(),

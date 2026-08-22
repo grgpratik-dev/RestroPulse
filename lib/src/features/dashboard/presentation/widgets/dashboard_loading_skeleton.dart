@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class DashboardLoadingSkeleton extends StatelessWidget {
   const DashboardLoadingSkeleton({super.key});
@@ -48,7 +48,7 @@ class DashboardErrorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       child: Column(
         children: [
           Container(
@@ -58,9 +58,12 @@ class DashboardErrorCard extends StatelessWidget {
               color: theme.colorScheme.errorContainer,
               shape: BoxShape.circle,
             ),
-            child: AppIcon(
+            child: SvgPicture.asset(
               AppIcons.cloud_off_outlined,
-              color: theme.colorScheme.onErrorContainer,
+              colorFilter: ColorFilter.mode(
+                theme.colorScheme.onErrorContainer,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.spaceMd),
@@ -94,7 +97,7 @@ class _SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContainer(
+    return AppCard(
       child: SizedBox(
         height: height,
         child: Column(

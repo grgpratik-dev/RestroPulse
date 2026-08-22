@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/menu_item.dart';
 
 class MenuSummaryCard extends StatelessWidget {
@@ -20,7 +20,7 @@ class MenuSummaryCard extends StatelessWidget {
         ? null
         : items.reduce((a, b) => a.unitsSold >= b.unitsSold ? a : b);
 
-    return CustomContainer(
+    return AppCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.spaceMd,
         vertical: AppSpacing.spaceSm,

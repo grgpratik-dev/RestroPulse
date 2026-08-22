@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-
-import 'app_svg_icon.dart';
 
 /// Describes a destination displayed by [AppBottomNavigationBar].
 ///
@@ -76,7 +75,12 @@ class _NavigationSvg extends StatelessWidget {
 
     return Transform.translate(
       offset: const Offset(0, 4),
-      child: AppSvgIcon(asset: asset, size: 24, color: color),
+      child: SvgPicture.asset(
+        asset,
+        width: 24,
+        height: 24,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      ),
     );
   }
 }

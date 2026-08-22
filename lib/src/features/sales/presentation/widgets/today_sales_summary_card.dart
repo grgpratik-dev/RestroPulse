@@ -4,7 +4,7 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/app/theme/app_typography.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class TodaySalesSummaryCard extends StatelessWidget {
   const TodaySalesSummaryCard({super.key});
@@ -13,7 +13,7 @@ class TodaySalesSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       color: AppColors.primaryStrong,
       borderColor: AppColors.primaryStrong,
       borderRadius: AppRadius.lg,

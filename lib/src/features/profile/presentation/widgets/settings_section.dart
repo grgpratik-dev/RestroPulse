@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
@@ -28,10 +28,7 @@ class SettingsSection extends StatelessWidget {
             left: AppSpacing.space2xs,
             bottom: AppSpacing.spaceSm,
           ),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
         ),
         Container(
           clipBehavior: Clip.antiAlias,
@@ -108,7 +105,15 @@ class SettingsTile extends StatelessWidget {
                     color: AppColors.splashAccent.withValues(alpha: 0.42),
                     borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: AppIcon(icon, color: AppColors.primary, size: 18),
+                  child: SvgPicture.asset(
+                    icon,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.primary,
+                      BlendMode.srcIn,
+                    ),
+                    width: 18,
+                    height: 18,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spaceSm),
                 Expanded(
@@ -135,9 +140,12 @@ class SettingsTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.spaceXs),
-                AppIcon(
+                SvgPicture.asset(
                   AppIcons.chevron_right_rounded,
-                  color: colorScheme.onSurfaceVariant,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.onSurfaceVariant,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ],
             ),

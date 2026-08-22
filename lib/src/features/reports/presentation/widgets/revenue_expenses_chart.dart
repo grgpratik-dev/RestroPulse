@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/report_data.dart';
 
 class RevenueExpensesChart extends StatelessWidget {
@@ -25,7 +25,7 @@ class RevenueExpensesChart extends StatelessWidget {
     final interval = _axisInterval(maxValue);
     final maxY = (maxValue / interval).ceil() * interval;
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

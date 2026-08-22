@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class RestaurantAccessOptionCard extends StatelessWidget {
   const RestaurantAccessOptionCard({
@@ -63,7 +63,12 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
-                      child: AppIcon(icon, color: accent, size: 26),
+                      child: SvgPicture.asset(
+                        icon,
+                        colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                        width: 26,
+                        height: 26,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
                     Expanded(
@@ -114,12 +119,13 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppIcon(
+                    SvgPicture.asset(
                       isViewer
                           ? AppIcons.visibility_outlined
                           : AppIcons.verified_user_outlined,
-                      color: accent,
-                      size: 18,
+                      colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                      width: 18,
+                      height: 18,
                     ),
                     const SizedBox(width: AppSpacing.spaceXs),
                     Expanded(
@@ -145,10 +151,11 @@ class RestaurantAccessOptionCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: AppSpacing.space2xs),
-                    AppIcon(
+                    SvgPicture.asset(
                       AppIcons.arrow_forward_rounded,
-                      color: accent,
-                      size: 19,
+                      colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+                      width: 19,
+                      height: 19,
                     ),
                   ],
                 ),

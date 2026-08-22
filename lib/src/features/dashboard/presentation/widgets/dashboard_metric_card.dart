@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/app/theme/app_typography.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
 
 enum MetricStatus { positive, negative, warning, neutral }
 
@@ -36,7 +36,7 @@ class DashboardMetricCard extends StatelessWidget {
       MetricStatus.neutral => theme.colorScheme.onSurfaceVariant,
     };
 
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,7 +51,12 @@ class DashboardMetricCard extends StatelessWidget {
                       : AppColors.splashAccent.withValues(alpha: 0.36),
                   borderRadius: BorderRadius.circular(AppRadius.xs),
                 ),
-                child: AppIcon(icon, color: statusColor, size: 17),
+                child: SvgPicture.asset(
+                  icon,
+                  width: 17,
+                  height: 17,
+                  colorFilter: ColorFilter.mode(statusColor, BlendMode.srcIn),
+                ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Expanded(

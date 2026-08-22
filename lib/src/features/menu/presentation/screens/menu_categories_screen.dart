@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
@@ -7,7 +8,6 @@ import '../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../core/widgets/app_divider.dart';
 import '../widgets/menu_category_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuCategoriesScreen extends StatefulWidget {
   const MenuCategoriesScreen({super.key});
@@ -47,7 +47,7 @@ class _MenuCategoriesScreenState extends State<MenuCategoriesScreen> {
         key: const ValueKey('menu-category-add-button'),
         tooltip: 'Add category',
         onPressed: _editCategory,
-        child: const AppIcon(AppIcons.add_rounded),
+        child: SvgPicture.asset(AppIcons.add_rounded),
       ),
       body: SafeArea(
         top: false,

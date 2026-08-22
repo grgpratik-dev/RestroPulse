@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({
@@ -108,7 +108,12 @@ class _QuickAction extends StatelessWidget {
           ),
           child: Column(
             children: [
-              AppIcon(icon, color: foreground, size: 23),
+              SvgPicture.asset(
+                icon,
+                width: 23,
+                height: 23,
+                colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
+              ),
               const SizedBox(height: AppSpacing.spaceXs),
               Text(
                 label,

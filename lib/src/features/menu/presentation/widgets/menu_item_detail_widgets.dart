@@ -1,14 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/menu_item.dart';
 import 'menu_performance_chip.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuItemHeader extends StatelessWidget {
   const MenuItemHeader({required this.item, super.key});
@@ -26,10 +26,14 @@ class MenuItemHeader extends StatelessWidget {
             color: AppColors.mintSoft,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const AppIcon(
+          child: SvgPicture.asset(
             AppIcons.restaurant_menu_rounded,
-            color: AppColors.primary,
-            size: 36,
+            width: 36,
+            height: 36,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(width: AppSpacing.spaceMd),
@@ -66,7 +70,7 @@ class MenuPricingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -130,16 +134,20 @@ class MenuPerformanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (item.unitsSold == 0) {
-      return const CustomContainer(
+      return AppCard(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.spaceLg),
           child: Center(
             child: Column(
               children: [
-                AppIcon(
+                SvgPicture.asset(
                   AppIcons.bar_chart_rounded,
-                  size: 38,
-                  color: AppColors.primary,
+                  width: 38,
+                  height: 38,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 SizedBox(height: AppSpacing.spaceSm),
                 Text(
@@ -156,7 +164,7 @@ class MenuPerformanceCard extends StatelessWidget {
     }
 
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -269,7 +277,7 @@ class MenuClassificationCard extends StatelessWidget {
       item,
       demandMultiplier: demandMultiplier,
     );
-    return CustomContainer(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -300,10 +308,14 @@ class MenuClassificationCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppIcon(
+                SvgPicture.asset(
                   AppIcons.lightbulb_outline_rounded,
-                  color: AppColors.primary,
-                  size: 21,
+                  width: 21,
+                  height: 21,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.spaceXs),
                 Expanded(child: Text(status.recommendation)),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../app/di/dependency_injection.dart';
@@ -10,7 +11,6 @@ import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_receipt_picker.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseFormScreen extends StatelessWidget {
   const ExpenseFormScreen({this.expense, super.key});
@@ -222,9 +222,11 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   onTap: _pickDate,
                   borderRadius: BorderRadius.circular(16),
                   child: InputDecorator(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Date',
-                      suffixIcon: AppIcon(AppIcons.calendar_today_outlined),
+                      suffixIcon: SvgPicture.asset(
+                        AppIcons.calendar_today_outlined,
+                      ),
                     ),
                     child: Text(DateFormat('MMM d, yyyy').format(_date)),
                   ),

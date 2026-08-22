@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
@@ -7,7 +8,6 @@ import 'package:restropulse/src/features/restaurant_access/presentation/widgets/
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_invitation_preview_card.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class JoinRestaurantScreen extends StatefulWidget {
   const JoinRestaurantScreen({this.onJoined, super.key});
@@ -70,16 +70,20 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                   AppRadius.full,
                                 ),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  AppIcon(
+                                  SvgPicture.asset(
                                     AppIcons.visibility_outlined,
-                                    color: AppColors.info,
-                                    size: 17,
+                                    colorFilter: const ColorFilter.mode(
+                                      AppColors.info,
+                                      BlendMode.srcIn,
+                                    ),
+                                    width: 17,
+                                    height: 17,
                                   ),
-                                  SizedBox(width: AppSpacing.spaceXs),
-                                  Text(
+                                  const SizedBox(width: AppSpacing.spaceXs),
+                                  const Text(
                                     'Viewer access',
                                     style: TextStyle(
                                       color: AppColors.info,
@@ -118,10 +122,14 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const AppIcon(
+                                SvgPicture.asset(
                                   AppIcons.lock_outline_rounded,
-                                  color: AppColors.info,
-                                  size: 21,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.info,
+                                    BlendMode.srcIn,
+                                  ),
+                                  width: 21,
+                                  height: 21,
                                 ),
                                 const SizedBox(width: AppSpacing.spaceSm),
                                 Expanded(
@@ -171,13 +179,13 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                   onFieldSubmitted: (_) => _findRestaurant(),
                                   decoration: InputDecoration(
                                     hintText: 'e.g. RP-7K9M2',
-                                    prefixIcon: const AppIcon(
+                                    prefixIcon: SvgPicture.asset(
                                       AppIcons.vpn_key_outlined,
                                     ),
                                     suffixIcon: IconButton(
                                       tooltip: 'Paste invitation code',
                                       onPressed: _pasteCode,
-                                      icon: const AppIcon(
+                                      icon: SvgPicture.asset(
                                         AppIcons.content_paste_rounded,
                                       ),
                                     ),

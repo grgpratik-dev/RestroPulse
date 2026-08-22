@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/sales_order.dart';
 import '../widgets/sales_channel_card.dart';
 import '../widgets/sales_history_widgets.dart';
 import '../widgets/sales_order_card.dart';
 import 'order_details_screen.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class SalesHistoryScreen extends StatefulWidget {
   const SalesHistoryScreen({this.initialDate, super.key});
@@ -49,7 +49,7 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
             key: const ValueKey('sales-history-calendar'),
             tooltip: 'Choose date',
             onPressed: _pickDate,
-            icon: const AppIcon(AppIcons.calendar_month_outlined),
+            icon: SvgPicture.asset(AppIcons.calendar_month_outlined),
           ),
           const SizedBox(width: AppSpacing.spaceXs),
         ],
@@ -141,7 +141,7 @@ class _NoSalesForDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return CustomContainer(
+    return AppCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.spaceLg,
         vertical: AppSpacing.space2xl,
@@ -155,10 +155,14 @@ class _NoSalesForDate extends StatelessWidget {
               color: AppColors.splashAccent.withValues(alpha: .42),
               borderRadius: BorderRadius.circular(AppRadius.lg),
             ),
-            child: const AppIcon(
+            child: SvgPicture.asset(
               AppIcons.event_busy_outlined,
-              color: AppColors.primary,
-              size: 30,
+              width: 30,
+              height: 30,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.spaceMd),
@@ -180,7 +184,7 @@ class _NoSalesForDate extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceLg),
           OutlinedButton.icon(
             onPressed: onChooseDate,
-            icon: const AppIcon(AppIcons.calendar_month_outlined),
+            icon: SvgPicture.asset(AppIcons.calendar_month_outlined),
             label: const Text('Choose another date'),
           ),
         ],

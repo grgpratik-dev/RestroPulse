@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ProfileFormSection extends StatelessWidget {
   const ProfileFormSection({
@@ -80,12 +80,16 @@ class ProfileImageEditor extends StatelessWidget {
                       : null,
                   border: Border.all(color: AppColors.mintBright),
                 ),
-                child: AppIcon(
+                child: SvgPicture.asset(
                   isRestaurant
                       ? AppIcons.storefront_rounded
                       : AppIcons.person_rounded,
-                  color: AppColors.primary,
-                  size: 44,
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
+                  width: 44,
+                  height: 44,
                 ),
               ),
               Positioned(
@@ -102,12 +106,16 @@ class ProfileImageEditor extends StatelessWidget {
                     ),
                     onTap: onTap,
                     customBorder: const CircleBorder(),
-                    child: const Padding(
-                      padding: EdgeInsets.all(AppSpacing.spaceXs),
-                      child: AppIcon(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.spaceXs),
+                      child: SvgPicture.asset(
                         AppIcons.camera_alt_outlined,
-                        color: AppColors.surface,
-                        size: 19,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.surface,
+                          BlendMode.srcIn,
+                        ),
+                        width: 19,
+                        height: 19,
                       ),
                     ),
                   ),
@@ -158,12 +166,12 @@ Future<void> showProfileImageOptions(
             ),
             const SizedBox(height: AppSpacing.spaceSm),
             ListTile(
-              leading: const AppIcon(AppIcons.photo_library_outlined),
+              leading: SvgPicture.asset(AppIcons.photo_library_outlined),
               title: const Text('Choose from gallery'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),
             ListTile(
-              leading: const AppIcon(AppIcons.camera_alt_outlined),
+              leading: SvgPicture.asset(AppIcons.camera_alt_outlined),
               title: const Text('Take a photo'),
               onTap: () => Navigator.of(sheetContext).pop(),
             ),

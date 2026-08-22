@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class IssueCategorySelector extends StatelessWidget {
   const IssueCategorySelector({
@@ -20,10 +20,10 @@ class IssueCategorySelector extends StatelessWidget {
       key: const ValueKey('issue-category-field'),
       initialValue: value,
       isExpanded: true,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         labelText: 'Issue Category',
         hintText: 'Select a category',
-        prefixIcon: AppIcon(AppIcons.category_outlined),
+        prefixIcon: SvgPicture.asset(AppIcons.category_outlined),
       ),
       items: [
         for (final item in items)

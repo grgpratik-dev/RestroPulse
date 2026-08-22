@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 /// Shared primary create action for bottom-navigation feature screens.
 class AppAddFloatingActionButton extends StatelessWidget {
@@ -28,7 +28,13 @@ class AppAddFloatingActionButton extends StatelessWidget {
         heroTag: heroTag,
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        child: const AppIcon(AppIcons.add_rounded, size: 30),
+        child: SvgPicture.asset(
+          AppIcons.add_rounded,
+          colorFilter: const ColorFilter.mode(
+            AppColors.kNeutral100,
+            BlendMode.srcIn,
+          ),
+        ),
       ),
     );
   }

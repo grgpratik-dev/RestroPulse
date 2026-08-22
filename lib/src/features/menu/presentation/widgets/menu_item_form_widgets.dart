@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import 'menu_image_provider.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuPhotoPicker extends StatelessWidget {
   const MenuPhotoPicker({this.initialPath, super.key});
@@ -28,12 +28,16 @@ class MenuPhotoPicker extends StatelessWidget {
               child: SizedBox.square(
                 dimension: 88,
                 child: path == null
-                    ? const ColoredBox(
+                    ? ColoredBox(
                         color: AppColors.mintSoft,
-                        child: AppIcon(
+                        child: SvgPicture.asset(
                           AppIcons.restaurant_menu_rounded,
-                          color: AppColors.primary,
-                          size: 34,
+                          width: 34,
+                          height: 34,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.primary,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       )
                     : Image(image: menuImageProvider(path), fit: BoxFit.cover),
@@ -76,9 +80,10 @@ class MenuPhotoPicker extends StatelessWidget {
                             dimension: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const AppIcon(
+                        : SvgPicture.asset(
                             AppIcons.add_photo_alternate_outlined,
-                            size: 19,
+                            width: 19,
+                            height: 19,
                           ),
                     label: Text(path == null ? 'Add Photo' : 'Change Photo'),
                   ),
@@ -110,7 +115,7 @@ class MenuCostPreview extends StatelessWidget {
         : estimatedCost / sellingPrice * 100;
     final contribution = sellingPrice - estimatedCost;
 
-    return CustomContainer(
+    return AppCard(
       color: AppColors.mintSurface,
       borderColor: AppColors.primary.withValues(alpha: 0.15),
       child: Column(
@@ -118,10 +123,14 @@ class MenuCostPreview extends StatelessWidget {
         children: [
           Row(
             children: [
-              const AppIcon(
+              SvgPicture.asset(
                 AppIcons.calculate_outlined,
-                color: AppColors.primary,
-                size: 20,
+                width: 20,
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
               ),
               const SizedBox(width: AppSpacing.spaceXs),
               Text(
@@ -186,14 +195,17 @@ class MenuCostWarning extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(color: AppColors.warningBorderStrong),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          AppIcon(
+          SvgPicture.asset(
             AppIcons.warning_amber_rounded,
-            color: AppColors.warningStrong,
+            colorFilter: const ColorFilter.mode(
+              AppColors.warningStrong,
+              BlendMode.srcIn,
+            ),
           ),
-          SizedBox(width: AppSpacing.spaceXs),
-          Expanded(
+          const SizedBox(width: AppSpacing.spaceXs),
+          const Expanded(
             child: Text(
               'Estimated cost is higher than the selling price.',
               style: TextStyle(

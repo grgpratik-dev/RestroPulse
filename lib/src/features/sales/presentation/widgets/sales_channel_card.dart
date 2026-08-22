@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/custom_container.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
+import 'package:restropulse/src/core/widgets/app_card.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
 class SalesChannelCard extends StatelessWidget {
   const SalesChannelCard({this.period = SalesTrendPeriod.week, super.key});
@@ -24,7 +24,7 @@ class SalesChannelCard extends StatelessWidget {
     String amount(double share) =>
         'Rs ${_formatAmount((total * share).round())}';
 
-    return CustomContainer(
+    return AppCard(
       borderRadius: AppRadius.lg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,13 +71,17 @@ class SalesChannelEmptyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CustomContainer(
+    return AppCard(
       child: Column(
         children: [
-          const AppIcon(
+          SvgPicture.asset(
             AppIcons.pie_chart_outline_rounded,
-            color: AppColors.primary,
-            size: 34,
+            width: 34,
+            height: 34,
+            colorFilter: const ColorFilter.mode(
+              AppColors.primary,
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(height: AppSpacing.spaceSm),
           Text(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../app/theme/app_colors.dart';
 import '../../../../../app/theme/app_radius.dart';
 import '../../../../../app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class PasswordRecoveryHeader extends StatelessWidget {
   const PasswordRecoveryHeader({
@@ -31,12 +31,13 @@ class PasswordRecoveryHeader extends StatelessWidget {
             color: success ? AppColors.successSurface : AppColors.mintSurface,
             borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
-          child: AppIcon(
+          child: SvgPicture.asset(
             success
                 ? AppIcons.mark_email_read_outlined
                 : AppIcons.lock_reset_rounded,
-            color: accent,
-            size: 36,
+            colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+            width: 36,
+            height: 36,
           ),
         ),
         const SizedBox(height: AppSpacing.spaceLg),

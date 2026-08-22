@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_divider.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
 import 'expense_category_icon.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseHistorySummary extends StatelessWidget {
   const ExpenseHistorySummary({
@@ -26,7 +26,7 @@ class ExpenseHistorySummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    return CustomContainer(
+    return AppCard(
       color: AppColors.expenseForeground,
       borderColor: AppColors.expenseForeground,
       padding: const EdgeInsets.all(AppSpacing.spaceLg),
@@ -109,7 +109,7 @@ class ExpenseHistoryGroup extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.spaceXs),
-        CustomContainer(
+        AppCard(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.spaceSm,
             vertical: AppSpacing.space2xs,
@@ -145,7 +145,7 @@ class ExpenseHistoryEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContainer(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.spaceXl),
         child: Column(
@@ -157,10 +157,14 @@ class ExpenseHistoryEmptyState extends StatelessWidget {
                 color: AppColors.expenseSurface,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
-              child: const AppIcon(
+              child: SvgPicture.asset(
                 AppIcons.receipt_long_outlined,
-                color: AppColors.expenseForeground,
-                size: 30,
+                width: 30,
+                height: 30,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.expenseForeground,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
@@ -235,7 +239,11 @@ class _HistoryExpenseRow extends StatelessWidget {
               'Rs ${currency.format(expense.amount)}',
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
-            const AppIcon(AppIcons.chevron_right_rounded, size: 20),
+            SvgPicture.asset(
+              AppIcons.chevron_right_rounded,
+              width: 20,
+              height: 20,
+            ),
           ],
         ),
       ),

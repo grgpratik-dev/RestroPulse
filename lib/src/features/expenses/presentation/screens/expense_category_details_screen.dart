@@ -1,17 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/custom_container.dart';
+import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_icon.dart';
 import '../widgets/expense_detail_widgets.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseCategoryDetailsScreen extends StatelessWidget {
   const ExpenseCategoryDetailsScreen({
@@ -43,7 +43,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           children: [
-            CustomContainer(
+            AppCard(
               child: Column(
                 children: [
                   Row(
@@ -96,7 +96,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
-            CustomContainer(
+            AppCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -177,7 +177,7 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.spaceSm),
             if (related.isEmpty)
-              const CustomContainer(
+              const AppCard(
                 child: Text('No recent transactions in the sample data.'),
               )
             else
@@ -200,7 +200,11 @@ class ExpenseCategoryDetailsScreen extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(width: 4),
-                      const AppIcon(AppIcons.chevron_right_rounded, size: 20),
+                      SvgPicture.asset(
+                        AppIcons.chevron_right_rounded,
+                        width: 20,
+                        height: 20,
+                      ),
                     ],
                   ),
                 ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/report_data.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ReportPeriodSelector extends StatelessWidget {
   const ReportPeriodSelector({
@@ -50,10 +50,16 @@ class ReportExportOption extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: ListTile(
         onTap: onTap,
-        leading: AppIcon(icon, color: AppColors.primary),
+        leading: SvgPicture.asset(
+          icon,
+          colorFilter: const ColorFilter.mode(
+            AppColors.primary,
+            BlendMode.srcIn,
+          ),
+        ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
         subtitle: Text(subtitle),
-        trailing: const AppIcon(AppIcons.chevron_right_rounded),
+        trailing: SvgPicture.asset(AppIcons.chevron_right_rounded),
       ),
     );
   }

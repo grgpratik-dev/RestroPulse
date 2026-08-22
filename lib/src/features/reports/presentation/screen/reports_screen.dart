@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/app/theme/app_colors.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_spacing.dart';
@@ -11,8 +14,6 @@ import '../widgets/report_controls.dart';
 import '../widgets/report_sections.dart';
 import '../widgets/report_states.dart';
 import '../widgets/revenue_expenses_chart.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 enum ReportsViewState { loaded, partial, empty, loading, error }
 
@@ -57,7 +58,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   minimumSize: const Size(0, 42),
                   padding: const EdgeInsets.symmetric(horizontal: 13),
                 ),
-                icon: const AppIcon(AppIcons.ios_share_rounded, size: 18),
+                icon: SvgPicture.asset(
+                  AppIcons.ios_share_rounded,
+                  width: 18,
+                  height: 18,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.primary,
+                    BlendMode.srcIn,
+                  ),
+                ),
                 label: const Text('Export'),
               ),
             ),

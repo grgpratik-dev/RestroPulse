@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 /// Consistent empty, error, and no-data presentation used across features.
 class AppStateMessage extends StatelessWidget {
@@ -40,10 +40,12 @@ class AppStateMessage extends StatelessWidget {
               CircleAvatar(
                 radius: 32,
                 backgroundColor: iconBackgroundColor ?? colors.primaryContainer,
-                child: AppIcon(
+                child: SvgPicture.asset(
                   icon,
-                  color: iconColor ?? colors.primary,
-                  size: 32,
+                  colorFilter: ColorFilter.mode(
+                    iconColor ?? colors.primary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceMd),

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/bloc/image_picker/image_picker_bloc.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseReceiptPicker extends StatelessWidget {
   const ExpenseReceiptPicker({this.initialPath, super.key});
@@ -33,11 +33,14 @@ class ExpenseReceiptPicker extends StatelessWidget {
                 child: SizedBox.square(
                   dimension: 62,
                   child: path == null
-                      ? const ColoredBox(
+                      ? ColoredBox(
                           color: Colors.white,
-                          child: AppIcon(
+                          child: SvgPicture.asset(
                             AppIcons.receipt_long_outlined,
-                            color: AppColors.expenseForeground,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.expenseForeground,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         )
                       : Image.file(File(path), fit: BoxFit.cover),
@@ -71,7 +74,11 @@ class ExpenseReceiptPicker extends StatelessWidget {
                           imageQuality: 85,
                         ),
                       ),
-                icon: const AppIcon(AppIcons.attach_file_rounded, size: 18),
+                icon: SvgPicture.asset(
+                  AppIcons.attach_file_rounded,
+                  width: 18,
+                  height: 18,
+                ),
                 label: Text(path == null ? 'Attach' : 'Change'),
               ),
             ],

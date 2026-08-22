@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
@@ -6,7 +7,6 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../app/theme/app_typography.dart';
 import '../../domain/models/menu_item.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class MenuPerformanceHighlights extends StatelessWidget {
   const MenuPerformanceHighlights({required this.items, super.key});
@@ -95,7 +95,12 @@ class _HighlightCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              AppIcon(icon, size: 16, color: accent),
+              SvgPicture.asset(
+                icon,
+                width: 16,
+                height: 16,
+                colorFilter: ColorFilter.mode(accent, BlendMode.srcIn),
+              ),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(

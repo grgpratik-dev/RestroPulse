@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -10,7 +11,6 @@ import '../widgets/expense_filter_sheet.dart';
 import '../widgets/expense_history_widgets.dart';
 import 'expense_details_screen.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class ExpenseHistoryScreen extends StatefulWidget {
   const ExpenseHistoryScreen({this.initialExpenses, super.key});
@@ -109,7 +109,11 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
                   child: OutlinedButton.icon(
                     key: const ValueKey('expense-history-date-range'),
                     onPressed: _chooseDateRange,
-                    icon: const AppIcon(AppIcons.date_range_outlined, size: 18),
+                    icon: SvgPicture.asset(
+                      AppIcons.date_range_outlined,
+                      width: 18,
+                      height: 18,
+                    ),
                     label: Text(_compactRangeLabel),
                   ),
                 ),
@@ -123,11 +127,12 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
                         ? AppColors.expenseSurface
                         : null,
                   ),
-                  icon: AppIcon(
+                  icon: SvgPicture.asset(
                     _filters.isActive
                         ? AppIcons.filter_alt_rounded
                         : AppIcons.filter_alt_outlined,
-                    size: 18,
+                    width: 18,
+                    height: 18,
                   ),
                   label: const Text('Filter'),
                 ),

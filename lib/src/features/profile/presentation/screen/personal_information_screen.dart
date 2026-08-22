@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../widgets/profile_form_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({this.onSaved, super.key});
@@ -124,11 +124,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   TextFormField(
                     initialValue: 'Owner · Boys to Serve',
                     readOnly: true,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Current role',
-                      suffixIcon: AppIcon(
+                      suffixIcon: SvgPicture.asset(
                         AppIcons.lock_outline_rounded,
-                        size: 19,
+                        width: 19,
+                        height: 19,
                       ),
                     ),
                   ),

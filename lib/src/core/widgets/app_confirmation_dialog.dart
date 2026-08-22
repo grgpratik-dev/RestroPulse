@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
-import 'package:restropulse/src/core/widgets/app_icon.dart';
 
 class AppConfirmationDialog extends StatelessWidget {
   const AppConfirmationDialog({
@@ -70,7 +70,7 @@ class AppConfirmationDialog extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: accent.withValues(alpha: 0.14)),
                 ),
-                child: AppIcon(icon, color: accent, size: 24),
+                child: SvgPicture.asset(icon),
               ),
               const SizedBox(height: AppSpacing.spaceLg),
               Text(
