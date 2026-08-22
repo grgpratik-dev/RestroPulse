@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../../app/theme/app_colors.dart';
 import '../../../../../app/theme/app_spacing.dart';
@@ -83,37 +84,31 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
                 description:
                     'This information identifies the restaurant throughout RestroPulse.',
                 children: [
-                  TextFormField(
+                  AppTextFormField(
                     key: const ValueKey('edit-restaurant-name-field'),
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.organizationName],
-                    decoration: const InputDecoration(
-                      labelText: 'Restaurant name',
-                    ),
+
                     validator: _required('Enter the restaurant name'),
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
-                  TextFormField(
+                  AppTextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.telephoneNumber],
-                    decoration: const InputDecoration(
-                      labelText: 'Business phone',
-                    ),
+
                     validator: _required('Enter the business phone number'),
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
-                  TextFormField(
+                  AppTextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: 'Business email',
-                    ),
+
                     validator: _emailValidator,
                   ),
                 ],
@@ -124,24 +119,20 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
                 description:
                     'Used to identify this restaurant to members and viewers.',
                 children: [
-                  TextFormField(
+                  AppTextFormField(
                     controller: _addressController,
                     textCapitalization: TextCapitalization.words,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Street or area',
-                    ),
+
                     validator: _required('Enter the restaurant address'),
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
-                  TextFormField(
+                  AppTextFormField(
                     key: const ValueKey('edit-restaurant-location-field'),
                     controller: _cityController,
                     textCapitalization: TextCapitalization.words,
                     textInputAction: TextInputAction.done,
-                    decoration: const InputDecoration(
-                      labelText: 'City and country',
-                    ),
+
                     validator: _required('Enter the city and country'),
                     onFieldSubmitted: (_) => _save(),
                   ),

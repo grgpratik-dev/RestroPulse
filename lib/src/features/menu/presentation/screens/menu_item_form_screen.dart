@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/di/dependency_injection.dart';
 import '../../../../app/theme/app_spacing.dart';
@@ -125,13 +126,10 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                 const SizedBox(height: AppSpacing.spaceLg),
                 MenuPhotoPicker(initialPath: widget.item?.imagePath),
                 const SizedBox(height: AppSpacing.spaceLg),
-                TextFormField(
+                AppTextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Item name',
-                    hintText: 'Chicken Momo',
-                  ),
+             
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Enter an item name'
                       : null,
@@ -168,7 +166,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextFormField(
                         controller: _priceController,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
@@ -178,10 +176,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                             RegExp(r'^\d*\.?\d{0,2}'),
                           ),
                         ],
-                        decoration: const InputDecoration(
-                          labelText: 'Selling price',
-                          prefixText: 'Rs  ',
-                        ),
+                    
                         onChanged: (_) => setState(() {}),
                         validator: (value) =>
                             (double.tryParse(value ?? '') ?? 0) <= 0
@@ -191,7 +186,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                     ),
                     const SizedBox(width: AppSpacing.spaceSm),
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextFormField(
                         controller: _costController,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
@@ -201,10 +196,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                             RegExp(r'^\d*\.?\d{0,2}'),
                           ),
                         ],
-                        decoration: const InputDecoration(
-                          labelText: 'Estimated cost',
-                          prefixText: 'Rs  ',
-                        ),
+                      
                         onChanged: (_) => setState(() {}),
                         validator: (value) {
                           final cost = double.tryParse(value ?? '');
@@ -222,15 +214,11 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                 ],
                 MenuCostPreview(sellingPrice: _price, estimatedCost: _cost),
                 const SizedBox(height: AppSpacing.spaceMd),
-                TextFormField(
+                AppTextFormField(
                   controller: _notesController,
                   minLines: 3,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes (optional)',
-                    hintText: 'Add a short note about this item',
-                    alignLabelWithHint: true,
-                  ),
+              
                 ),
                 if (_isEditing) ...[
                   const SizedBox(height: AppSpacing.spaceMd),

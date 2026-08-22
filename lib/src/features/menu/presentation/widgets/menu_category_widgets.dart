@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
@@ -181,21 +182,18 @@ class _MenuCategoryEditorSheetState extends State<MenuCategoryEditorSheet> {
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
-              TextFormField(
+              AppTextFormField(
                 key: const ValueKey('menu-category-name-field'),
                 controller: _controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.done,
-                decoration: InputDecoration(
-                  labelText: 'Category name',
-                  hintText: 'e.g. Desserts',
                   prefixIcon: SvgPicture.asset(
                     AppIcons.category_outlined,
                     width: 22,
                     height: 22,
                   ),
-                ),
+              
                 onFieldSubmitted: (_) => _submit(),
                 validator: (value) {
                   final name = value?.trim() ?? '';

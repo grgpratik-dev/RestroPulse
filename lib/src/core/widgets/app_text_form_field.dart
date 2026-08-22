@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/theme/app_spacing.dart';
+
 enum AppTextFieldInputType { text, name, number, decimal, phone, search }
 
 enum AppTextFieldVariant { outlined, borderless }
@@ -20,6 +22,7 @@ class AppTextFormField extends StatelessWidget {
     this.onTap,
     this.prefixIcon,
     this.suffixIcon,
+    this.style,
     this.keyboardType,
     this.textInputAction,
     this.inputFormatters,
@@ -58,6 +61,7 @@ class AppTextFormField extends StatelessWidget {
 
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final TextStyle? style;
 
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -112,32 +116,37 @@ class AppTextFormField extends StatelessWidget {
       maxLines: obscureText ? 1 : maxLines,
       minLines: obscureText ? 1 : minLines,
       maxLength: maxLength,
+      style: style,
       textAlign: textAlign,
       textCapitalization: textCapitalization,
       autovalidateMode: autovalidateMode,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        border: _resolveBorder(),
-        enabledBorder: _resolveBorder(),
-        focusedBorder: _resolveFocusedBorder(),
-      ),
+      decoration: _getDecoration(),
     );
   }
 
-  InputBorder? _resolveBorder() {
-    return switch (variant) {
-      AppTextFieldVariant.outlined => null,
-      AppTextFieldVariant.borderless => InputBorder.none,
-    };
-  }
+  InputDecoration _getDecoration() {
+    final decoration = InputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      prefixIcon: Container(
+        padding: EdgeInsets.all(AppSpacing.spaceSm),
+        child: prefixIcon,
+      ),
+      suffixIcon: suffixIcon == null
+          ? null
+          : Container(
+              padding: EdgeInsets.all(AppSpacing.spaceSm),
+              child: suffixIcon,
+            ),
+    );
 
-  InputBorder? _resolveFocusedBorder() {
     return switch (variant) {
-      AppTextFieldVariant.outlined => null,
-      AppTextFieldVariant.borderless => InputBorder.none,
+      AppTextFieldVariant.outlined => decoration,
+      AppTextFieldVariant.borderless => decoration.copyWith(
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+      ),
     };
   }
 

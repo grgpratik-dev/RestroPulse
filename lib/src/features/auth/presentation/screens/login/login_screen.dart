@@ -3,13 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/app_name.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../../app/router/app_route.dart';
 import '../widgets/ambient_glow_widget.dart';
 import '../widgets/fields_label_widget.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 part '../widgets/brand_header.dart';
 part '../widgets/section_divider.dart';
@@ -23,7 +24,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
-  bool _obscurePassword = true;
+  final bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -91,26 +92,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   const FieldLabel('Email address'),
                                   const SizedBox(height: AppSpacing.spaceXs),
-                                  TextFormField(
+                                  AppTextFormField(
                                     key: const ValueKey('login-email-field'),
                                     controller: _emailController,
-                                    keyboardType: TextInputType.emailAddress,
+                                    keyboardType: TextInputType.text,
                                     textInputAction: TextInputAction.next,
                                     autofillHints: const [AutofillHints.email],
                                     autocorrect: false,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter your email',
-                                      prefixIcon: SvgPicture.asset(
-                                        AppIcons.email_outlined,
-                                        width: 22,
-                                        height: 22,
-                                      ),
+                                    hintText: "Email address",
+
+                                    prefixIcon: SvgPicture.asset(
+                                      AppIcons.email_outlined,
+                                      width: 10,
+                                      height: 10,
                                     ),
                                   ),
                                   const SizedBox(height: AppSpacing.spaceMd),
                                   const FieldLabel('Password'),
                                   const SizedBox(height: AppSpacing.spaceXs),
-                                  TextFormField(
+                                  AppTextFormField(
                                     key: const ValueKey('login-password-field'),
                                     obscureText: _obscurePassword,
                                     textInputAction: TextInputAction.done,
@@ -119,34 +119,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ],
                                     enableSuggestions: false,
                                     autocorrect: false,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter your password',
-                                      prefixIcon: SvgPicture.asset(
-                                        AppIcons.lock_outline_rounded,
-                                        width: 22,
-                                        height: 22,
-                                      ),
-                                      suffixIcon: IconButton(
-                                        key: const ValueKey(
-                                          'login-password-visibility',
-                                        ),
-                                        tooltip: _obscurePassword
-                                            ? 'Show password'
-                                            : 'Hide password',
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscurePassword =
-                                                !_obscurePassword;
-                                          });
-                                        },
-                                        icon: SvgPicture.asset(
-                                          _obscurePassword
-                                              ? AppIcons.visibility_off_outlined
-                                              : AppIcons.visibility_outlined,
-                                          width: 22,
-                                          height: 22,
-                                        ),
-                                      ),
+                                    hintText: "Password",
+                                    prefixIcon: SvgPicture.asset(
+                                      AppIcons.lock_outline_rounded,
+                                      width: 22,
+                                      height: 22,
+                                    ),
+                                    suffixIcon: SvgPicture.asset(
+                                      _obscurePassword
+                                          ? AppIcons.visibility_off_outlined
+                                          : AppIcons.visibility_outlined,
+                                      width: 22,
+                                      height: 22,
                                     ),
                                   ),
                                   const SizedBox(height: AppSpacing.spaceSm),

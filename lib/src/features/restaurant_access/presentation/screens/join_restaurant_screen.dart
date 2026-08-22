@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/access_request_pending_view.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_invitation_preview_card.dart';
@@ -158,7 +159,7 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: AppSpacing.spaceXs),
-                                TextFormField(
+                                AppTextFormField(
                                   key: const ValueKey('invitation-code-field'),
                                   controller: _codeController,
                                   textCapitalization:
@@ -177,9 +178,7 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                     }
                                   },
                                   onFieldSubmitted: (_) => _findRestaurant(),
-                                  decoration: InputDecoration(
-                                    hintText: 'e.g. RP-7K9M2',
-                                    prefixIcon: SvgPicture.asset(
+                                   prefixIcon: SvgPicture.asset(
                                       AppIcons.vpn_key_outlined,
                                       width: 22,
                                       height: 22,
@@ -193,7 +192,6 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                         height: 22,
                                       ),
                                     ),
-                                  ),
                                   validator: (value) {
                                     final code = value?.trim() ?? '';
                                     if (code.isEmpty) {

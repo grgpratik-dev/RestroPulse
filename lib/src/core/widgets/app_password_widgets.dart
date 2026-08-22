@@ -5,6 +5,7 @@ import 'package:restropulse/src/core/icons/app_icons.dart';
 import '../../app/theme/app_colors.dart';
 import '../../app/theme/app_radius.dart';
 import '../../app/theme/app_spacing.dart';
+import 'app_text_form_field.dart';
 
 class AppPasswordField extends StatelessWidget {
   const AppPasswordField({
@@ -32,7 +33,7 @@ class AppPasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return AppTextFormField(
       key: fieldKey,
       controller: controller,
       obscureText: obscureText,
@@ -42,18 +43,15 @@ class AppPasswordField extends StatelessWidget {
       autocorrect: false,
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: IconButton(
-          tooltip: obscureText ? 'Show $label' : 'Hide $label',
-          onPressed: onVisibilityChanged,
-          icon: SvgPicture.asset(
-            obscureText
-                ? AppIcons.visibility_off_outlined
-                : AppIcons.visibility_outlined,
-            width: 22,
-            height: 22,
-          ),
+      suffixIcon: IconButton(
+        tooltip: obscureText ? 'Show $label' : 'Hide $label',
+        onPressed: onVisibilityChanged,
+        icon: SvgPicture.asset(
+          obscureText
+              ? AppIcons.visibility_off_outlined
+              : AppIcons.visibility_outlined,
+          width: 22,
+          height: 22,
         ),
       ),
     );

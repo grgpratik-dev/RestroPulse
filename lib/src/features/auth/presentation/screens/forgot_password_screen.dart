@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import 'widgets/password_recovery_header.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 typedef SendResetLink = Future<void> Function(String email);
 
@@ -93,22 +94,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 'Enter the email address you use for RestroPulse and we’ll send you a secure reset link.',
           ),
           const SizedBox(height: AppSpacing.spaceXl),
-          TextFormField(
+          AppTextFormField(
             key: const ValueKey('recovery-email-field'),
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
-            decoration: InputDecoration(
-              labelText: 'Email address',
-              hintText: 'Enter your email',
-              prefixIcon: SvgPicture.asset(
-                AppIcons.email_outlined,
-                width: 22,
-                height: 22,
-              ),
-            ),
+            prefixIcon: SvgPicture.asset(AppIcons.email_outlined),
             validator: _validateEmail,
             onFieldSubmitted: (_) => _sendResetLink(),
           ),

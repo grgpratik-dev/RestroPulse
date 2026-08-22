@@ -50,6 +50,9 @@ dependencies:
   smooth_page_indicator: ^2.0.1
   fl_chart: ^1.2.0
   flutter_svg: ^2.3.0
+  supabase_flutter: ^2.17.2
+  google_sign_in: ^7.2.0
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +83,7 @@ flutter:
     - assets/onboarding/
     - assets/logo/
     - assets/svg/
+    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

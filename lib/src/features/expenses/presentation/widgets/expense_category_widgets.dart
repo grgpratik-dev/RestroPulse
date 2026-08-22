@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
@@ -218,16 +219,12 @@ class _ExpenseCategoryEditorSheetState
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
-              TextFormField(
+              AppTextFormField(
                 key: const ValueKey('expense-category-name-field'),
                 controller: _controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Category name',
-                  hintText: 'e.g. Insurance',
-                ),
                 validator: (value) {
                   final name = value?.trim() ?? '';
                   if (name.isEmpty) return 'Enter a category name';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/theme/app_spacing.dart';
 import '../../domain/models/wastage.dart';
@@ -95,20 +96,17 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceLg),
-              TextFormField(
+              AppTextFormField(
                 controller: _itemController,
                 autofocus: !_editing,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                  labelText: 'Item or Ingredient',
-                  hintText: 'e.g. Chicken',
-                ),
+              
                 validator: (value) => value == null || value.trim().isEmpty
                     ? 'Enter an item or ingredient'
                     : null,
               ),
               const SizedBox(height: AppSpacing.spaceMd),
-              TextFormField(
+              AppTextFormField(
                 controller: _lossController,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -116,10 +114,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                 ],
-                decoration: const InputDecoration(
-                  labelText: 'Estimated Loss',
-                  prefixText: 'Rs  ',
-                ),
+            
                 validator: (value) => (double.tryParse(value ?? '') ?? 0) <= 0
                     ? 'Enter an estimated loss above 0'
                     : null,
@@ -176,7 +171,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: TextFormField(
+                    child: AppTextFormField(
                       controller: _quantityController,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
@@ -186,9 +181,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                           RegExp(r'^\d*\.?\d{0,2}'),
                         ),
                       ],
-                      decoration: const InputDecoration(
-                        labelText: 'Quantity (optional)',
-                      ),
+              
                       validator: (value) {
                         if (value == null || value.isEmpty) return null;
                         return (double.tryParse(value) ?? -1) < 0
@@ -232,15 +225,11 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
-              TextFormField(
+              AppTextFormField(
                 controller: _notesController,
                 minLines: 3,
                 maxLines: 5,
-                decoration: const InputDecoration(
-                  labelText: 'Notes (optional)',
-                  hintText: 'Add any useful details',
-                  alignLabelWithHint: true,
-                ),
+             
               ),
             ],
           ),

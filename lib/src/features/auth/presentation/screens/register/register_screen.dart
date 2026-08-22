@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../widgets/ambient_glow_widget.dart';
 import '../widgets/fields_label_widget.dart';
@@ -82,43 +83,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               const SizedBox(height: AppSpacing.spaceXl),
                               const FieldLabel('Full name'),
                               const SizedBox(height: AppSpacing.spaceXs),
-                              TextFormField(
+                              AppTextFormField(
                                 keyboardType: TextInputType.name,
                                 textCapitalization: TextCapitalization.words,
                                 textInputAction: TextInputAction.next,
                                 autofillHints: const [AutofillHints.name],
-                                decoration: InputDecoration(
-                                  fillColor: colorScheme.surface,
-                                  hintText: 'Enter full name',
-                                  prefixIcon: SvgPicture.asset(
+                                prefixIcon: SvgPicture.asset(
                                     AppIcons.person_outline_rounded,
                                     width: 22,
                                     height: 22,
                                   ),
-                                ),
+                               
                               ),
                               const SizedBox(height: AppSpacing.spaceMd),
                               const FieldLabel('Email address'),
                               const SizedBox(height: AppSpacing.spaceXs),
-                              TextFormField(
+                              AppTextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 autofillHints: const [AutofillHints.email],
                                 autocorrect: false,
-                                decoration: InputDecoration(
-                                  fillColor: colorScheme.surface,
-                                  hintText: 'Enter email address',
-                                  prefixIcon: SvgPicture.asset(
+                                prefixIcon: SvgPicture.asset(
                                     AppIcons.email_outlined,
                                     width: 22,
                                     height: 22,
                                   ),
-                                ),
                               ),
                               const SizedBox(height: AppSpacing.spaceMd),
                               const FieldLabel('Password'),
                               const SizedBox(height: AppSpacing.spaceXs),
-                              TextFormField(
+                              AppTextFormField(
                                 obscureText: _obscurePassword,
                                 textInputAction: TextInputAction.next,
                                 autofillHints: const [
@@ -126,10 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ],
                                 enableSuggestions: false,
                                 autocorrect: false,
-                                decoration: InputDecoration(
-                                  fillColor: colorScheme.surface,
-                                  hintText: 'Create a password',
-                                  prefixIcon: SvgPicture.asset(
+                                prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline_rounded,
                                     width: 22,
                                     height: 22,
@@ -151,12 +142,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       height: 22,
                                     ),
                                   ),
-                                ),
                               ),
                               const SizedBox(height: AppSpacing.spaceMd),
                               const FieldLabel('Confirm password'),
                               const SizedBox(height: AppSpacing.spaceXs),
-                              TextFormField(
+                              AppTextFormField(
                                 obscureText: _obscureConfirmation,
                                 textInputAction: TextInputAction.done,
                                 autofillHints: const [
@@ -164,10 +154,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ],
                                 enableSuggestions: false,
                                 autocorrect: false,
-                                decoration: InputDecoration(
-                                  fillColor: colorScheme.surface,
-                                  hintText: 'Re-enter your password',
-                                  prefixIcon: SvgPicture.asset(
+                                prefixIcon: SvgPicture.asset(
                                     AppIcons.lock_outline,
                                     width: 22,
                                     height: 22,
@@ -190,7 +177,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       height: 22,
                                     ),
                                   ),
-                                ),
                               ),
                               const SizedBox(height: AppSpacing.spaceLg),
                               SizedBox(

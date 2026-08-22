@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../app/di/dependency_injection.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -123,7 +124,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.spaceLg),
-                TextFormField(
+                AppTextFormField(
                   controller: _amountController,
                   autofocus: !_editing,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -136,11 +137,6 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   ],
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Amount',
-                    prefixText: 'Rs  ',
-                    hintText: '0',
                   ),
                   onChanged: (_) => setState(() {}),
                   validator: (value) => (double.tryParse(value ?? '') ?? 0) <= 0
@@ -206,13 +202,10 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                       _category == null ? 'Select a category' : null,
                 ),
                 const SizedBox(height: AppSpacing.spaceMd),
-                TextFormField(
+                AppTextFormField(
                   controller: _descriptionController,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Chicken supplier',
-                  ),
+               
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Enter a short description'
                       : null,
@@ -254,15 +247,11 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                       setState(() => _type = values.first),
                 ),
                 const SizedBox(height: AppSpacing.spaceMd),
-                TextFormField(
+                AppTextFormField(
                   controller: _notesController,
                   minLines: 3,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes (optional)',
-                    hintText: 'Add any useful details',
-                    alignLabelWithHint: true,
-                  ),
+                
                 ),
                 const SizedBox(height: AppSpacing.spaceMd),
                 ExpenseReceiptPicker(initialPath: widget.expense?.receiptPath),

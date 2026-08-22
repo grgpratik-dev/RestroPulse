@@ -5,6 +5,7 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_logo_selector.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
@@ -121,20 +122,17 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.spaceXs),
-                      TextFormField(
+                      AppTextFormField(
                         key: const ValueKey('restaurant-name-field'),
                         controller: _nameController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.organizationName],
-                        decoration: InputDecoration(
-                          hintText: 'e.g. Boys to Serve',
-                          prefixIcon: SvgPicture.asset(
+                        prefixIcon: SvgPicture.asset(
                             AppIcons.storefront_outlined,
                             width: 22,
                             height: 22,
                           ),
-                        ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Enter your restaurant name';
@@ -151,19 +149,16 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.spaceXs),
-                      TextFormField(
+                      AppTextFormField(
                         key: const ValueKey('restaurant-location-field'),
                         controller: _locationController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          hintText: 'e.g. Pokhara, Nepal',
-                          prefixIcon: SvgPicture.asset(
+                      prefixIcon: SvgPicture.asset(
                             AppIcons.location_on_outlined,
                             width: 22,
                             height: 22,
                           ),
-                        ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Enter the restaurant location';
@@ -180,10 +175,9 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.spaceXs),
-                      TextFormField(
+                      AppTextFormField(
                         initialValue: 'NPR (Rs)',
                         readOnly: true,
-                        decoration: InputDecoration(
                           prefixIcon: SvgPicture.asset(
                             AppIcons.currency,
                             width: 22,
@@ -194,9 +188,6 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                             width: 20,
                             height: 20,
                           ),
-                          helperText:
-                              'More currencies can be added from settings later.',
-                        ),
                       ),
                       const SizedBox(height: AppSpacing.spaceXl),
                       SizedBox(

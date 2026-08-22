@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../../app/theme/app_colors.dart';
 import '../../../../../app/theme/app_spacing.dart';
@@ -79,37 +80,31 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 description:
                     'Your personal details are separate from the restaurant profile.',
                 children: [
-                  TextFormField(
+                  AppTextFormField(
                     key: const ValueKey('personal-name-field'),
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.name],
-                    decoration: const InputDecoration(labelText: 'Full name'),
                     validator: _required('Enter your full name'),
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
-                  TextFormField(
+                  AppTextFormField(
                     key: const ValueKey('personal-email-field'),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.email],
-                    decoration: const InputDecoration(
-                      labelText: 'Email address',
-                      helperText: 'This email is used to sign in.',
-                    ),
+                
                     validator: _emailValidator,
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
-                  TextFormField(
+                  AppTextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.done,
                     autofillHints: const [AutofillHints.telephoneNumber],
-                    decoration: const InputDecoration(
-                      labelText: 'Phone number',
-                    ),
+              
                     validator: _required('Enter your phone number'),
                     onFieldSubmitted: (_) => _save(),
                   ),
@@ -121,17 +116,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 description:
                     'Access is managed by the restaurant owner from Members & Access.',
                 children: [
-                  TextFormField(
+                  AppTextFormField(
                     initialValue: 'Owner · Boys to Serve',
                     readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: 'Current role',
-                      suffixIcon: SvgPicture.asset(
+                   suffixIcon: SvgPicture.asset(
                         AppIcons.lock_outline_rounded,
                         width: 20,
                         height: 20,
                       ),
-                    ),
                   ),
                 ],
               ),

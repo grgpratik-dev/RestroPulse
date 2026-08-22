@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 import 'package:restropulse/src/features/profile/presentation/widgets/help_and_support/issue_category_selector.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
@@ -103,19 +104,15 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             onChanged: (value) => setState(() => _category = value),
           ),
           const SizedBox(height: AppSpacing.spaceMd),
-          TextFormField(
+          AppTextFormField(
             key: const ValueKey('issue-subject-field'),
             controller: _subjectController,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: 'Subject',
-              hintText: 'Briefly describe the issue',
-              prefixIcon: SvgPicture.asset(
+            prefixIcon: SvgPicture.asset(
                 AppIcons.short_text_rounded,
                 width: 22,
                 height: 22,
               ),
-            ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a short subject.';
@@ -124,18 +121,13 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             },
           ),
           const SizedBox(height: AppSpacing.spaceMd),
-          TextFormField(
+          AppTextFormField(
             key: const ValueKey('issue-description-field'),
             controller: _descriptionController,
             minLines: 5,
             maxLines: 8,
             textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              labelText: 'Description',
-              hintText:
-                  'Tell us what happened and what you expected to happen.',
-              alignLabelWithHint: true,
-            ),
+         
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please describe what happened.';
