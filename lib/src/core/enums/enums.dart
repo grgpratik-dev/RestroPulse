@@ -18,23 +18,5 @@ enum ApiErrorType {
   unknown,
 }
 
-enum FirebaseErrorType {
-  cancelled,
-  network,
-  unauthenticated,
-  permissionDenied,
-  notFound,
-  alreadyExists,
-  invalidArgument,
-  invalidCredential,
-  userDisabled,
-  userNotFound,
-  emailAlreadyInUse,
-  weakPassword,
-  tooManyRequests,
-  quotaExceeded,
-  unavailable,
-  requiresRecentLogin,
-  operationNotAllowed,
-  unknown,
-}
+// global application status
+enum AppStatus { initializing, onboarding, unauthenticated, authenticated }

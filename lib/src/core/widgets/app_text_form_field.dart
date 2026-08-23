@@ -135,6 +135,7 @@ class AppTextFormField extends StatelessWidget {
       suffixIcon: suffixIcon == null
           ? null
           : Container(
+              // color: Colors.red,
               padding: EdgeInsets.all(AppSpacing.spaceSm),
               child: suffixIcon,
             ),

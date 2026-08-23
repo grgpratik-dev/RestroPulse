@@ -5,10 +5,8 @@
 enum AppRoute {
   onboarding('/onboarding'),
   splash('/splash'),
-  login('/login'),
-  forgotPassword('/forgot-password'),
-  resetPassword('/auth/reset-password'),
-  register('/register'),
+ auth('/auth'),
+ verifyOTP('/verify-otp'),
   restaurantAccess('/restaurant-access'),
   createRestaurant('/restaurant/create'),
   joinRestaurant('/restaurant/join'),

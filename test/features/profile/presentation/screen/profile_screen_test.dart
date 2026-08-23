@@ -10,7 +10,10 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(theme: AppTheme.light, home: const ProfileScreen()),
+      MaterialApp(
+        theme: AppTheme.light,
+        home: ProfileScreen(onLogout: () {}),
+      ),
     );
 
     expect(find.text('Profile'), findsOneWidget);

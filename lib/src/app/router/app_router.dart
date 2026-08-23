@@ -1,10 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
-import 'package:restropulse/src/features/auth/presentation/screens/login/login_screen.dart';
-import 'package:restropulse/src/features/auth/presentation/screens/forgot_password_screen.dart';
-import 'package:restropulse/src/features/auth/presentation/screens/reset_password_screen.dart';
+import 'package:restropulse/src/app/session/app_session_controller.dart';
+import 'package:restropulse/src/core/enums/enums.dart';
+import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
+import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_cubit.dart';
+import 'package:restropulse/src/features/auth/presentation/screens/auth_screen.dart';
+import 'package:restropulse/src/features/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:restropulse/src/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
 import 'package:restropulse/src/features/expenses/presentation/screens/expense_categories_screen.dart';
@@ -19,16 +24,16 @@ import 'package:restropulse/src/features/menu/presentation/screens/menu_item_det
 import 'package:restropulse/src/features/menu/presentation/screens/menu_item_form_screen.dart';
 import 'package:restropulse/src/features/menu/presentation/screens/menu_screen.dart';
 import 'package:restropulse/src/features/onboarding/presentation/screens/onboarding_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
-import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant/edit_restaurant_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/change_password/change_password_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/edit_restaurant/edit_restaurant_screen.dart';
+import 'package:restropulse/src/features/profile/presentation/screen/help_and_support/help_and_support_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/members_access/members_access_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/personal_informatin/personal_information_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
-import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/create_restaurant_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/join_restaurant_screen.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_details_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
@@ -39,17 +44,56 @@ import 'package:restropulse/src/features/wastage/presentation/screens/wastage_de
 import 'package:restropulse/src/features/wastage/presentation/screens/wastage_form_screen.dart';
 import 'package:restropulse/src/features/wastage/presentation/screens/wastage_screen.dart';
 
-import '../../features/auth/presentation/screens/register/register_screen.dart';
 import '../../features/main/presentation/screens/main_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-class AppRouter {
-  static final GoRouter goRouter = GoRouter(
+GoRouter createAppRouter(AppSessionController appScessionController) {
+  return GoRouter(
     debugLogDiagnostics: kDebugMode,
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoute.splash.path,
+    refreshListenable: appScessionController,
+    redirect: (context, state) {
+      final status = appScessionController.status;
+      final location = state.matchedLocation;
+      final publicRoutes = {AppRoute.auth.path, AppRoute.verifyOTP.path};
+
+      final entryRoutes = {
+        AppRoute.splash.path,
+        AppRoute.onboarding.path,
+        AppRoute.auth.path,
+        AppRoute.verifyOTP.path,
+      };
+      switch (status) {
+        case AppStatus.initializing:
+          if (location != AppRoute.splash.path) {
+            return AppRoute.splash.path;
+          }
+
+          return null;
+
+        case AppStatus.onboarding:
+          if (location != AppRoute.onboarding.path) {
+            return AppRoute.onboarding.path;
+          }
+
+          return null;
+
+        case AppStatus.unauthenticated:
+          if (publicRoutes.contains(location)) {
+            return null;
+          }
+          return AppRoute.auth.path;
+
+        case AppStatus.authenticated:
+          if (entryRoutes.contains(location)) {
+            return AppRoute.dashboard.path;
+          }
+          return null;
+      }
+    },
     routes: [
       // Define your app routes here
       StatefulShellRoute.indexedStack(
@@ -116,25 +160,21 @@ class AppRouter {
         builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
-        path: AppRoute.login.path,
-        name: AppRoute.login.name,
-        builder: (context, state) => const LoginScreen(),
+        path: AppRoute.auth.path,
+        name: AppRoute.auth.name,
+        builder: (context, state) => BlocProvider(
+          create: (_) => sl<AuthCubit>(),
+          child: const AuthScreen(),
+        ),
       ),
+
       GoRoute(
-        path: AppRoute.forgotPassword.path,
-        name: AppRoute.forgotPassword.name,
-        builder: (context, state) =>
-            ForgotPasswordScreen(initialEmail: state.extra as String?),
-      ),
-      GoRoute(
-        path: AppRoute.resetPassword.path,
-        name: AppRoute.resetPassword.name,
-        builder: (context, state) => const ResetPasswordScreen(),
-      ),
-      GoRoute(
-        path: AppRoute.register.path,
-        name: AppRoute.register.name,
-        builder: (context, state) => const RegisterScreen(),
+        path: AppRoute.verifyOTP.path,
+        name: AppRoute.verifyOTP.name,
+        builder: (context, state) => BlocProvider(
+          create: (_) => sl<AuthCubit>(),
+          child: VerifyOtpScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoute.restaurantAccess.path,
@@ -160,7 +200,10 @@ class AppRouter {
       GoRoute(
         path: AppRoute.profile.path,
         name: AppRoute.profile.name,
-        builder: (context, state) => const ProfileScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (_) => sl<SignOutCubit>(),
+          child: const ProfileScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoute.editRestaurant.path,

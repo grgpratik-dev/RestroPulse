@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../enums/enums.dart';
 import 'api_exceptions.dart';
-import 'firebase_exceptions.dart';
 
 abstract class Failure extends Equatable {
   const Failure(this.message, {this.statusCode, this.customCode});
@@ -38,35 +37,21 @@ class ApiFailure extends Failure {
   List<Object?> get props => [...super.props, type];
 }
 
-class FirebaseFailure extends Failure {
-  const FirebaseFailure(
+/// Supabase failure
+class SupabaseFailure extends Failure {
+  const SupabaseFailure(
     super.message, {
-    required this.type,
-    required this.code,
-    this.plugin,
+    this.supabaseCode,
+    this.supabaseStatusCode,
   });
 
-  factory FirebaseFailure.fromException(AppFirebaseException exception) {
-    return FirebaseFailure(
-      exception.message,
-      type: exception.type,
-      code: exception.code,
-      plugin: exception.plugin,
-    );
-  }
-
-  final FirebaseErrorType type;
-  final String code;
-  final String? plugin;
+  final String? supabaseCode;
+  final String? supabaseStatusCode;
 
   @override
-  List<Object?> get props => [...super.props, type, code, plugin];
+  List<Object?> get props => [...super.props, supabaseCode, supabaseStatusCode];
 }
 
-class LocationFailure extends Failure {
-  const LocationFailure(super.message);
-}
-
-class CacheFailure extends Failure {
-  const CacheFailure(super.message);
+class UnknownFailure extends Failure {
+  const UnknownFailure(super.message);
 }

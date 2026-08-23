@@ -1,4 +1,4 @@
-part of '../login/login_screen.dart';
+part of '../auth_screen.dart';
 
 class SectionDivider extends StatelessWidget {
   const SectionDivider({super.key});

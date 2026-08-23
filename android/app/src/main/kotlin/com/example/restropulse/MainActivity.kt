@@ -1,4 +1,4 @@
-package com.example.restropulse
+package com.gurungpratik.restropulse
 
 import io.flutter.embedding.android.FlutterActivity
 

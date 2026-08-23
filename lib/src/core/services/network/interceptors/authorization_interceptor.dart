@@ -1,21 +1,18 @@
 import 'package:dio/dio.dart';
 
-import '../../storage/secure_storage_service.dart';
+import '../supabase_service.dart';
 
 /// Dio request metadata used by authentication-related interceptors.
 const requiresAuthKey = 'requiresAuth';
 
-/// Adds the stored bearer token only to requests that require authentication.
+/// Adds the current Supabase bearer token to authenticated requests.
 final class AuthorizationInterceptor extends Interceptor {
-  AuthorizationInterceptor(this._secureStorage);
+  AuthorizationInterceptor(this._authService);
 
-  final SecureStorageService _secureStorage;
+  final SupabaseService _authService;
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final requiresAuth = options.extra[requiresAuthKey] == true;
     final alreadyHasToken = options.headers.containsKey('Authorization');
 
@@ -24,23 +21,11 @@ final class AuthorizationInterceptor extends Interceptor {
       return;
     }
 
-    try {
-      final token = await _secureStorage.readAccessToken();
-
-      if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer $token';
-      }
-
-      handler.next(options);
-    } on Exception catch (error, stackTrace) {
-      handler.reject(
-        DioException(
-          requestOptions: options,
-          error: error,
-          stackTrace: stackTrace,
-          message: 'The access token could not be read.',
-        ),
-      );
+    final token = _authService.accessToken;
+    if (token != null && token.isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer $token';
     }
+
+    handler.next(options);
   }
 }

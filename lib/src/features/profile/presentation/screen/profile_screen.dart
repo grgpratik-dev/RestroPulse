@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
+import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_cubit.dart';
+import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_state.dart';
 
 import '../widgets/logout_confirmation_dialog.dart';
 import '../widgets/logout_tile.dart';
 import '../widgets/profile_header_card.dart';
 import '../widgets/settings_section.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 part '../widgets/settings_tile.dart';
 
@@ -22,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final scaffold = Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
         backgroundColor: AppColors.background,
@@ -136,6 +139,22 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+
+    if (onLogout != null) return scaffold;
+
+    return BlocListener<SignOutCubit, SignOutState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: (context, state) {
+        if (state.status != SignOutStatus.failure) return;
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(state.message ?? 'Could not log out.')),
+          );
+      },
+      child: scaffold,
+    );
   }
 
   void _showPlaceholder(BuildContext context, String feature) {
@@ -240,7 +259,7 @@ class ProfileScreen extends StatelessWidget {
       builder: (dialogContext) {
         return LogoutConfirmationDialog(
           onCancel: () => Navigator.of(dialogContext).pop(false),
-          onConfirm: () => Navigator.of(dialogContext).pop(true),
+          onConfirm: () => context.read<SignOutCubit>().signOut(),
         );
       },
     );
@@ -249,7 +268,7 @@ class ProfileScreen extends StatelessWidget {
     if (onLogout != null) {
       onLogout!();
     } else {
-      context.goNamed(AppRoute.login.name);
+      await context.read<SignOutCubit>().signOut();
     }
   }
 }

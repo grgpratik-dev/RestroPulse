@@ -3,8 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../app/config/api_config.dart';
 import '../../errors/api_exceptions.dart';
-import '../session/session_service.dart';
-import '../storage/secure_storage_service.dart';
+import 'supabase_service.dart';
 import 'interceptors/authorization_interceptor.dart';
 import 'interceptors/network_logging_interceptor.dart';
 import 'interceptors/session_interceptor.dart';
@@ -19,8 +18,7 @@ import 'interceptors/session_interceptor.dart';
 final class NetworkService {
   NetworkService({
     required ApiConfig config,
-    required SecureStorageService secureStorage,
-    required SessionService sessionService,
+    required SupabaseService authService,
     Dio? dio,
   }) : _dio = dio ?? Dio() {
     _dio.options = BaseOptions(
@@ -32,8 +30,8 @@ final class NetworkService {
       headers: const {Headers.acceptHeader: Headers.jsonContentType},
     );
 
-    _dio.interceptors.add(AuthorizationInterceptor(secureStorage));
-    _dio.interceptors.add(SessionInterceptor(sessionService));
+    _dio.interceptors.add(AuthorizationInterceptor(authService));
+    _dio.interceptors.add(SessionInterceptor(authService));
 
     // Keep logging last so it sees changes made by the other interceptors.
     if (kDebugMode) {

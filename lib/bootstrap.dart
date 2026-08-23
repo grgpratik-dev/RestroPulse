@@ -9,14 +9,19 @@ import 'src/app/di/dependency_injection.dart';
 
 /// Performs startup work before the root widget is mounted.
 ///
+///
+bool isForDevelopment = true;
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    publishableKey: dotenv.env['SUPABASE_PUBLISHABLE_KEY']!,
+    url: dotenv.env[isForDevelopment ? 'SUPABASE_DEV_URL' : 'SUPABASE_URL']!,
+    publishableKey:
+        dotenv.env[isForDevelopment
+            ? 'SUPABASE_DEV_PUBLISHABLE_KEY'
+            : 'SUPABASE_PUBLISHABLE_KEY']!,
     debug: kDebugMode,
   );
 
