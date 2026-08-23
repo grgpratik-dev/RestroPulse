@@ -8,6 +8,10 @@ enum AuthStatus {
   verifyingOtp,
   otpVerified,
   otpVerificationFailure,
+  googleSignInInProgress,
+  googleSignInSuccess,
+  googleSignInFailure,
+  googleSignInCancelled,
 }
 
 @freezed
@@ -19,6 +23,4 @@ abstract class AuthState with _$AuthState {
     String? email,
     String? message,
   }) = _AuthState;
-
-
 }

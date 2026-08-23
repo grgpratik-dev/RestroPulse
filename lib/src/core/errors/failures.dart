@@ -52,6 +52,19 @@ class SupabaseFailure extends Failure {
   List<Object?> get props => [...super.props, supabaseCode, supabaseStatusCode];
 }
 
+class GoogleSignInFailure extends Failure {
+  const GoogleSignInFailure(super.message, {required this.googleCode});
+
+  final String googleCode;
+
+  @override
+  List<Object?> get props => [...super.props, googleCode];
+}
+
+class AuthCancelledFailure extends Failure {
+  const AuthCancelledFailure() : super('Authentication was cancelled.');
+}
+
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message);
 }

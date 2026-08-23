@@ -5,6 +5,7 @@ import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/router/app_router.dart';
 import 'package:restropulse/src/app/session/app_session_controller.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
+import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
 import 'package:restropulse/src/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 
 class App extends StatefulWidget {
@@ -33,7 +34,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => sl<OnboardingBloc>())],
+      providers: [
+        BlocProvider(create: (_) => sl<OnboardingBloc>()),
+        BlocProvider(create: (_) => sl<AuthCubit>()),
+      ],
       child: MaterialApp.router(
         title: 'Flutter Project Setup',
         theme: AppTheme.light,

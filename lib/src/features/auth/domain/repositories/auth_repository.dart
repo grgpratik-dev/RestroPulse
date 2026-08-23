@@ -6,5 +6,7 @@ abstract class AuthRepository {
 
   Future<Either<Failure, void>> verifyOtp(String email, String token);
 
+  Future<Either<Failure, void>> signInWithGoogle();
+
   Future<Either<Failure, void>> signOut();
 }

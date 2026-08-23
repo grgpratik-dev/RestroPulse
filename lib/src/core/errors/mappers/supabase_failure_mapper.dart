@@ -52,7 +52,7 @@ final class SupabaseFailureMapper {
       'same_password' =>
         'Your new password must be different from your current password.',
 
-      'otp_expired' => 'This verification code has expired. Request a new one.',
+      'otp_expired' => 'The verification code is incorrect or has expired.',
 
       'captcha_failed' => 'Verification failed. Please try again.',
 

@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:restropulse/src/core/errors/failures.dart';
 import 'package:restropulse/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:restropulse/src/features/auth/domain/usecases/request_otp_usecase.dart';
+import 'package:restropulse/src/features/auth/domain/usecases/sign_in_with_google_usecase.dart';
 import 'package:restropulse/src/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
 
@@ -14,8 +15,11 @@ void main() {
     repository = _FakeAuthRepository();
   });
 
-  AuthCubit buildCubit() =>
-      AuthCubit(RequestOtpUsecase(repository), VerifyOtpUsecase(repository));
+  AuthCubit buildCubit() => AuthCubit(
+    RequestOtpUsecase(repository),
+    VerifyOtpUsecase(repository),
+    SignInWithGoogleUsecase(repository),
+  );
 
   blocTest<AuthCubit, AuthState>(
     'sends an OTP and remembers the normalized email',
@@ -93,11 +97,56 @@ void main() {
       ),
     ],
   );
+
+  blocTest<AuthCubit, AuthState>(
+    'signs in with Google',
+    build: buildCubit,
+    act: (cubit) => cubit.signInWithGoogle(),
+    expect: () => const [
+      AuthState(status: AuthStatus.googleSignInInProgress),
+      AuthState(status: AuthStatus.googleSignInSuccess),
+    ],
+  );
+
+  blocTest<AuthCubit, AuthState>(
+    'exposes Google sign-in failures',
+    setUp: () {
+      repository.googleSignInResult = const Left(
+        GoogleSignInFailure(
+          'Google sign-in is currently unavailable.',
+          googleCode: 'providerConfigurationError',
+        ),
+      );
+    },
+    build: buildCubit,
+    act: (cubit) => cubit.signInWithGoogle(),
+    expect: () => const [
+      AuthState(status: AuthStatus.googleSignInInProgress),
+      AuthState(
+        status: AuthStatus.googleSignInFailure,
+        message: 'Google sign-in is currently unavailable.',
+      ),
+    ],
+  );
+
+  blocTest<AuthCubit, AuthState>(
+    'treats closing the Google picker as cancellation',
+    setUp: () {
+      repository.googleSignInResult = const Left(AuthCancelledFailure());
+    },
+    build: buildCubit,
+    act: (cubit) => cubit.signInWithGoogle(),
+    expect: () => const [
+      AuthState(status: AuthStatus.googleSignInInProgress),
+      AuthState(status: AuthStatus.googleSignInCancelled),
+    ],
+  );
 }
 
 final class _FakeAuthRepository implements AuthRepository {
   Either<Failure, void> signInResult = const Right(null);
   Either<Failure, void> verifyResult = const Right(null);
+  Either<Failure, void> googleSignInResult = const Right(null);
 
   String? email;
   String? token;
@@ -106,6 +155,11 @@ final class _FakeAuthRepository implements AuthRepository {
   Future<Either<Failure, void>> requestOtp(String email) async {
     this.email = email;
     return signInResult;
+  }
+
+  @override
+  Future<Either<Failure, void>> signInWithGoogle() async {
+    return googleSignInResult;
   }
 
   @override

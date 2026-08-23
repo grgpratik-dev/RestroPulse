@@ -162,19 +162,13 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
       GoRoute(
         path: AppRoute.auth.path,
         name: AppRoute.auth.name,
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
-          child: const AuthScreen(),
-        ),
+        builder: (context, state) => const AuthScreen(),
       ),
 
       GoRoute(
         path: AppRoute.verifyOTP.path,
         name: AppRoute.verifyOTP.name,
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
-          child: VerifyOtpScreen(),
-        ),
+        builder: (context, state) => VerifyOtpScreen(),
       ),
       GoRoute(
         path: AppRoute.restaurantAccess.path,

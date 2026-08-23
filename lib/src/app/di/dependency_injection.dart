@@ -2,11 +2,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restropulse/src/app/session/app_session_controller.dart';
+import 'package:restropulse/src/core/services/network/google_service.dart';
 import 'package:restropulse/src/core/services/network/supabase_service.dart';
 import 'package:restropulse/src/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:restropulse/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:restropulse/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:restropulse/src/features/auth/domain/usecases/request_otp_usecase.dart';
+import 'package:restropulse/src/features/auth/domain/usecases/sign_in_with_google_usecase.dart';
 import 'package:restropulse/src/features/auth/domain/usecases/sign_out_usecase.dart';
 import 'package:restropulse/src/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
@@ -39,6 +41,7 @@ void initGetIt() {
 
 void serviceDependencies() {
   sl.registerLazySingleton<SupabaseService>(() => SupabaseService());
+  sl.registerLazySingleton<GoogleService>(() => GoogleService());
 
   sl.registerLazySingleton<AppSessionController>(
     () => AppSessionController(
@@ -61,7 +64,7 @@ void serviceDependencies() {
 void datasourceDependencies() {
   // Register your datasource dependencies here
   sl.registerLazySingleton<AuthRemoteDatasource>(
-    () => AuthRemoteDatasourceImpl(sl()),
+    () => AuthRemoteDatasourceImpl(sl(), sl()),
   );
   sl.registerLazySingleton<OnboardingLocalDataSource>(
     () => OnboardingLocalDataSourceImpl(sl()),
@@ -79,6 +82,9 @@ void usecaseDependencies() {
 
   sl.registerLazySingleton<VerifyOtpUsecase>(() => VerifyOtpUsecase(sl()));
   sl.registerLazySingleton<SignOutUsecase>(() => SignOutUsecase(sl()));
+  sl.registerLazySingleton<SignInWithGoogleUsecase>(
+    () => SignInWithGoogleUsecase(sl()),
+  );
 }
 
 void blocDependencies() {
@@ -89,6 +95,6 @@ void blocDependencies() {
   );
   sl.registerFactory<OnboardingBloc>(() => OnboardingBloc());
 
-  sl.registerLazySingleton<AuthCubit>(() => AuthCubit(sl(), sl()));
+  sl.registerFactory<AuthCubit>(() => AuthCubit(sl(), sl(), sl()));
   sl.registerFactory<SignOutCubit>(() => SignOutCubit(sl()));
 }

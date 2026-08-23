@@ -13,6 +13,15 @@ final class SupabaseService {
   }) =>
       _supabase.auth.verifyOTP(email: email, token: token, type: OtpType.email);
 
+  Future<AuthResponse> signInWithGoogle({
+    required String idToken,
+    required String accessToken,
+  }) => _supabase.auth.signInWithIdToken(
+    provider: OAuthProvider.google,
+    idToken: idToken,
+    accessToken: accessToken,
+  );
+
   Future<void> signOut() => _supabase.auth.signOut();
 
   Session? get currentSession => _supabase.auth.currentSession;

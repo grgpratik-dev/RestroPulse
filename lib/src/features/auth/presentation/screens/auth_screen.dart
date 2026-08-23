@@ -60,6 +60,17 @@ class _AuthScreenState extends State<AuthScreen> {
             context.pushNamed(AppRoute.verifyOTP.name, extra: email);
           }
         }
+        if (state.status == AuthStatus.googleSignInFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.message ?? 'Could not sign in with Google.',
+                ),
+              ),
+            );
+        }
       },
       child: Scaffold(
         body: Stack(
@@ -143,7 +154,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                           context.read<AuthCubit>().requestOtp(
                                             _emailController.text.trim(),
                                           );
-                                     
                                         },
                                         child: Text('Continue with Email'),
                                       ),
@@ -151,45 +161,73 @@ class _AuthScreenState extends State<AuthScreen> {
                                     const SizedBox(height: AppSpacing.spaceLg),
                                     const SectionDivider(),
                                     const SizedBox(height: AppSpacing.spaceLg),
-                                    SizedBox(
-                                      height: 52,
-                                      child: OutlinedButton(
-                                        onPressed: () {
-                                          context.pushNamed(
-                                            AppRoute.verifyOTP.name,
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              padding: const EdgeInsets.all(3),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(999),
-                                              ),
-                                              child: Image.asset(
-                                                Assets.images.googleLogo.path,
-                                                fit: BoxFit.contain,
-                                                filterQuality:
-                                                    FilterQuality.high,
-                                              ),
+                                    BlocSelector<AuthCubit, AuthState, bool>(
+                                      selector: (state) =>
+                                          state.status ==
+                                          AuthStatus.googleSignInInProgress,
+                                      builder: (context, isLoading) {
+                                        return SizedBox(
+                                          height: 52,
+                                          child: OutlinedButton(
+                                            onPressed: isLoading
+                                                ? null
+                                                : () => context
+                                                      .read<AuthCubit>()
+                                                      .signInWithGoogle(),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                if (isLoading)
+                                                  const SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                        ),
+                                                  )
+                                                else
+                                                  Container(
+                                                    width: 28,
+                                                    height: 28,
+                                                    padding:
+                                                        const EdgeInsets.all(3),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            999,
+                                                          ),
+                                                    ),
+                                                    child: Image.asset(
+                                                      Assets
+                                                          .images
+                                                          .googleLogo
+                                                          .path,
+                                                      fit: BoxFit.contain,
+                                                      filterQuality:
+                                                          FilterQuality.high,
+                                                    ),
+                                                  ),
+                                                const SizedBox(
+                                                  width: AppSpacing.spaceSm,
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    isLoading
+                                                        ? 'Connecting...'
+                                                        : 'Continue with Google',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: AppSpacing.spaceSm),
-                                            Flexible(
-                                              child: Text(
-                                                'Continue with Google',
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
