@@ -47,5 +47,6 @@ create type public.notification_type as enum (
   'join_request_received',
   'join_request_approved',
   'join_request_declined',
-  'viewer_removed'
+  'viewer_removed',
+  'ownership_transferred'
 );

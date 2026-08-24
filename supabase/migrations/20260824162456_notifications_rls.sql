@@ -5,12 +5,10 @@
 --
 -- Access rules:
 --   - A user can read only notifications addressed to them.
---   - A user can update only their own notifications.
---   - Normal client users cannot create notifications.
---   - Normal client users cannot delete notifications.
---
--- Notification creation will later happen through trusted
--- backend/database logic when events occur.
+--   - Normal client users cannot directly insert, update,
+--     or delete notification rows.
+--   - State changes such as marking a notification as read
+--     happen through controlled database functions.
 -- =========================================================
 
 alter table public.notifications
@@ -27,27 +25,5 @@ on public.notifications
 for select
 to authenticated
 using (
-  recipient_profile_id = auth.uid()
-);
-
-
--- =========================================================
--- UPDATE
--- Users can update only notifications addressed to them.
---
--- This is primarily intended for actions such as
--- marking a notification as read.
---
--- WITH CHECK prevents changing the recipient to another user.
--- =========================================================
-
-create policy "Users can update own notifications"
-on public.notifications
-for update
-to authenticated
-using (
-  recipient_profile_id = auth.uid()
-)
-with check (
   recipient_profile_id = auth.uid()
 );
