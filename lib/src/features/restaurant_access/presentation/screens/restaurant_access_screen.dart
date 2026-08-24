@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_option_card.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class RestaurantAccessScreen extends StatelessWidget {
   const RestaurantAccessScreen({
