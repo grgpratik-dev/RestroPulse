@@ -125,5 +125,3 @@ to authenticated;
 grant select
 on public.notifications
 to authenticated;
-
-RP-45ED46

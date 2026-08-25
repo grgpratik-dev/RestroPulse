@@ -512,3 +512,263 @@ from authenticated;
 grant select
 on public.restaurant_join_requests
 to authenticated;
+
+
+-- =========================================================
+-- Approve Join Request
+--
+-- Approves a pending restaurant join request and creates
+-- the requester as a viewer member of that restaurant.
+--
+-- Rules:
+--   - Caller must be authenticated.
+--   - Caller must be the owner of the target restaurant.
+--   - Request must still be pending.
+--   - Requester must not already belong to a restaurant.
+--   - Membership creation + request approval happen together.
+-- =========================================================
+
+create or replace function public.approve_join_request(
+  p_request_id uuid
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_owner_id uuid;
+  v_restaurant_id uuid;
+  v_requester_id uuid;
+  v_status public.join_request_status;
+begin
+  -- Currently authenticated user.
+  v_owner_id := auth.uid();
+
+  if v_owner_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+
+  -- Load and lock the join request so it cannot be processed
+  -- simultaneously by another transaction.
+  select
+    restaurant_id,
+    requester_profile_id,
+    status
+  into
+    v_restaurant_id,
+    v_requester_id,
+    v_status
+  from public.restaurant_join_requests
+  where id = p_request_id
+  for update;
+
+
+  -- Request must exist.
+  if not found then
+    raise exception 'Join request not found';
+  end if;
+
+
+  -- Only pending requests can be approved.
+  if v_status <> 'pending' then
+    raise exception 'Join request has already been processed';
+  end if;
+
+
+  -- Caller must own the restaurant receiving this request.
+  if not exists (
+    select 1
+    from public.restaurant_memberships rm
+    where rm.restaurant_id = v_restaurant_id
+      and rm.profile_id = v_owner_id
+      and rm.role = 'owner'
+  ) then
+    raise exception 'Only the restaurant owner can approve this request';
+  end if;
+
+
+  -- The requester must still be free to join a restaurant.
+  if exists (
+    select 1
+    from public.restaurant_memberships rm
+    where rm.profile_id = v_requester_id
+  ) then
+    raise exception 'Requester already belongs to a restaurant';
+  end if;
+
+
+  -- Create the viewer membership.
+  insert into public.restaurant_memberships (
+    restaurant_id,
+    profile_id,
+    role
+  )
+  values (
+    v_restaurant_id,
+    v_requester_id,
+    'viewer'
+  );
+
+
+  -- Mark the request as approved.
+  update public.restaurant_join_requests
+  set
+    status = 'approved',
+    reviewed_by_profile_id = v_owner_id,
+    reviewed_at = now()
+  where id = p_request_id;
+
+
+  -- Create an in-app notification for the requester.
+  insert into public.notifications (
+    recipient_profile_id,
+    restaurant_id,
+    type,
+    title,
+    message,
+    related_entity_type,
+    related_entity_id
+  )
+  values (
+    v_requester_id,
+    v_restaurant_id,
+    'join_request_approved',
+    'Join request approved',
+    'Your request to join the restaurant has been approved.',
+    'restaurant_join_request',
+    p_request_id
+  );
+end;
+$$;
+
+
+-- Only authenticated users can invoke the function.
+-- Internal checks still ensure only the correct owner succeeds.
+revoke all
+on function public.approve_join_request(uuid)
+from public;
+
+grant execute
+on function public.approve_join_request(uuid)
+to authenticated;
+
+
+-- =========================================================
+-- Decline Join Request
+--
+-- Declines a pending restaurant join request.
+--
+-- Rules:
+--   - Caller must be authenticated.
+--   - Caller must be the owner of the target restaurant.
+--   - Request must still be pending.
+--   - No membership is created.
+--   - Request status and review metadata are updated together.
+-- =========================================================
+
+create or replace function public.decline_join_request(
+  p_request_id uuid
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_owner_id uuid;
+  v_restaurant_id uuid;
+  v_requester_id uuid;
+  v_status public.join_request_status;
+begin
+  -- Currently authenticated user.
+  v_owner_id := auth.uid();
+
+  if v_owner_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+
+  -- Load and lock the request so it cannot be processed
+  -- simultaneously by another transaction.
+  select
+    restaurant_id,
+    requester_profile_id,
+    status
+  into
+    v_restaurant_id,
+    v_requester_id,
+    v_status
+  from public.restaurant_join_requests
+  where id = p_request_id
+  for update;
+
+
+  -- Request must exist.
+  if not found then
+    raise exception 'Join request not found';
+  end if;
+
+
+  -- Only pending requests can be declined.
+  if v_status <> 'pending' then
+    raise exception 'Join request has already been processed';
+  end if;
+
+
+  -- Caller must own the restaurant receiving this request.
+  if not exists (
+    select 1
+    from public.restaurant_memberships rm
+    where rm.restaurant_id = v_restaurant_id
+      and rm.profile_id = v_owner_id
+      and rm.role = 'owner'
+  ) then
+    raise exception 'Only the restaurant owner can decline this request';
+  end if;
+
+
+  -- Mark the request as declined.
+  update public.restaurant_join_requests
+  set
+    status = 'declined',
+    reviewed_by_profile_id = v_owner_id,
+    reviewed_at = now()
+  where id = p_request_id;
+
+
+  -- Notify the requester.
+  insert into public.notifications (
+    recipient_profile_id,
+    restaurant_id,
+    type,
+    title,
+    message,
+    related_entity_type,
+    related_entity_id
+  )
+  values (
+    v_requester_id,
+    v_restaurant_id,
+    'join_request_declined',
+    'Join request declined',
+    'Your request to join the restaurant was declined.',
+    'restaurant_join_request',
+    p_request_id
+  );
+end;
+$$;
+
+
+-- Only authenticated users may invoke the function.
+-- Internal validation still ensures only the correct
+-- restaurant owner can successfully decline the request.
+revoke all
+on function public.decline_join_request(uuid)
+from public;
+
+grant execute
+on function public.decline_join_request(uuid)
+to authenticated;
+
