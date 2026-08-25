@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/widgets/app_add_floating_action_button.dart';
 import '../../../../core/widgets/app_feature_header.dart';
-import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_category_breakdown.dart';
 import '../widgets/expense_states.dart';
 import '../widgets/expense_summary_card.dart';
-import '../widgets/expense_trend_card.dart';
 import '../widgets/recent_expenses_list.dart';
 import 'expense_details_screen.dart';
 
@@ -39,7 +34,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   late final List<Expense> _expenses = [
     ...(widget.initialExpenses ?? ExpensesMockData.expenses),
   ];
-  ExpensePeriod _period = ExpensePeriod.month;
   double _totalAdjustment = 0;
   int _transactionAdjustment = 0;
 
@@ -100,16 +94,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       comparisonLabel: monthlyBase.comparisonLabel,
       trend: monthlyBase.trend,
     );
-    final baseSnapshot = ExpensesMockData.snapshot(_period);
-    final categories = ExpensesMockData.categorySummaries(_period);
-    final analysisSnapshot = ExpensePeriodSnapshot(
-      total: baseSnapshot.total + _totalAdjustment,
-      change: baseSnapshot.change,
-      transactions: baseSnapshot.transactions + _transactionAdjustment,
-      averageDaily: baseSnapshot.averageDaily,
-      comparisonLabel: baseSnapshot.comparisonLabel,
-      trend: baseSnapshot.trend,
-    );
     return Column(
       children: [
         ExpenseSummaryCard(
@@ -117,65 +101,16 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           largestCategory: monthlyCategories.first,
         ),
         const SizedBox(height: AppSpacing.spaceLg),
-        AppPeriodSelector<ExpensePeriod>(
-          selected: _period,
-          options: const [
-            ExpensePeriod.month,
-            ExpensePeriod.quarter,
-            ExpensePeriod.sixMonths,
-            ExpensePeriod.year,
-          ],
-          labelOf: (period) => period.label,
-          descriptionOf: (period) => period.dateLabel,
-          title: 'Expense analysis period',
-          onChanged: (period) => setState(() => _period = period),
-        ),
-        const SizedBox(height: AppSpacing.spaceLg),
         ExpenseCategoryBreakdown(
-          categories: categories,
-          onCategoryTap: (category) => context.pushNamed(
-            AppRoute.expenseCategoryDetails.name,
-            extra: ExpenseCategoryDetailsData(
-              category: category,
-              period: _period,
-            ),
-          ),
+          categories: monthlyCategories,
+          onCategoryTap: (category) =>
+              _openExpenseHistory(category: category.name),
         ),
-        const SizedBox(height: AppSpacing.spaceMd),
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.spaceSm),
-          decoration: BoxDecoration(
-            color: AppColors.expenseSurface,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                AppIcons.insights_outlined,
-                width: 20,
-                height: 20,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.expenseForeground,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceXs),
-              Expanded(
-                child: Text(
-                  ExpensesMockData.categoryInsight(_period),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.spaceLg),
-        ExpenseTrendCard(period: _period, points: analysisSnapshot.trend),
         const SizedBox(height: AppSpacing.spaceLg),
         RecentExpensesList(
           expenses: _expenses.take(5).toList(),
           onExpenseTap: _openExpense,
-          onViewHistory: _openExpenseHistory,
+          onViewHistory: () => _openExpenseHistory(),
         ),
       ],
     );
@@ -220,7 +155,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     }
   }
 
-  void _openExpenseHistory() {
-    context.pushNamed(AppRoute.expenseHistory.name, extra: [..._expenses]);
+  void _openExpenseHistory({String? category}) {
+    context.pushNamed(
+      AppRoute.expenseHistory.name,
+      queryParameters: category == null ? const {} : {'category': category},
+      extra: [..._expenses],
+    );
   }
 }

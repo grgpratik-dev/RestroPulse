@@ -3,12 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_route.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/icons/app_icons.dart';
 import '../../domain/models/wastage.dart';
 import '../widgets/wastage_cards.dart';
 import '../widgets/wastage_states.dart';
 import 'wastage_details_screen.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 enum WastageViewState { loaded, noPeriodData, empty, loading, error }
 
@@ -40,18 +41,24 @@ class _WastageScreenState extends State<WastageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Wastage')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _recordWastage,
+        tooltip: 'Record wastage',
+        heroTag: 'record-wastage',
+        backgroundColor: AppColors.warning,
+        foregroundColor: Colors.white,
+        child: SvgPicture.asset(
+          AppIcons.add_rounded,
+          width: 30,
+          height: 30,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
           children: [
-            Text(
-              'Track food loss and understand where it happens.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.spaceSm),
             Align(
               alignment: Alignment.centerLeft,
               child: Container(
@@ -60,13 +67,13 @@ class _WastageScreenState extends State<WastageScreen> {
                   vertical: 7,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: AppColors.warningMuted,
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
                   'This Month · August 2026',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    color: AppColors.warning,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -122,26 +129,24 @@ class _WastageScreenState extends State<WastageScreen> {
     );
     return Column(
       children: [
-        WastageSummaryCard(snapshot: snapshot),
-        const SizedBox(height: AppSpacing.spaceMd),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: _recordWastage,
-            icon: SvgPicture.asset(AppIcons.add_rounded, width: 20, height: 20),
-            label: const Text('Record Wastage'),
-          ),
+        WastageSummaryCard(
+          snapshot: snapshot,
+          topReason: WastageMockData.reasons.first.reason,
         ),
-        const SizedBox(height: AppSpacing.spaceLg),
-        WastageTrendCard(period: _period, points: snapshot.trend),
         const SizedBox(height: AppSpacing.spaceLg),
         const WastageReasonsSection(reasons: WastageMockData.reasons),
         const SizedBox(height: AppSpacing.spaceLg),
-        const MostWastedItemsSection(items: WastageMockData.topItems),
-        const SizedBox(height: AppSpacing.spaceLg),
-        RecentWastageSection(entries: _entries, onTap: _openEntry),
+        RecentWastageSection(
+          entries: _entries,
+          onTap: _openEntry,
+          onViewHistory: _openHistory,
+        ),
       ],
     );
+  }
+
+  void _openHistory() {
+    context.pushNamed(AppRoute.wastageHistory.name, extra: _entries);
   }
 
   Future<void> _recordWastage() async {

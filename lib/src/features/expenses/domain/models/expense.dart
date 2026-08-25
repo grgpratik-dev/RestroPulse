@@ -356,19 +356,6 @@ abstract final class ExpensesMockData {
       )
       .toList();
 
-  static String categoryInsight(ExpensePeriod period) => switch (period) {
-    ExpensePeriod.week =>
-      'Ingredient spending is 8% higher than the previous week.',
-    ExpensePeriod.month =>
-      'Ingredient spending is 14% higher than the previous month.',
-    ExpensePeriod.quarter =>
-      'Ingredient spending is 11% higher than the previous 3 months.',
-    ExpensePeriod.sixMonths =>
-      'Ingredient spending is 10% higher than the previous 6 months.',
-    ExpensePeriod.year =>
-      'Ingredient spending is 9% higher than the previous year.',
-  };
-
   static List<ExpenseTrendPoint> categoryTrend(
     ExpenseCategorySummary category,
     ExpensePeriod period,

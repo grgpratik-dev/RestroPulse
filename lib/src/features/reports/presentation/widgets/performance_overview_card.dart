@@ -23,7 +23,7 @@ class PerformanceOverviewCard extends StatelessWidget {
     return AppCard(
       color: AppColors.primaryStrong,
       borderColor: AppColors.primaryStrong,
-      padding: const EdgeInsets.all(AppSpacing.spaceLg),
+      padding: const EdgeInsets.all(AppSpacing.spaceMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,7 +41,7 @@ class PerformanceOverviewCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.75),
             ),
           ),
-          const SizedBox(height: AppSpacing.spaceLg),
+          const SizedBox(height: AppSpacing.spaceMd),
           Row(
             children: [
               Expanded(
@@ -65,7 +65,7 @@ class PerformanceOverviewCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.spaceLg),
+          const SizedBox(height: AppSpacing.spaceMd),
           Row(
             children: [
               Expanded(
@@ -94,7 +94,7 @@ class PerformanceOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.spaceLg),
           AppDivider(color: Colors.white.withValues(alpha: .18), height: 1),
-          const SizedBox(height: AppSpacing.spaceMd),
+          const SizedBox(height: AppSpacing.spaceSm),
           Row(
             children: [
               Expanded(
@@ -112,7 +112,7 @@ class PerformanceOverviewCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.spaceMd),
+          const SizedBox(height: AppSpacing.spaceSm),
           Row(
             children: [
               Expanded(

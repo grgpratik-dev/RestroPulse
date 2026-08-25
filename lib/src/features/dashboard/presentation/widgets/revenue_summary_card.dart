@@ -18,6 +18,7 @@ class RevenueSummaryCard extends StatelessWidget {
 
     return AppCard(
       borderRadius: AppRadius.lg,
+      borderColor: AppColors.primary.withValues(alpha: .12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

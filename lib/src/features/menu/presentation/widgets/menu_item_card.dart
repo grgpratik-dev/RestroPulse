@@ -70,7 +70,7 @@ class MenuItemCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _Metric(
-                              label: 'PRICE',
+                              label: 'SELLING PRICE',
                               value: 'Rs ${currency.format(item.sellingPrice)}',
                             ),
                           ),
@@ -89,7 +89,7 @@ class MenuItemCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _Metric(
-                              label: 'UNITS',
+                              label: 'UNITS SOLD',
                               value: NumberFormat.decimalPattern().format(
                                 item.unitsSold,
                               ),
@@ -224,47 +224,46 @@ class _CompactStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, background, foreground) = switch (status) {
       MenuPerformanceStatus.star => (
-        'HIGH DEMAND',
+        'High Demand',
         AppColors.infoSurfaceSoft,
         AppColors.infoForeground,
       ),
       MenuPerformanceStatus.reviewCost => (
-        'REVIEW COST',
+        'Review Cost',
         AppColors.warningChip,
         AppColors.warningStrong,
       ),
       MenuPerformanceStatus.promote => (
-        'PROMOTE',
+        'Healthy Margin',
         AppColors.mintChip,
         AppColors.primary,
       ),
       MenuPerformanceStatus.lowPerformer => (
-        'TRENDING DOWN',
+        'Needs Review',
         AppColors.dangerSurface,
         AppColors.danger,
       ),
       MenuPerformanceStatus.notEnoughData => (
-        'NEW',
+        'New',
         AppColors.neutral300,
         AppColors.neutral700,
       ),
     };
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: 84),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      constraints: const BoxConstraints(maxWidth: 96),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
-        maxLines: 2,
+        maxLines: 1,
         textAlign: TextAlign.center,
         style: TextStyle(
           color: foreground,
-          fontSize: 9,
-          height: 1.05,
+          fontSize: 10,
           fontWeight: FontWeight.w700,
         ),
       ),

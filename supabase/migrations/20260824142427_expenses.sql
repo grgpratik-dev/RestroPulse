@@ -35,6 +35,8 @@ create table public.expenses (
   -- Date/time when the expense actually occurred.
   expense_at timestamptz not null default now(),
 
+  description varchar not null,
+
   -- Optional description/note about the expense.
   notes text,
 

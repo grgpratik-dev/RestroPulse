@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -12,26 +11,30 @@ import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/wastage.dart';
 
 class WastageSummaryCard extends StatelessWidget {
-  const WastageSummaryCard({required this.snapshot, super.key});
+  const WastageSummaryCard({
+    required this.snapshot,
+    required this.topReason,
+    super.key,
+  });
 
   final WastageSnapshot snapshot;
+  final WastageReason topReason;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    final improving = snapshot.change < 0;
     return AppCard(
-      color: AppColors.ink,
-      borderColor: AppColors.ink,
-      padding: const EdgeInsets.all(AppSpacing.spaceLg),
+      color: AppColors.warning,
+      borderColor: AppColors.warning,
+      padding: const EdgeInsets.all(AppSpacing.spaceMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'TOTAL WASTAGE',
+            'Estimated Loss',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: Colors.white.withValues(alpha: 0.68),
-              letterSpacing: 0.7,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 5),
@@ -45,15 +48,7 @@ class WastageSummaryCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 5),
-          Text(
-            '${snapshot.change >= 0 ? '↑' : '↓'} ${snapshot.change.abs().toStringAsFixed(0)}% ${snapshot.comparisonLabel}',
-            style: TextStyle(
-              color: improving ? AppColors.splashAccent : AppColors.expenseWarm,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceLg),
+          const SizedBox(height: AppSpacing.spaceMd),
           Row(
             children: [
               Expanded(
@@ -62,148 +57,14 @@ class WastageSummaryCard extends StatelessWidget {
                   value: '${snapshot.entries}',
                 ),
               ),
-              const Expanded(
-                child: _SummaryMetric(label: 'Top item', value: 'Chicken'),
-              ),
-              const Expanded(
+              Expanded(
+                flex: 2,
                 child: _SummaryMetric(
-                  label: 'Main cause',
-                  value: 'Overproduction',
+                  label: 'Top Reason',
+                  value: topReason.label,
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          Text(
-            improving
-                ? 'Wastage is improving compared with the previous period.'
-                : 'Wastage is increasing. You recorded Rs 1,520 more loss than last month.',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.78),
-              fontSize: 12,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class WastageTrendCard extends StatelessWidget {
-  const WastageTrendCard({
-    required this.period,
-    required this.points,
-    super.key,
-  });
-
-  final WastagePeriod period;
-  final List<WastageTrendPoint> points;
-
-  @override
-  Widget build(BuildContext context) {
-    final highest = points.reduce((a, b) => a.amount >= b.amount ? a : b);
-    final currency = NumberFormat.decimalPattern();
-    final label = switch (period) {
-      WastagePeriod.week => 'Highest wastage day',
-      WastagePeriod.month => 'Highest wastage week',
-      WastagePeriod.quarter => 'Highest wastage month',
-    };
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Wastage Trend',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpacing.spaceLg),
-          SizedBox(
-            height: 200,
-            child: BarChart(
-              BarChartData(
-                maxY: highest.amount * 1.25,
-                alignment: BarChartAlignment.spaceAround,
-                gridData: FlGridData(
-                  drawVerticalLine: false,
-                  horizontalInterval: highest.amount / 4,
-                  getDrawingHorizontalLine: (_) => FlLine(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                    strokeWidth: 0.7,
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                titlesData: FlTitlesData(
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index < 0 || index >= points.length) {
-                          return const SizedBox.shrink();
-                        }
-                        return SideTitleWidget(
-                          meta: meta,
-                          child: Text(
-                            points.length <= 7 || index.isEven
-                                ? points[index].label
-                                : '',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                barTouchData: BarTouchData(
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => AppColors.ink,
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) =>
-                        BarTooltipItem(
-                          '${points[group.x].tooltipLabel}\nRs ${currency.format(points[group.x].amount * 1000)}',
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                  ),
-                ),
-                barGroups: [
-                  for (var index = 0; index < points.length; index++)
-                    BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          toY: points[index].amount,
-                          width: points.length > 7 ? 10 : 18,
-                          color: AppColors.warningChart,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(5),
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceSm),
-          Text(
-            '$label\n${highest.tooltipLabel} · Rs ${currency.format(highest.amount * 1000)}',
-            style: const TextStyle(fontWeight: FontWeight.w700, height: 1.4),
           ),
         ],
       ),
@@ -220,7 +81,7 @@ class WastageReasonsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     return _Section(
-      title: 'Why Wastage Happened',
+      title: 'Where Loss Came From',
       child: Column(
         children: [
           for (var index = 0; index < reasons.length; index++) ...[
@@ -260,82 +121,33 @@ class WastageReasonsSection extends StatelessWidget {
   }
 }
 
-class MostWastedItemsSection extends StatelessWidget {
-  const MostWastedItemsSection({required this.items, super.key});
-
-  final List<WastedItemSummary> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final currency = NumberFormat.decimalPattern();
-    return _Section(
-      title: 'Most Wasted Items',
-      child: Column(
-        children: [
-          for (var index = 0; index < items.length; index++) ...[
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.warningMuted,
-                  child: SvgPicture.asset(
-                    index == 0
-                        ? AppIcons.set_meal_outlined
-                        : AppIcons.eco_outlined,
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.warning,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.spaceSm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        items[index].name,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                      Text('${items[index].entries} entries'),
-                    ],
-                  ),
-                ),
-                Text(
-                  'Rs ${currency.format(items[index].amount)}',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
-            if (index != items.length - 1) const AppDivider(),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 class RecentWastageSection extends StatelessWidget {
   const RecentWastageSection({
     required this.entries,
     required this.onTap,
+    required this.onViewHistory,
     super.key,
   });
 
   final List<WastageEntry> entries;
   final ValueChanged<WastageEntry> onTap;
+  final VoidCallback onViewHistory;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
+    final recentEntries = entries.take(5).toList();
     return _Section(
       title: 'Recent Wastage',
+      action: TextButton(
+        onPressed: onViewHistory,
+        child: const Text('View History >'),
+      ),
       child: Column(
         children: [
-          for (var index = 0; index < entries.length; index++) ...[
+          for (var index = 0; index < recentEntries.length; index++) ...[
             InkWell(
-              onTap: () => onTap(entries[index]),
+              onTap: () => onTap(recentEntries[index]),
               borderRadius: BorderRadius.circular(12),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
@@ -359,25 +171,25 @@ class RecentWastageSection extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            entries[index].itemName,
+                            recentEntries[index].itemName,
                             style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
                           Text(
-                            '${entries[index].reason.label} · ${_dateLabel(entries[index].date)}',
+                            [
+                              if (_quantityLabel(recentEntries[index]) != null)
+                                _quantityLabel(recentEntries[index])!,
+                              recentEntries[index].reason.label,
+                              _dateLabel(recentEntries[index].date),
+                            ].join(' · '),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          if (entries[index].quantityLabel != null)
-                            Text(
-                              entries[index].quantityLabel!,
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
                         ],
                       ),
                     ),
                     Text(
-                      'Rs ${currency.format(entries[index].estimatedLoss)}',
+                      'Rs ${currency.format(recentEntries[index].estimatedLoss)}',
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                     SvgPicture.asset(
@@ -389,11 +201,19 @@ class RecentWastageSection extends StatelessWidget {
                 ),
               ),
             ),
-            if (index != entries.length - 1) const AppDivider(height: 20),
+            if (index != recentEntries.length - 1) const AppDivider(height: 20),
           ],
         ],
       ),
     );
+  }
+
+  String? _quantityLabel(WastageEntry entry) {
+    if (entry.quantity == null || entry.unit == null) return null;
+    final quantity = entry.quantity! % 1 == 0
+        ? entry.quantity!.toStringAsFixed(0)
+        : entry.quantity.toString();
+    return '$quantity ${entry.unit!.label}';
   }
 
   String _dateLabel(DateTime date) {
@@ -406,15 +226,16 @@ class RecentWastageSection extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.child});
+  const _Section({required this.title, required this.child, this.action});
   final String title;
   final Widget child;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      AppSectionHeading(title: title),
+      AppSectionHeading(title: title, trailing: action),
       const SizedBox(height: AppSpacing.spaceSm),
       AppCard(child: child),
     ],

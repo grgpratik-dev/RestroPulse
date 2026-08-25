@@ -4,11 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/sales_order.dart';
+import '../widgets/order_channel_filter.dart';
 import '../widgets/sales_channel_card.dart';
+import '../widgets/sales_history_data.dart';
+import '../widgets/sales_history_trend_card.dart';
 import '../widgets/sales_history_widgets.dart';
 import '../widgets/sales_order_card.dart';
 import 'order_details_screen.dart';
@@ -23,20 +25,40 @@ class SalesHistoryScreen extends StatefulWidget {
 }
 
 class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
-  static final DateTime _latestRecordedDate = DateTime(2026, 8, 16);
+  late final DateTime _anchorDate;
+  SalesHistoryPeriod _selectedPeriod = SalesHistoryPeriod.month;
+  DateTimeRange? _customRange;
+  OrderChannel? _selectedChannel;
 
-  late DateTime _selectedDate;
+  DateTimeRange get _selectedRange {
+    return _customRange ?? _selectedPeriod.rangeEndingOn(_anchorDate);
+  }
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.initialDate ?? _latestRecordedDate;
+    _anchorDate = widget.initialDate ?? SalesHistoryMockData.latestRecordedDate;
   }
 
   @override
   Widget build(BuildContext context) {
-    final snapshot = _snapshotFor(_selectedDate);
-    final dateLabel = DateFormat('EEEE, MMM d').format(_selectedDate);
+    final range = _selectedRange;
+    final snapshot = SalesHistoryMockData.snapshot(
+      range,
+      grouping: _customRange == null ? _selectedPeriod.trendGrouping : null,
+    );
+    final visibleOrders =
+        snapshot.orders
+            .where(
+              (order) =>
+                  _selectedChannel == null || order.channel == _selectedChannel,
+            )
+            .toList()
+          ..sort((a, b) => b.orderedAt.compareTo(a.orderedAt));
+    final groupedOrders = _groupOrdersByDate(visibleOrders);
+    final orderCountLabel = _selectedChannel == null
+        ? '${snapshot.totalOrders} orders'
+        : '${_filteredOrderCount(snapshot.totalOrders, _selectedChannel!)} results';
 
     return Scaffold(
       appBar: AppBar(
@@ -44,19 +66,6 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
         backgroundColor: AppColors.background,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
-        actions: [
-          IconButton(
-            key: const ValueKey('sales-history-calendar'),
-            tooltip: 'Choose date',
-            onPressed: _pickDate,
-            icon: SvgPicture.asset(
-              AppIcons.calendar_month_outlined,
-              width: 24,
-              height: 24,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.spaceXs),
-        ],
       ),
       body: SafeArea(
         top: false,
@@ -67,66 +76,173 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
             AppSpacing.spaceMd,
             AppSpacing.spaceXl,
           ),
-          children: snapshot == null
-              ? [_NoSalesForDate(dateLabel: dateLabel, onChooseDate: _pickDate)]
-              : [
-                  SelectedDateSummaryCard(
-                    dateLabel: dateLabel,
-                    revenue: snapshot.revenue,
-                    orders: snapshot.orders,
-                    averageOrder: snapshot.averageOrder,
-                    change: snapshot.change,
-                  ),
-                  const SizedBox(height: AppSpacing.spaceMd),
-                  const SalesChannelCard(),
-                  const SizedBox(height: AppSpacing.spaceLg),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Orders',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                      Text(
-                        '${SalesMockData.todayOrders.length} recent · '
-                        '${snapshot.orders} total',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.spaceSm),
-                  for (
-                    var index = 0;
-                    index < SalesMockData.todayOrders.length;
-                    index++
-                  ) ...[
-                    SalesOrderCard(
-                      order: SalesMockData.todayOrders[index],
-                      onTap: () =>
-                          _openOrder(context, SalesMockData.todayOrders[index]),
+          children: [
+            AppPeriodSelector<SalesHistoryPeriod>(
+              selected: _selectedPeriod,
+              options: SalesHistoryPeriod.values,
+              labelOf: (period) => period.label,
+              descriptionOf: (_) => _formatRange(range),
+              onChanged: (period) {
+                setState(() {
+                  _selectedPeriod = period;
+                  _customRange = null;
+                });
+              },
+              title: 'Sales history period',
+              showDescription: false,
+            ),
+            const SizedBox(height: AppSpacing.space2xs),
+            Row(
+              children: [
+                SvgPicture.asset(
+                  AppIcons.calendar_today_outlined,
+                  width: 18,
+                  height: 18,
+                ),
+                const SizedBox(width: AppSpacing.spaceXs),
+                Expanded(
+                  child: Text(
+                    _formatRange(range),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
                     ),
-                    if (index != SalesMockData.todayOrders.length - 1)
-                      const SizedBox(height: AppSpacing.spaceXs),
-                  ],
+                  ),
+                ),
+                TextButton(
+                  key: const ValueKey('sales-history-custom-range'),
+                  onPressed: _pickCustomRange,
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: const Text('Custom'),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.spaceXs),
+            PeriodSalesSummaryCard(
+              revenue: snapshot.totalSales,
+              orders: snapshot.totalOrders,
+              averageOrder: snapshot.averageOrder,
+              change: snapshot.change,
+            ),
+            const SizedBox(height: AppSpacing.spaceMd),
+            SalesHistoryTrendCard(
+              points: snapshot.trend,
+              grouping: snapshot.trendGrouping,
+            ),
+            const SizedBox(height: AppSpacing.spaceMd),
+            SalesChannelCard(totalRevenue: snapshot.totalSales),
+            const SizedBox(height: AppSpacing.spaceLg),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Orders',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Text(
+                  orderCountLabel,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.spaceSm),
+            OrderChannelFilter(
+              selectedChannel: _selectedChannel,
+              onSelected: (channel) {
+                setState(() => _selectedChannel = channel);
+              },
+            ),
+            const SizedBox(height: AppSpacing.spaceMd),
+            if (groupedOrders.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.spaceLg,
+                ),
+                child: Text(
+                  'No orders found for this period and channel.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              )
+            else
+              for (final group in groupedOrders.entries) ...[
+                Text(
+                  DateFormat('MMM d').format(group.key),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: AppSpacing.spaceSm),
+                for (var index = 0; index < group.value.length; index++) ...[
+                  SalesOrderCard(
+                    order: group.value[index],
+                    onTap: () => _openOrder(context, group.value[index]),
+                  ),
+                  if (index != group.value.length - 1)
+                    const SizedBox(height: AppSpacing.spaceXs),
                 ],
+                const SizedBox(height: AppSpacing.spaceMd),
+              ],
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _pickDate() async {
-    final selected = await showDatePicker(
+  Future<void> _pickCustomRange() async {
+    final selected = await showDateRangePicker(
       context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: _latestRecordedDate,
+      initialDateRange: _selectedRange,
+      firstDate: DateTime(2025, 1),
+      lastDate: SalesHistoryMockData.latestRecordedDate,
     );
     if (!mounted || selected == null) return;
-    setState(() => _selectedDate = selected);
+    setState(() => _customRange = selected);
+  }
+
+  Map<DateTime, List<SalesOrder>> _groupOrdersByDate(List<SalesOrder> orders) {
+    final grouped = <DateTime, List<SalesOrder>>{};
+    for (final order in orders) {
+      final date = DateTime(
+        order.orderedAt.year,
+        order.orderedAt.month,
+        order.orderedAt.day,
+      );
+      grouped.putIfAbsent(date, () => []).add(order);
+    }
+    return grouped;
+  }
+
+  int _filteredOrderCount(int totalOrders, OrderChannel channel) {
+    final share = switch (channel) {
+      OrderChannel.dineIn => .55,
+      OrderChannel.takeaway => .25,
+      OrderChannel.delivery => .20,
+    };
+    return (totalOrders * share).round();
+  }
+
+  String _formatRange(DateTimeRange range) {
+    final start = range.start;
+    final end = range.end;
+    if (start.year == end.year) {
+      return '${DateFormat('MMM d').format(start)} – '
+          '${DateFormat('MMM d, y').format(end)}';
+    }
+    return '${DateFormat('MMM d, y').format(start)} – '
+        '${DateFormat('MMM d, y').format(end)}';
   }
 
   void _openOrder(BuildContext context, SalesOrder order) {
@@ -134,95 +250,4 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
       MaterialPageRoute<void>(builder: (_) => OrderDetailsScreen(order: order)),
     );
   }
-}
-
-class _NoSalesForDate extends StatelessWidget {
-  const _NoSalesForDate({required this.dateLabel, required this.onChooseDate});
-
-  final String dateLabel;
-  final VoidCallback onChooseDate;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return AppCard(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.spaceLg,
-        vertical: AppSpacing.space2xl,
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.splashAccent.withValues(alpha: .42),
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-            ),
-            child: SvgPicture.asset(
-              AppIcons.event_busy_outlined,
-              width: 30,
-              height: 30,
-              colorFilter: const ColorFilter.mode(
-                AppColors.primary,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          Text(
-            dateLabel,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceXs),
-          Text(
-            'No sales were recorded on this date.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceLg),
-          OutlinedButton.icon(
-            onPressed: onChooseDate,
-            icon: SvgPicture.asset(
-              AppIcons.calendar_month_outlined,
-              width: 20,
-              height: 20,
-            ),
-            label: const Text('Choose another date'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-_DailySalesSnapshot? _snapshotFor(DateTime date) {
-  final key = DateTime(date.year, date.month, date.day);
-  return _dailySalesSnapshots[key];
-}
-
-final Map<DateTime, _DailySalesSnapshot> _dailySalesSnapshots = {
-  DateTime(2026, 8, 16): const _DailySalesSnapshot(28450, 42, 677, 12.4),
-  DateTime(2026, 8, 15): const _DailySalesSnapshot(25600, 38, 674, -4.8),
-  DateTime(2026, 8, 14): const _DailySalesSnapshot(31200, 51, 612, 8.6),
-};
-
-class _DailySalesSnapshot {
-  const _DailySalesSnapshot(
-    this.revenue,
-    this.orders,
-    this.averageOrder,
-    this.change,
-  );
-
-  final int revenue;
-  final int orders;
-  final int averageOrder;
-  final double change;
 }

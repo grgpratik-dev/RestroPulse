@@ -5,49 +5,43 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_card.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 
 class SalesChannelCard extends StatelessWidget {
-  const SalesChannelCard({this.period = SalesTrendPeriod.week, super.key});
+  const SalesChannelCard({required this.totalRevenue, super.key});
 
-  final SalesTrendPeriod period;
+  final int totalRevenue;
 
   @override
   Widget build(BuildContext context) {
-    final total = switch (period) {
-      SalesTrendPeriod.week => 198450,
-      SalesTrendPeriod.month => 842500,
-      SalesTrendPeriod.quarter => 2482500,
-      SalesTrendPeriod.sixMonths => 4772500,
-      SalesTrendPeriod.year => 8812500,
-    };
-    String amount(double share) =>
-        'Rs ${_formatAmount((total * share).round())}';
+    final dineInRevenue = (totalRevenue * .55).round();
+    final takeawayRevenue = (totalRevenue * .25).round();
+    final deliveryRevenue = totalRevenue - dineInRevenue - takeawayRevenue;
+    String amount(int value) => 'Rs ${_formatAmount(value)}';
 
     return AppCard(
       borderRadius: AppRadius.lg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _ChannelHeader(periodLabel: period.dateLabel),
+          const _ChannelHeader(),
           const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Dine-in',
-            amount: amount(.55),
+            amount: amount(dineInRevenue),
             percent: 55,
             color: AppColors.primary,
           ),
           const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Takeaway',
-            amount: amount(.25),
+            amount: amount(takeawayRevenue),
             percent: 25,
             color: AppColors.info,
           ),
           const SizedBox(height: AppSpacing.spaceMd),
           _ChannelRow(
             label: 'Delivery',
-            amount: amount(.20),
+            amount: amount(deliveryRevenue),
             percent: 20,
             color: AppColors.warning,
           ),
@@ -110,29 +104,15 @@ class SalesChannelEmptyCard extends StatelessWidget {
 }
 
 class _ChannelHeader extends StatelessWidget {
-  const _ChannelHeader({required this.periodLabel});
-
-  final String periodLabel;
+  const _ChannelHeader();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Sales by Channel',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          periodLabel,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
+    return Text(
+      'Sales by Channel',
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/session/app_session_controller.dart';
 import 'package:restropulse/src/core/enums/enums.dart';
-import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_cubit.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/auth_screen.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/verify_otp_screen.dart';
@@ -42,6 +41,7 @@ import 'package:restropulse/src/features/sales/presentation/screens/sales_screen
 import 'package:restropulse/src/features/wastage/domain/models/wastage.dart';
 import 'package:restropulse/src/features/wastage/presentation/screens/wastage_details_screen.dart';
 import 'package:restropulse/src/features/wastage/presentation/screens/wastage_form_screen.dart';
+import 'package:restropulse/src/features/wastage/presentation/screens/wastage_history_screen.dart';
 import 'package:restropulse/src/features/wastage/presentation/screens/wastage_screen.dart';
 
 import '../../features/main/presentation/screens/main_screen.dart';
@@ -229,6 +229,7 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
         name: AppRoute.expenseHistory.name,
         builder: (context, state) => ExpenseHistoryScreen(
           initialExpenses: state.extra as List<Expense>?,
+          initialCategory: state.uri.queryParameters['category'],
         ),
       ),
       GoRoute(
@@ -266,6 +267,13 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
         path: AppRoute.wastage.path,
         name: AppRoute.wastage.name,
         builder: (context, state) => const WastageScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.wastageHistory.path,
+        name: AppRoute.wastageHistory.name,
+        builder: (context, state) => WastageHistoryScreen(
+          initialEntries: state.extra as List<WastageEntry>?,
+        ),
       ),
       GoRoute(
         path: AppRoute.recordWastage.path,

@@ -12,8 +12,16 @@
 --   - optional notes
 --   - optional order time
 --
--- Prices, costs, names, subtotal, and total are calculated
--- from trusted database values rather than client input.
+-- The database generates:
+--   - order number
+--   - item name snapshots
+--   - selling price snapshots
+--   - cost price snapshots
+--   - subtotal
+--   - total
+--
+-- This prevents the client from manipulating prices
+-- or manually assigning order numbers.
 -- =========================================================
 
 
@@ -43,6 +51,7 @@
 --   - Duplicate menu_item_id entries are rejected.
 --   - Selling price / cost / item name come from menu_items.
 --   - Discount cannot exceed subtotal.
+--   - Order number is generated per restaurant.
 --   - Order + order_items are committed together.
 -- =========================================================
 
@@ -61,13 +70,16 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+
   v_order_id uuid;
+  v_order_number bigint;
 
   v_subtotal numeric(12,2);
   v_total_amount numeric(12,2);
 
   v_requested_item_count integer;
   v_valid_item_count integer;
+
 begin
 
   -- =======================================================
@@ -127,7 +139,10 @@ begin
       or not (item ? 'quantity')
       or (item ->> 'quantity')::integer <= 0
   ) then
-    raise exception 'Every order item must have a valid menu item and positive quantity';
+
+    raise exception
+      'Every order item must have a valid menu item and positive quantity';
+
   end if;
 
 
@@ -147,7 +162,9 @@ begin
       having count(*) > 1
     ) duplicates
   ) > 0 then
+
     raise exception 'Duplicate menu items are not allowed';
+
   end if;
 
 
@@ -218,10 +235,45 @@ begin
 
 
   -- =======================================================
+  -- Generate restaurant-scoped order number.
+  --
+  -- Each restaurant has its own numbering:
+  --
+  -- Restaurant A:
+  --   1, 2, 3, ...
+  --
+  -- Restaurant B:
+  --   1, 2, 3, ...
+  --
+  -- Flutter can display:
+  --   1  -> #0001
+  --   43 -> #0043
+  --
+  -- The advisory transaction lock prevents two concurrent
+  -- order creations for the SAME restaurant from generating
+  -- the same number.
+  --
+  -- Orders for different restaurants can still be created
+  -- concurrently.
+  -- =======================================================
+
+  perform pg_advisory_xact_lock(
+    hashtextextended(v_restaurant_id::text, 0)
+  );
+
+
+  select coalesce(max(o.order_number), 0) + 1
+  into v_order_number
+  from public.orders o
+  where o.restaurant_id = v_restaurant_id;
+
+
+  -- =======================================================
   -- Create the parent order.
   -- =======================================================
 
   insert into public.orders (
+    order_number,
     restaurant_id,
     recorded_by_profile_id,
     channel,
@@ -232,6 +284,7 @@ begin
     ordered_at
   )
   values (
+    v_order_number,
     v_restaurant_id,
     v_user_id,
     p_channel,
@@ -279,7 +332,7 @@ begin
   where mi.restaurant_id = v_restaurant_id;
 
 
-  -- Return the newly created order ID to Flutter.
+  -- Return the internal UUID of the newly created order.
   return v_order_id;
 
 end;
@@ -320,7 +373,15 @@ to authenticated;
 --
 -- Batch entry is only a faster input workflow.
 -- Each entry still becomes its own orders row with its
--- own order_items.
+-- own order_items and its own sequential order number.
+--
+-- Example:
+--
+-- Batch containing three orders:
+--
+--   Order 1 -> #0043
+--   Order 2 -> #0044
+--   Order 3 -> #0045
 --
 -- If any order in the batch fails, the entire batch
 -- transaction is rolled back.
@@ -337,36 +398,50 @@ as $$
 declare
   v_order jsonb;
   v_order_id uuid;
+
   v_order_ids uuid[] := array[]::uuid[];
+
 begin
-  -- Batch payload must be a non-empty JSON array.
+
+  -- =======================================================
+  -- Validate batch payload.
+  -- =======================================================
+
   if p_orders is null
      or jsonb_typeof(p_orders) <> 'array'
      or jsonb_array_length(p_orders) = 0 then
+
     raise exception 'Batch must contain at least one order';
+
   end if;
 
 
-  -- Process each order individually using the already
-  -- validated create_order() function.
+  -- =======================================================
+  -- Process every order using create_order().
+  --
+  -- This keeps all validation, calculations, snapshots,
+  -- and order-number generation in one source of truth.
+  -- =======================================================
+
   for v_order in
     select value
     from jsonb_array_elements(p_orders)
   loop
 
-    -- Every batch entry needs a channel.
+    -- Every batch order must contain a channel.
     if not (v_order ? 'channel') then
       raise exception 'Every order must include a channel';
     end if;
 
 
-    -- Every batch entry needs an items array.
+    -- Every batch order must contain items.
     if not (v_order ? 'items') then
       raise exception 'Every order must include items';
     end if;
 
 
     v_order_id := public.create_order(
+
       p_channel :=
         (v_order ->> 'channel')::public.order_channel,
 
@@ -390,7 +465,7 @@ begin
     );
 
 
-    -- Collect each newly created order ID.
+    -- Store the created order UUID.
     v_order_ids := array_append(
       v_order_ids,
       v_order_id
@@ -399,7 +474,9 @@ begin
   end loop;
 
 
+  -- Return all created order UUIDs to Flutter.
   return v_order_ids;
+
 end;
 $$;
 
@@ -411,6 +488,7 @@ $$;
 revoke all
 on function public.create_orders_batch(jsonb)
 from public;
+
 
 grant execute
 on function public.create_orders_batch(jsonb)

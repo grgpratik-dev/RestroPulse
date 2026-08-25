@@ -5,8 +5,8 @@
 enum AppRoute {
   onboarding('/onboarding'),
   splash('/splash'),
- auth('/auth'),
- verifyOTP('/verify-otp'),
+  auth('/auth'),
+  verifyOTP('/verify-otp'),
   restaurantAccess('/restaurant-access'),
   createRestaurant('/restaurant/create'),
   joinRestaurant('/restaurant/join'),
@@ -25,6 +25,7 @@ enum AppRoute {
   expenseCategoryDetails('/expenses/category/details'),
   expenseCategories('/expenses/categories'),
   wastage('/wastage'),
+  wastageHistory('/wastage/history'),
   recordWastage('/wastage/record'),
   wastageDetails('/wastage/details'),
   menu('/menu'),

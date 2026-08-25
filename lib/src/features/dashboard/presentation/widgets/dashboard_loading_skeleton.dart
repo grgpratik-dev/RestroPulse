@@ -13,7 +13,7 @@ class DashboardLoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const _SkeletonCard(height: 246),
+        const _SkeletonCard(height: 154),
         const SizedBox(height: AppSpacing.spaceMd),
         const _SkeletonCard(height: 92),
         const SizedBox(height: AppSpacing.spaceMd),

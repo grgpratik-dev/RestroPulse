@@ -40,7 +40,7 @@ class WastageLoadingSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        for (final height in [230.0, 270.0, 320.0, 220.0]) ...[
+        for (final height in [150.0, 300.0, 220.0]) ...[
           AppSkeleton(height: height),
           const SizedBox(height: AppSpacing.spaceMd),
         ],

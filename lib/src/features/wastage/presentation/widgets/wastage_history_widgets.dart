@@ -1,34 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_divider.dart';
+import '../../../../core/icons/app_icons.dart';
 import '../../../../core/widgets/app_card.dart';
-import '../../domain/models/expense.dart';
-import 'expense_category_icon.dart';
+import '../../../../core/widgets/app_divider.dart';
+import '../../domain/models/wastage.dart';
 
-class ExpenseHistorySummary extends StatelessWidget {
-  const ExpenseHistorySummary({
+class WastageHistorySummary extends StatelessWidget {
+  const WastageHistorySummary({
     required this.rangeLabel,
-    required this.total,
-    required this.transactions,
+    required this.totalLoss,
+    required this.entries,
+    required this.topReason,
     super.key,
   });
 
   final String rangeLabel;
-  final double total;
-  final int transactions;
+  final double totalLoss;
+  final int entries;
+  final WastageReason? topReason;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
     return AppCard(
-      color: AppColors.expenseForeground,
-      borderColor: AppColors.expenseForeground,
+      color: AppColors.warning,
+      borderColor: AppColors.warning,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.spaceMd,
         vertical: AppSpacing.spaceSm,
@@ -39,27 +40,34 @@ class ExpenseHistorySummary extends StatelessWidget {
           Text(
             rangeLabel,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: AppColors.surface.withValues(alpha: .72),
+              color: Colors.white.withValues(alpha: .76),
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: AppSpacing.space2xs),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Rs ${currency.format(total)}',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppColors.surface,
-                fontWeight: FontWeight.w800,
-              ),
+          Text(
+            'Estimated Loss',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Colors.white.withValues(alpha: .7),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'Rs ${currency.format(totalLoss)}',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: AppSpacing.space2xs),
           Text(
-            '$transactions ${transactions == 1 ? 'transaction' : 'transactions'}',
+            [
+              '$entries ${entries == 1 ? 'entry' : 'entries'}',
+              if (topReason != null) 'Top reason: ${topReason!.label}',
+            ].join(' · '),
             style: TextStyle(
-              color: AppColors.surface.withValues(alpha: .78),
+              color: Colors.white.withValues(alpha: .82),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -69,24 +77,24 @@ class ExpenseHistorySummary extends StatelessWidget {
   }
 }
 
-class ExpenseHistoryGroup extends StatelessWidget {
-  const ExpenseHistoryGroup({
+class WastageHistoryGroup extends StatelessWidget {
+  const WastageHistoryGroup({
     required this.date,
-    required this.expenses,
-    required this.onExpenseTap,
+    required this.entries,
+    required this.onEntryTap,
     super.key,
   });
 
   final DateTime date;
-  final List<Expense> expenses;
-  final ValueChanged<Expense> onExpenseTap;
+  final List<WastageEntry> entries;
+  final ValueChanged<WastageEntry> onEntryTap;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    final total = expenses.fold<double>(
+    final total = entries.fold<double>(
       0,
-      (sum, expense) => sum + expense.amount,
+      (sum, entry) => sum + entry.estimatedLoss,
     );
 
     return Column(
@@ -105,7 +113,7 @@ class ExpenseHistoryGroup extends StatelessWidget {
             Text(
               'Rs ${currency.format(total)}',
               style: const TextStyle(
-                color: AppColors.expenseForeground,
+                color: AppColors.warning,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -119,12 +127,12 @@ class ExpenseHistoryGroup extends StatelessWidget {
           ),
           child: Column(
             children: [
-              for (var index = 0; index < expenses.length; index++) ...[
-                _HistoryExpenseRow(
-                  expense: expenses[index],
-                  onTap: () => onExpenseTap(expenses[index]),
+              for (var index = 0; index < entries.length; index++) ...[
+                _WastageHistoryRow(
+                  entry: entries[index],
+                  onTap: () => onEntryTap(entries[index]),
                 ),
-                if (index != expenses.length - 1) const AppDivider(height: 1),
+                if (index != entries.length - 1) const AppDivider(height: 1),
               ],
             ],
           ),
@@ -141,8 +149,8 @@ class ExpenseHistoryGroup extends StatelessWidget {
   }
 }
 
-class ExpenseHistoryEmptyState extends StatelessWidget {
-  const ExpenseHistoryEmptyState({required this.onChangeFilters, super.key});
+class WastageHistoryEmptyState extends StatelessWidget {
+  const WastageHistoryEmptyState({required this.onChangeFilters, super.key});
 
   final VoidCallback onChangeFilters;
 
@@ -158,29 +166,29 @@ class ExpenseHistoryEmptyState extends StatelessWidget {
               height: 60,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.expenseSurface,
+                color: AppColors.warningMuted,
                 borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: SvgPicture.asset(
-                AppIcons.receipt_long_outlined,
+                AppIcons.delete_sweep_outlined,
                 width: 30,
                 height: 30,
                 colorFilter: const ColorFilter.mode(
-                  AppColors.expenseForeground,
+                  AppColors.warning,
                   BlendMode.srcIn,
                 ),
               ),
             ),
             const SizedBox(height: AppSpacing.spaceMd),
             Text(
-              'No expenses found',
+              'No wastage found',
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: AppSpacing.space2xs),
             Text(
-              'Try another date range or clear your filters.',
+              'Try another period or clear your filters.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -198,15 +206,16 @@ class ExpenseHistoryEmptyState extends StatelessWidget {
   }
 }
 
-class _HistoryExpenseRow extends StatelessWidget {
-  const _HistoryExpenseRow({required this.expense, required this.onTap});
+class _WastageHistoryRow extends StatelessWidget {
+  const _WastageHistoryRow({required this.entry, required this.onTap});
 
-  final Expense expense;
+  final WastageEntry entry;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
+    final quantity = _quantityLabel(entry);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -214,21 +223,38 @@ class _HistoryExpenseRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.spaceSm),
         child: Row(
           children: [
-            ExpenseCategoryIcon(category: expense.category),
+            Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.warningMuted,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: SvgPicture.asset(
+                AppIcons.delete_sweep_outlined,
+                width: 21,
+                height: 21,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.warning,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
             const SizedBox(width: AppSpacing.spaceSm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    expense.description,
+                    entry.itemName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${expense.category} · ${expense.type.label}',
+                    [?quantity, entry.reason.label].join(' · '),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -240,7 +266,7 @@ class _HistoryExpenseRow extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.spaceXs),
             Text(
-              'Rs ${currency.format(expense.amount)}',
+              'Rs ${currency.format(entry.estimatedLoss)}',
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
             SvgPicture.asset(
@@ -252,5 +278,13 @@ class _HistoryExpenseRow extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _quantityLabel(WastageEntry value) {
+    if (value.quantity == null || value.unit == null) return null;
+    final amount = value.quantity! % 1 == 0
+        ? value.quantity!.toStringAsFixed(0)
+        : value.quantity.toString();
+    return '$amount ${value.unit!.label}';
   }
 }

@@ -76,8 +76,8 @@ class _HighlightCard extends StatelessWidget {
     final accent = isPrimary ? AppColors.mintBright : AppColors.primary;
 
     return Container(
-      constraints: const BoxConstraints(minHeight: 158),
-      padding: const EdgeInsets.all(AppSpacing.spaceMd),
+      constraints: const BoxConstraints(minHeight: 138),
+      padding: const EdgeInsets.all(AppSpacing.spaceSm),
       decoration: BoxDecoration(
         color: isPrimary ? AppColors.primaryStrong : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -110,14 +110,15 @@ class _HighlightCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.spaceSm),
+          const SizedBox(height: AppSpacing.spaceXs),
           Text(
             itemName,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(color: foreground),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const Spacer(),
           Wrap(

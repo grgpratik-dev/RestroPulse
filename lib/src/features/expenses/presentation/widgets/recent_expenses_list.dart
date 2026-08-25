@@ -40,7 +40,7 @@ class RecentExpensesList extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('View all'),
+                  Text('View History'),
                   SizedBox(width: 2),
                   SvgPicture.asset(
                     AppIcons.arrow_forward_rounded,
@@ -115,7 +115,8 @@ class _ExpenseRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${expense.category} · ${_dateLabel(expense.date)}',
+                    '${expense.category} · ${_dateLabel(expense.date)} · '
+                    '${DateFormat.jm().format(expense.date)}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -152,7 +153,7 @@ class _ExpenseRow extends StatelessWidget {
 
   String _dateLabel(DateTime date) {
     if (date.year == 2026 && date.month == 8 && date.day == 16) {
-      return 'Today · ${DateFormat.jm().format(date)}';
+      return 'Today';
     }
     return DateFormat('MMM d').format(date);
   }

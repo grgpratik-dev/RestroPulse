@@ -47,7 +47,7 @@ class QuickActionsSection extends StatelessWidget {
             Expanded(
               child: _QuickAction(
                 icon: AppIcons.wastage,
-                label: 'Record Wastage',
+                label: 'Wastage',
                 onTap: onRecordWastage,
                 tone: _QuickActionTone.warning,
               ),

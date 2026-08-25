@@ -100,7 +100,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 controller: _itemController,
                 autofocus: !_editing,
                 textCapitalization: TextCapitalization.words,
-              
+
                 validator: (value) => value == null || value.trim().isEmpty
                     ? 'Enter an item or ingredient'
                     : null,
@@ -114,7 +114,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                 ],
-            
+
                 validator: (value) => (double.tryParse(value ?? '') ?? 0) <= 0
                     ? 'Enter an estimated loss above 0'
                     : null,
@@ -156,6 +156,7 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 initialValue: _reason,
                 decoration: const InputDecoration(labelText: 'Reason'),
                 items: WastageReason.values
+                    .where((reason) => reason != WastageReason.staffMeal)
                     .map(
                       (reason) => DropdownMenuItem(
                         value: reason,
@@ -181,9 +182,13 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                           RegExp(r'^\d*\.?\d{0,2}'),
                         ),
                       ],
-              
+
                       validator: (value) {
-                        if (value == null || value.isEmpty) return null;
+                        if (value == null || value.isEmpty) {
+                          return _unit == null
+                              ? null
+                              : 'Enter a quantity for this unit';
+                        }
                         return (double.tryParse(value) ?? -1) < 0
                             ? 'Cannot be negative'
                             : null;
@@ -204,6 +209,11 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                           )
                           .toList(),
                       onChanged: (value) => setState(() => _unit = value),
+                      validator: (value) =>
+                          _quantityController.text.trim().isNotEmpty &&
+                              value == null
+                          ? 'Select a unit'
+                          : null,
                     ),
                   ),
                 ],
@@ -229,7 +239,6 @@ class _WastageFormScreenState extends State<WastageFormScreen> {
                 controller: _notesController,
                 minLines: 3,
                 maxLines: 5,
-             
               ),
             ],
           ),

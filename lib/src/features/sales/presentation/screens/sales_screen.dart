@@ -4,19 +4,16 @@ import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_add_floating_action_button.dart';
 import 'package:restropulse/src/core/widgets/app_feature_header.dart';
-import 'package:restropulse/src/core/widgets/app_period_selector.dart';
 import 'package:restropulse/src/features/sales/domain/models/sales_order.dart';
+import 'package:restropulse/src/features/sales/presentation/widgets/recent_orders_section.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_channel_card.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_entry_type_sheet.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/sales_loading_skeleton.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_card.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/today_orders_section.dart';
 import 'package:restropulse/src/features/sales/presentation/widgets/today_sales_summary_card.dart';
 
 enum SalesViewState { loaded, empty, partial, loading, error }
 
-class SalesScreen extends StatefulWidget {
+class SalesScreen extends StatelessWidget {
   const SalesScreen({
     super.key,
     this.viewState = SalesViewState.loaded,
@@ -26,19 +23,16 @@ class SalesScreen extends StatefulWidget {
   final SalesViewState viewState;
   final VoidCallback? onTryAgain;
 
-  @override
-  State<SalesScreen> createState() => _SalesScreenState();
-}
-
-class _SalesScreenState extends State<SalesScreen> {
-  OrderChannel? _selectedChannel;
-  SalesTrendPeriod _analysisPeriod = SalesTrendPeriod.week;
+  static const _todayRevenue = 28450;
+  static const _todayRevenueChange = 12.4;
+  static const _todayOrders = 42;
+  static const _todayAverageOrder = 677;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: AppAddFloatingActionButton(
-        onPressed: _showEntryOptions,
+        onPressed: () => _showEntryOptions(context),
         tooltip: 'Record sales',
         heroTag: 'sales-add-order-fab',
       ),
@@ -57,44 +51,37 @@ class _SalesScreenState extends State<SalesScreen> {
             children: [
               const AppFeatureHeader(
                 title: 'Sales',
-                subtitle: 'Track orders and sales performance.',
+                subtitle: 'Today’s sales and recent orders.',
                 contextLabel: 'Today · Aug 16',
               ),
               const SizedBox(height: AppSpacing.spaceLg),
-              if (widget.viewState == SalesViewState.loading)
+              if (viewState == SalesViewState.loading)
                 const SalesLoadingSkeleton()
-              else if (widget.viewState == SalesViewState.error)
-                SalesErrorCard(onTryAgain: widget.onTryAgain ?? () {})
-              else if (widget.viewState == SalesViewState.empty)
-                SalesOrdersEmptyState(onRecordSales: _showEntryOptions)
+              else if (viewState == SalesViewState.error)
+                SalesErrorCard(onTryAgain: onTryAgain ?? () {})
+              else if (viewState == SalesViewState.empty)
+                SalesOrdersEmptyState(
+                  onRecordSales: () => _showEntryOptions(context),
+                )
               else ...[
-                const TodaySalesSummaryCard(),
-                const SizedBox(height: AppSpacing.spaceLg),
-                AppPeriodSelector<SalesTrendPeriod>(
-                  selected: _analysisPeriod,
-                  options: SalesTrendPeriod.values,
-                  labelOf: (period) => period.label,
-                  descriptionOf: (period) => period.dateLabel,
-                  title: 'Sales analysis period',
-                  onChanged: (period) =>
-                      setState(() => _analysisPeriod = period),
+                const TodaySalesSummaryCard(
+                  revenue: _todayRevenue,
+                  change: _todayRevenueChange,
+                  orders: _todayOrders,
+                  averageOrder: _todayAverageOrder,
                 ),
                 const SizedBox(height: AppSpacing.spaceLg),
-                if (widget.viewState == SalesViewState.partial)
-                  SalesChannelEmptyCard(onUpdateSales: _openAddOrder)
+                if (viewState == SalesViewState.partial)
+                  SalesChannelEmptyCard(
+                    onUpdateSales: () => _openAddOrder(context),
+                  )
                 else
-                  SalesChannelCard(period: _analysisPeriod),
-                const SizedBox(height: AppSpacing.spaceMd),
-                SalesTrendCard(period: _analysisPeriod),
+                  const SalesChannelCard(totalRevenue: _todayRevenue),
                 const SizedBox(height: AppSpacing.spaceLg),
-                TodayOrdersSection(
+                RecentOrdersSection(
                   orders: SalesMockData.todayOrders,
-                  selectedChannel: _selectedChannel,
-                  onChannelSelected: (channel) {
-                    setState(() => _selectedChannel = channel);
-                  },
-                  onOrderTap: _openOrderDetails,
-                  onViewHistory: _openSalesHistory,
+                  onOrderTap: (order) => _openOrderDetails(context, order),
+                  onViewHistory: () => _openSalesHistory(context),
                 ),
               ],
             ],
@@ -108,30 +95,30 @@ class _SalesScreenState extends State<SalesScreen> {
     return Future<void>.delayed(const Duration(milliseconds: 500));
   }
 
-  void _openAddOrder() {
+  void _openAddOrder(BuildContext context) {
     context.pushNamed(AppRoute.addOrder.name);
   }
 
-  Future<void> _showEntryOptions() async {
+  Future<void> _showEntryOptions(BuildContext context) async {
     final type = await showSalesEntryTypeSheet(context);
-    if (!mounted || type == null) return;
+    if (!context.mounted || type == null) return;
     switch (type) {
       case SalesEntryType.singleOrder:
-        _openAddOrder();
+        _openAddOrder(context);
       case SalesEntryType.batchEntry:
-        _openBatchEntry();
+        _openBatchEntry(context);
     }
   }
 
-  void _openBatchEntry() {
+  void _openBatchEntry(BuildContext context) {
     context.pushNamed(AppRoute.batchEntry.name);
   }
 
-  void _openOrderDetails(SalesOrder order) {
+  void _openOrderDetails(BuildContext context, SalesOrder order) {
     context.pushNamed(AppRoute.orderDetails.name, extra: order);
   }
 
-  void _openSalesHistory() {
+  void _openSalesHistory(BuildContext context) {
     context.pushNamed(AppRoute.salesHistory.name);
   }
 }

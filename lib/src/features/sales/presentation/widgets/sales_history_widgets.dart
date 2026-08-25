@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/app_divider.dart';
 
-class SelectedDateSummaryCard extends StatelessWidget {
-  const SelectedDateSummaryCard({
-    required this.dateLabel,
+class PeriodSalesSummaryCard extends StatelessWidget {
+  const PeriodSalesSummaryCard({
     required this.revenue,
     required this.orders,
     required this.averageOrder,
@@ -19,7 +16,6 @@ class SelectedDateSummaryCard extends StatelessWidget {
     super.key,
   });
 
-  final String dateLabel;
   final int revenue;
   final int orders;
   final int averageOrder;
@@ -36,28 +32,14 @@ class SelectedDateSummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                AppIcons.calendar_today_outlined,
-                width: 18,
-                height: 18,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primary,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceXs),
-              Text(
-                dateLabel,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+          Text(
+            'Total Sales',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-          const SizedBox(height: AppSpacing.spaceSm),
+          const SizedBox(height: AppSpacing.spaceXs),
           Text(
             'Rs ${currency.format(revenue)}',
             style: theme.textTheme.headlineMedium?.copyWith(
@@ -68,7 +50,7 @@ class SelectedDateSummaryCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceXs),
           Text(
             '${change >= 0 ? '↑' : '↓'} '
-            '${change.abs().toStringAsFixed(1)}% vs previous day',
+            '${change.abs().toStringAsFixed(1)}% vs previous period',
             style: theme.textTheme.bodySmall?.copyWith(
               color: change >= 0 ? AppColors.success : theme.colorScheme.error,
               fontWeight: FontWeight.w700,

@@ -21,7 +21,7 @@ void main() {
     await pumpHistory(tester);
 
     expect(find.text('Expense History'), findsOneWidget);
-    expect(find.text('August 2026 · Aug 1–16'), findsOneWidget);
+    expect(find.text('Aug 1 – Aug 16, 2026'), findsNWidgets(2));
     expect(find.text('Rs 73,100'), findsOneWidget);
     expect(find.text('5 transactions'), findsOneWidget);
     expect(find.text('Today · Aug 16'), findsOneWidget);

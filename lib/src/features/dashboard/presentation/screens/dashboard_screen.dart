@@ -90,6 +90,6 @@ class DashboardScreen extends StatelessWidget {
   }
 
   void _openWastage(BuildContext context) {
-    context.pushNamed(AppRoute.recordWastage.name);
+    context.pushNamed(AppRoute.wastage.name);
   }
 }

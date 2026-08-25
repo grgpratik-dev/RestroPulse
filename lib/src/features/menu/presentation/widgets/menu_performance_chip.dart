@@ -33,6 +33,13 @@ class MenuPerformanceChip extends StatelessWidget {
         AppColors.neutral700,
       ),
     };
+    final label = switch (status) {
+      MenuPerformanceStatus.star => 'High Demand',
+      MenuPerformanceStatus.reviewCost => 'Review Cost',
+      MenuPerformanceStatus.promote => 'Healthy Margin',
+      MenuPerformanceStatus.lowPerformer => 'Low Demand',
+      MenuPerformanceStatus.notEnoughData => 'Not Enough Data',
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -41,7 +48,7 @@ class MenuPerformanceChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        status.label,
+        label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           color: foreground,
           fontWeight: FontWeight.w700,

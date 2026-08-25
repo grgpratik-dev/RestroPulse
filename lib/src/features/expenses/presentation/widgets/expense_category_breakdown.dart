@@ -1,12 +1,11 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_radius.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../core/widgets/app_divider.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../domain/models/expense.dart';
 
@@ -32,10 +31,6 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = NumberFormat.decimalPattern();
-    final total = categories.fold<double>(
-      0,
-      (sum, category) => sum + category.amount,
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,73 +46,16 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.spaceMd),
           child: Column(
             children: [
-              SizedBox(
-                height: 200,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    PieChart(
-                      PieChartData(
-                        centerSpaceRadius: 62,
-                        sectionsSpace: 3,
-                        startDegreeOffset: -90,
-                        pieTouchData: PieTouchData(enabled: false),
-                        sections: [
-                          for (
-                            var index = 0;
-                            index < categories.length;
-                            index++
-                          )
-                            PieChartSectionData(
-                              value: categories[index].amount,
-                              color: _colors[index % _colors.length],
-                              radius: 34,
-                              showTitle: false,
-                            ),
-                        ],
-                      ),
-                      duration: const Duration(milliseconds: 350),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Total',
-                          style: Theme.of(context).textTheme.labelMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                        const SizedBox(height: 2),
-                        SizedBox(
-                          width: 108,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Rs ${currency.format(total)}',
-                              maxLines: 1,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const AppDivider(),
               for (var index = 0; index < categories.length; index++) ...[
-                _CategoryRow(
+                _CategoryProgressRow(
                   category: categories[index],
                   color: _colors[index % _colors.length],
                   formattedAmount:
                       'Rs ${currency.format(categories[index].amount)}',
                   onTap: () => onCategoryTap(categories[index]),
                 ),
-                if (index != categories.length - 1) const AppDivider(height: 1),
+                if (index != categories.length - 1)
+                  const SizedBox(height: AppSpacing.spaceMd),
               ],
             ],
           ),
@@ -127,8 +65,8 @@ class ExpenseCategoryBreakdown extends StatelessWidget {
   }
 }
 
-class _CategoryRow extends StatelessWidget {
-  const _CategoryRow({
+class _CategoryProgressRow extends StatelessWidget {
+  const _CategoryProgressRow({
     required this.category,
     required this.color,
     required this.formattedAmount,
@@ -142,57 +80,66 @@ class _CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final percentage = (category.percentage * 100).round();
+
     return Semantics(
       button: true,
-      label:
-          '${category.name}, ${(category.percentage * 100).round()} percent, $formattedAmount',
+      label: '${category.name}, $percentage percent, $formattedAmount',
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.spaceSm),
-          child: Row(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.space2xs),
+          child: Column(
             children: [
-              Container(
-                width: 11,
-                height: 11,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
                       category.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${(category.percentage * 100).round()}% of total',
+                  ),
+                  const SizedBox(width: AppSpacing.spaceSm),
+                  Text(
+                    formattedAmount,
+                    maxLines: 1,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(width: AppSpacing.spaceXs),
+                  SizedBox(
+                    width: 34,
+                    child: Text(
+                      '$percentage%',
+                      textAlign: TextAlign.end,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: AppSpacing.space2xs),
+                  SvgPicture.asset(
+                    AppIcons.chevron_right_rounded,
+                    width: 18,
+                    height: 18,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              Text(
-                formattedAmount,
-                maxLines: 1,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(width: 4),
-              SvgPicture.asset(
-                AppIcons.chevron_right_rounded,
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.onSurfaceVariant,
-                  BlendMode.srcIn,
+              const SizedBox(height: AppSpacing.spaceXs),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                child: LinearProgressIndicator(
+                  value: category.percentage.clamp(0, 1),
+                  minHeight: 7,
+                  backgroundColor: AppColors.neutral200,
+                  color: color,
                 ),
               ),
             ],

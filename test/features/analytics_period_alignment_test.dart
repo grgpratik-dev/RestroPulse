@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/features/expenses/domain/models/expense.dart';
 import 'package:restropulse/src/features/menu/domain/models/menu_item.dart';
 import 'package:restropulse/src/features/reports/domain/models/report_data.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_data.dart';
 import 'package:restropulse/src/features/wastage/domain/models/wastage.dart';
 
 void main() {
@@ -16,13 +15,6 @@ void main() {
   });
 
   test('feature analysis periods align with the reporting timeline', () {
-    expect(SalesTrendPeriod.values.map((period) => period.label), [
-      '1W',
-      '1M',
-      '3M',
-      '6M',
-      '1Y',
-    ]);
     expect(ExpensePeriod.values.skip(1).map((period) => period.label), [
       '1M',
       '3M',

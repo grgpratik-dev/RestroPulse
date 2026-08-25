@@ -29,6 +29,19 @@ grant select, insert, update, delete
 on public.restaurants
 to authenticated;
 
+-- =========================================================
+-- Restaurant Join Codes
+--
+-- Direct client access is read-only.
+-- Owner visibility is still restricted by RLS.
+-- Writes happen through controlled RPC functions.
+-- =========================================================
+
+grant select
+on public.restaurant_join_codes
+to authenticated;
+
+
 
 -- =========================================================
 -- Restaurant Memberships
@@ -43,7 +56,7 @@ to authenticated;
 -- Restaurant Join Requests
 -- =========================================================
 
-grant select, insert, update, delete
+grant select
 on public.restaurant_join_requests
 to authenticated;
 
@@ -112,3 +125,5 @@ to authenticated;
 grant select
 on public.notifications
 to authenticated;
+
+RP-45ED46

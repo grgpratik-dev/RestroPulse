@@ -102,304 +102,6 @@ class ProfitabilityReportCard extends StatelessWidget {
   }
 }
 
-class FoodCostReportCard extends StatelessWidget {
-  const FoodCostReportCard({required this.report, super.key});
-
-  final ReportSnapshot report;
-
-  @override
-  Widget build(BuildContext context) {
-    final aboveTarget = report.foodCost > 30;
-    final color = aboveTarget ? AppColors.warning : AppColors.primary;
-    return _ReportCard(
-      title: 'Food Cost',
-      icon: AppIcons.restaurant_outlined,
-      trailing: Text(
-        'Target < 30%',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                '${report.foodCost.toStringAsFixed(1)}%',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.spaceSm),
-              _ChangeLabel(
-                value: report.foodCostChange,
-                positiveIsGood: false,
-                isPoints: true,
-              ),
-            ],
-          ),
-          const SizedBox(height: 3),
-          Text(
-            'Estimated cost · Rs ${NumberFormat.decimalPattern().format(report.estimatedFoodCost)}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: (report.foodCost / 40).clamp(0, 1),
-              minHeight: 10,
-              color: color,
-              backgroundColor: color.withValues(alpha: 0.12),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.spaceSm),
-          Text(
-            aboveTarget
-                ? 'Food cost exceeded your target during this period.'
-                : 'Food cost stayed within your target this period.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ExpenseBreakdownCard extends StatelessWidget {
-  const ExpenseBreakdownCard({
-    required this.report,
-    required this.onViewExpenses,
-    super.key,
-  });
-
-  final ReportSnapshot report;
-  final VoidCallback onViewExpenses;
-
-  @override
-  Widget build(BuildContext context) {
-    final currency = NumberFormat.decimalPattern();
-    final items = _expenseBreakdown(report.period);
-    return _ReportCard(
-      title: 'Where Money Went',
-      icon: AppIcons.account_balance_wallet_outlined,
-      footer: _CardAction(label: 'View Expenses', onTap: onViewExpenses),
-      child: Column(
-        children: [
-          for (var index = 0; index < items.length; index++) ...[
-            _ProgressRow(
-              label: items[index].$1,
-              value: 'Rs ${currency.format(items[index].$2)}',
-              percentage: items[index].$3,
-              color: AppColors.successStrong,
-            ),
-            if (index != items.length - 1)
-              const SizedBox(height: AppSpacing.spaceSm),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class SalesChannelReportCard extends StatelessWidget {
-  const SalesChannelReportCard({
-    required this.report,
-    required this.onViewSales,
-    super.key,
-  });
-
-  final ReportSnapshot report;
-  final VoidCallback onViewSales;
-
-  @override
-  Widget build(BuildContext context) {
-    final currency = NumberFormat.decimalPattern();
-    final channels = _salesChannels(report);
-    return _ReportCard(
-      title: 'Sales by Channel',
-      icon: AppIcons.salesChannel,
-      footer: _CardAction(label: 'View Sales', onTap: onViewSales),
-      child: Column(
-        children: [
-          for (var index = 0; index < channels.length; index++) ...[
-            _ProgressRow(
-              label: channels[index].$1,
-              value:
-                  'Rs ${currency.format(channels[index].$2)} · ↑ ${channels[index].$4}%',
-              percentage: channels[index].$3,
-              color: AppColors.secondary,
-            ),
-            if (index != channels.length - 1)
-              const SizedBox(height: AppSpacing.spaceSm),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class MenuPerformanceReportCard extends StatelessWidget {
-  const MenuPerformanceReportCard({
-    required this.report,
-    required this.onViewMenu,
-    super.key,
-  });
-
-  final ReportSnapshot report;
-  final VoidCallback onViewMenu;
-
-  @override
-  Widget build(BuildContext context) {
-    final data = _menuPerformance(report.period);
-    return _ReportCard(
-      title: 'Menu Performance',
-      icon: AppIcons.restaurant_menu_rounded,
-      footer: _CardAction(label: 'View Menu Performance', onTap: onViewMenu),
-      child: Column(
-        children: [
-          _ValueRow(
-            label: 'Top revenue item',
-            value: 'Chicken Burger',
-            detail: data.$1,
-          ),
-          AppDivider(),
-          _ValueRow(
-            label: 'Best margin item',
-            value: 'Lemonade',
-            detail: '68% margin',
-          ),
-          AppDivider(),
-          _ValueRow(
-            label: 'Most sold item',
-            value: 'Chicken Momo',
-            detail: data.$2,
-          ),
-          AppDivider(),
-          _ValueRow(
-            label: 'Needs review',
-            value: 'Chicken Pizza',
-            detail: 'High sales · Low margin',
-            warning: true,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class WastageReportCard extends StatelessWidget {
-  const WastageReportCard({
-    required this.report,
-    required this.onViewWastage,
-    super.key,
-  });
-
-  final ReportSnapshot report;
-  final VoidCallback onViewWastage;
-
-  @override
-  Widget build(BuildContext context) {
-    final data = _wastageData(report.period);
-    return _ReportCard(
-      title: 'Wastage',
-      icon: AppIcons.delete_sweep_outlined,
-      footer: _CardAction(label: 'View Wastage', onTap: onViewWastage),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _LabelValue(
-                  label: 'Total loss',
-                  value: data.$1,
-                  valueColor: Theme.of(context).colorScheme.error,
-                ),
-              ),
-              _ChangeLabel(value: data.$2, positiveIsGood: false),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          Row(
-            children: [
-              const Expanded(
-                child: _LabelValue(label: 'Top wasted item', value: 'Chicken'),
-              ),
-              Expanded(
-                child: _LabelValue(label: 'Most common reason', value: data.$3),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.spaceMd),
-          _InsightBox(
-            icon: AppIcons.info_outline_rounded,
-            title: '${data.$3} increased wastage',
-            message:
-                'It accounted for ${data.$4}% of wastage during this period.',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OrderBehaviourCard extends StatelessWidget {
-  const OrderBehaviourCard({required this.report, super.key});
-
-  final ReportSnapshot report;
-
-  @override
-  Widget build(BuildContext context) {
-    final currency = NumberFormat.decimalPattern();
-    final data = _orderBehaviour(report.period);
-    return _ReportCard(
-      title: 'Order Behaviour',
-      icon: AppIcons.receipt_long_outlined,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _LabelValue(
-                  label: 'Average order value',
-                  value:
-                      'Rs ${currency.format(report.averageOrderValue.round())}',
-                  detail: '↑ ${data.$1}%',
-                ),
-              ),
-              Expanded(
-                child: _LabelValue(
-                  label: 'Orders this period',
-                  value: NumberFormat.decimalPattern().format(report.orders),
-                  detail: '↑ ${data.$2}%',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.spaceLg),
-          Row(
-            children: [
-              Expanded(
-                child: _LabelValue(label: 'Busiest day', value: data.$3),
-              ),
-              Expanded(
-                child: _LabelValue(label: 'Busiest time', value: data.$4),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class OperationalHighlightsCard extends StatelessWidget {
   const OperationalHighlightsCard({
     required this.report,
@@ -456,8 +158,9 @@ class OperationalHighlightsCard extends StatelessWidget {
             icon: AppIcons.delete_sweep_outlined,
             label: 'Wastage loss',
             value: wastage.$1,
-            detail: '↑ ${wastage.$2.toStringAsFixed(1)}%',
-            detailIsGood: false,
+            detail:
+                '${wastage.$2 >= 0 ? '↑' : '↓'} ${wastage.$2.abs().toStringAsFixed(1)}%',
+            detailIsGood: wastage.$2 <= 0,
             onTap: onViewWastage,
           ),
           const AppDivider(height: 1),
@@ -605,7 +308,7 @@ class BusinessInsightsSection extends StatelessWidget {
         AppIcons.restaurant_menu_rounded,
         'Chicken Burger is popular but costly',
         'It generated strong revenue, but its food cost reached 48%.',
-        'Review High-Cost Items',
+        'Review Menu Item',
         onViewMenu,
       ),
       (
@@ -732,38 +435,6 @@ class _ProfitStep extends StatelessWidget {
   }
 }
 
-List<(String, double, double)> _expenseBreakdown(ReportPeriod period) =>
-    switch (period) {
-      ReportPeriod.month => const [
-        ('Ingredients', 210000, .44),
-        ('Salaries', 120000, .25),
-        ('Rent', 55000, .12),
-        ('Packaging', 32000, .07),
-        ('Other', 61300, .12),
-      ],
-      ReportPeriod.quarter => const [
-        ('Ingredients', 610000, .433),
-        ('Salaries', 360000, .256),
-        ('Rent', 165000, .117),
-        ('Packaging', 94000, .067),
-        ('Other', 179300, .127),
-      ],
-      ReportPeriod.sixMonths => const [
-        ('Ingredients', 1168000, .433),
-        ('Salaries', 688000, .255),
-        ('Rent', 316000, .117),
-        ('Packaging', 181000, .067),
-        ('Other', 346300, .128),
-      ],
-      ReportPeriod.year => const [
-        ('Ingredients', 2147000, .433),
-        ('Salaries', 1264000, .255),
-        ('Rent', 580000, .117),
-        ('Packaging', 332000, .067),
-        ('Other', 635300, .128),
-      ],
-    };
-
 List<(String, double, double, int)> _salesChannels(ReportSnapshot report) {
   final growth = switch (report.period) {
     ReportPeriod.month => const [8, 3, 24],
@@ -806,15 +477,11 @@ class _ReportCard extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.child,
-    this.trailing,
-    this.footer,
   });
 
   final String title;
   final String icon;
   final Widget child;
-  final Widget? trailing;
-  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -842,192 +509,21 @@ class _ReportCard extends StatelessWidget {
                   ),
                 ),
               ),
-              ?trailing,
             ],
           ),
           const SizedBox(height: AppSpacing.spaceMd),
           child,
-          if (footer != null) ...[
-            const SizedBox(height: AppSpacing.spaceSm),
-            const AppDivider(height: 1),
-            footer!,
-          ],
         ],
       ),
     );
   }
 }
 
-class _ProgressRow extends StatelessWidget {
-  const _ProgressRow({
-    required this.label,
-    required this.value,
-    required this.percentage,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final double percentage;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Text(label)),
-            const SizedBox(width: AppSpacing.spaceSm),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    value,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${(percentage * 100).round()}% of total',
-                    textAlign: TextAlign.end,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(999),
-          child: LinearProgressIndicator(
-            value: percentage,
-            minHeight: 7,
-            color: color,
-            backgroundColor: color.withValues(alpha: 0.1),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ValueRow extends StatelessWidget {
-  const _ValueRow({
-    required this.label,
-    required this.value,
-    required this.detail,
-    this.warning = false,
-  });
-
-  final String label;
-  final String value;
-  final String detail;
-  final bool warning;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.spaceSm),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                value,
-                textAlign: TextAlign.end,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              Text(
-                detail,
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  color: warning
-                      ? AppColors.warning
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _LabelValue extends StatelessWidget {
-  const _LabelValue({
-    required this.label,
-    required this.value,
-    this.detail,
-    this.valueColor,
-  });
-
-  final String label;
-  final String value;
-  final String? detail;
-  final Color? valueColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: valueColor,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        if (detail != null)
-          Text(
-            detail!,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-      ],
-    );
-  }
-}
-
 class _ChangeLabel extends StatelessWidget {
-  const _ChangeLabel({
-    required this.value,
-    required this.positiveIsGood,
-    this.isPoints = false,
-  });
+  const _ChangeLabel({required this.value, required this.positiveIsGood});
 
   final double value;
   final bool positiveIsGood;
-  final bool isPoints;
 
   @override
   Widget build(BuildContext context) {
@@ -1042,82 +538,13 @@ class _ChangeLabel extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        '${isUp ? '↑' : '↓'} ${value.abs().toStringAsFixed(1)}${isPoints ? ' pts' : '%'}',
+        '${isUp ? '↑' : '↓'} ${value.abs().toStringAsFixed(1)}%',
         style: TextStyle(
           color: isGood ? AppColors.primary : AppColors.warning,
           fontSize: 12,
           fontWeight: FontWeight.w700,
         ),
       ),
-    );
-  }
-}
-
-class _InsightBox extends StatelessWidget {
-  const _InsightBox({
-    required this.icon,
-    required this.title,
-    required this.message,
-  });
-
-  final String icon;
-  final String title;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.spaceSm),
-      decoration: BoxDecoration(
-        color: AppColors.mintSurface,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SvgPicture.asset(
-            icon,
-            width: 20,
-            height: 20,
-            colorFilter: const ColorFilter.mode(
-              AppColors.primary,
-              BlendMode.srcIn,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.spaceXs),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  message,
-                  style: const TextStyle(fontSize: 12, height: 1.35),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CardAction extends StatelessWidget {
-  const _CardAction({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(onPressed: onTap, child: Text(label)),
     );
   }
 }

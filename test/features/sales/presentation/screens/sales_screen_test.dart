@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/order_entry_screen.dart';
 import 'package:restropulse/src/features/sales/presentation/screens/sales_screen.dart';
-import 'package:restropulse/src/features/sales/presentation/widgets/sales_trend_card.dart';
 
 void main() {
   Future<void> pumpAtMobileSize(WidgetTester tester, Widget child) async {
@@ -30,14 +29,20 @@ void main() {
     expect(find.text('55%'), findsOneWidget);
     expect(find.text('25%'), findsOneWidget);
     expect(find.text('20%'), findsOneWidget);
+    expect(find.text('Rs 15,648'), findsOneWidget);
+    expect(find.text('Rs 7,113'), findsOneWidget);
+    expect(find.text('Rs 5,689'), findsOneWidget);
     expect(
       tester.getTopLeft(find.text('Sales by Channel')).dy,
-      lessThan(tester.getTopLeft(find.text('Sales Trend')).dy),
+      lessThan(tester.getTopLeft(find.text('Recent Orders')).dy),
     );
-    expect(
-      tester.getTopLeft(find.text('Sales Trend')).dy,
-      lessThan(tester.getTopLeft(find.text("Today's Orders")).dy),
-    );
+    expect(find.text('View History →'), findsOneWidget);
+    expect(find.text('Sales Trend'), findsNothing);
+    expect(find.text('1W'), findsNothing);
+    expect(find.text('1M'), findsNothing);
+    expect(find.text('3M'), findsNothing);
+    expect(find.text('6M'), findsNothing);
+    expect(find.text('1Y'), findsNothing);
     expect(find.textContaining('₹'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -61,45 +66,6 @@ void main() {
 
     expect(find.text('1 orders entered'), findsOneWidget);
     expect(find.text('Order saved. Ready for the next bill.'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets(
-    'sales trend stays focused on the recent Sunday to Saturday week',
-    (tester) async {
-      await pumpAtMobileSize(
-        tester,
-        const Scaffold(
-          body: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: SalesTrendCard(),
-          ),
-        ),
-      );
-
-      expect(find.text('Best day'), findsOneWidget);
-      expect(find.text('Sunday'), findsOneWidget);
-      expect(find.text('Rs 31,200'), findsOneWidget);
-      expect(find.text('Aug 16–22, 2026'), findsOneWidget);
-      expect(find.text('Sun–Sat'), findsOneWidget);
-      expect(find.text('1M'), findsNothing);
-      expect(find.text('3M'), findsNothing);
-      expect(tester.takeException(), isNull);
-    },
-  );
-
-  testWidgets('sales analysis changes without changing today overview', (
-    tester,
-  ) async {
-    await pumpAtMobileSize(tester, const SalesScreen());
-
-    await tester.tap(find.text('1M'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Today · Aug 16'), findsOneWidget);
-    expect(find.text('Rs 28,450'), findsOneWidget);
-    expect(find.text('August 2026'), findsWidgets);
-    expect(find.text('Best week'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

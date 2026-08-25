@@ -18,8 +18,6 @@ class SalesLoadingSkeleton extends StatelessWidget {
         _SkeletonCard(height: 220),
         SizedBox(height: AppSpacing.spaceMd),
         _SkeletonCard(height: 230),
-        SizedBox(height: AppSpacing.spaceMd),
-        _SkeletonCard(height: 180),
       ],
     );
   }

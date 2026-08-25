@@ -28,7 +28,7 @@ class ExpenseSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "THIS MONTH'S EXPENSES",
+            "This Month's Expenses",
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: AppColors.surface.withValues(alpha: 0.72),
             ),

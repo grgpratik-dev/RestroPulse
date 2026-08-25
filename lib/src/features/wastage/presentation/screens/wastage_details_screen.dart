@@ -96,9 +96,9 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
               child: Column(
                 children: [
                   AppInfoRow(label: 'Reason', value: _entry.reason.label),
-                  if (_entry.quantityLabel != null) ...[
+                  if (_quantityLabel != null) ...[
                     const AppDivider(),
-                    AppInfoRow(label: 'Quantity', value: _entry.quantityLabel!),
+                    AppInfoRow(label: 'Quantity', value: _quantityLabel!),
                   ],
                   const AppDivider(),
                   AppInfoRow(
@@ -135,6 +135,14 @@ class _WastageDetailsScreenState extends State<WastageDetailsScreen> {
         ),
       ),
     );
+  }
+
+  String? get _quantityLabel {
+    if (_entry.quantity == null || _entry.unit == null) return null;
+    final quantity = _entry.quantity! % 1 == 0
+        ? _entry.quantity!.toStringAsFixed(0)
+        : _entry.quantity.toString();
+    return '$quantity ${_entry.unit!.label}';
   }
 
   Future<void> _edit() async {

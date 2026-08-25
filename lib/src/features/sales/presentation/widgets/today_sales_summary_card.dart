@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
@@ -7,11 +8,24 @@ import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/widgets/app_card.dart';
 
 class TodaySalesSummaryCard extends StatelessWidget {
-  const TodaySalesSummaryCard({super.key});
+  const TodaySalesSummaryCard({
+    required this.revenue,
+    required this.change,
+    required this.orders,
+    required this.averageOrder,
+    super.key,
+  });
+
+  final int revenue;
+  final double change;
+  final int orders;
+  final int averageOrder;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final currency = NumberFormat.decimalPattern();
+    final changeDirection = change >= 0 ? '↑' : '↓';
 
     return AppCard(
       color: AppColors.primaryStrong,
@@ -29,12 +43,12 @@ class TodaySalesSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.space2xs),
           Text(
-            'Rs 28,450',
+            'Rs ${currency.format(revenue)}',
             style: AppTypography.metricLarge.copyWith(color: AppColors.surface),
           ),
           const SizedBox(height: AppSpacing.spaceXs),
           Text(
-            '↑ 12.4% vs yesterday',
+            '$changeDirection ${change.abs().toStringAsFixed(1)}% vs yesterday',
             style: theme.textTheme.bodySmall?.copyWith(
               color: AppColors.splashAccent,
               fontWeight: FontWeight.w800,
@@ -50,17 +64,17 @@ class TodaySalesSummaryCard extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
-            child: const IntrinsicHeight(
+            child: IntrinsicHeight(
               child: Row(
                 children: [
                   Expanded(
-                    child: _SummaryMetric(label: 'Orders', value: '42'),
+                    child: _SummaryMetric(label: 'Orders', value: '$orders'),
                   ),
-                  AppDivider.vertical(color: AppColors.splashAccent),
+                  const AppDivider.vertical(color: AppColors.splashAccent),
                   Expanded(
                     child: _SummaryMetric(
                       label: 'Average Order',
-                      value: 'Rs 677',
+                      value: 'Rs ${currency.format(averageOrder)}',
                     ),
                   ),
                 ],

@@ -17,46 +17,31 @@ void main() {
     await tester.pumpWidget(MaterialApp(theme: AppTheme.light, home: home));
   }
 
-  testWidgets('expenses can switch its analytical period', (tester) async {
+  testWidgets('expenses shows a focused monthly operational view', (
+    tester,
+  ) async {
     await pumpScreen(tester, const ExpensesScreen());
 
     expect(find.text('Rs 210,000'), findsWidgets);
     expect(
       find.text('Ingredient spending is 14% higher than the previous month.'),
-      findsOneWidget,
+      findsNothing,
     );
-    expect(find.text('August 2026'), findsOneWidget);
+    expect(find.text('This Month · August 2026'), findsOneWidget);
     expect(find.text('1W'), findsNothing);
-    expect(find.text('1M'), findsOneWidget);
-    expect(find.text('3M'), findsOneWidget);
-    expect(find.text('6M'), findsOneWidget);
-    expect(find.text('1Y'), findsOneWidget);
-    expect(find.text('View all'), findsOneWidget);
+    expect(find.text('1M'), findsNothing);
+    expect(find.text('3M'), findsNothing);
+    expect(find.text('6M'), findsNothing);
+    expect(find.text('1Y'), findsNothing);
+    expect(find.text('Expense Trend'), findsNothing);
+    expect(find.text('Highest week'), findsNothing);
+    expect(find.text('View History'), findsOneWidget);
     final summaryAmount = find.descendant(
       of: find.byType(ExpenseSummaryCard),
       matching: find.text('Rs 478,300'),
     );
     expect(summaryAmount, findsOneWidget);
     expect(tester.widget<Text>(summaryAmount).maxLines, isNull);
-
-    await tester.tap(find.text('3M'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('June–August 2026'), findsOneWidget);
-    expect(find.text('Rs 1,408,300'), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byType(ExpenseSummaryCard),
-        matching: find.text('Rs 478,300'),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.text(
-        'Ingredient spending is 11% higher than the previous 3 months.',
-      ),
-      findsOneWidget,
-    );
     expect(tester.takeException(), isNull);
   });
 

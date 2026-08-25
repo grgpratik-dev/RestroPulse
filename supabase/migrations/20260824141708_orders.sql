@@ -22,6 +22,9 @@ create table public.orders (
     references public.profiles(id)
     on delete set null,
 
+  -- The UUID above remains the real database identifier.
+  order_number bigint not null,
+
   -- Sales channel:
   -- dine_in, takeaway, or delivery.
   channel public.order_channel not null,
@@ -43,6 +46,10 @@ create table public.orders (
 
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
+
+  -- Order numbers must be unique within a restaurant.
+  constraint orders_unique_order_number_per_restaurant
+  unique (restaurant_id, order_number),
 
   -- Monetary values cannot be negative.
   constraint orders_subtotal_non_negative

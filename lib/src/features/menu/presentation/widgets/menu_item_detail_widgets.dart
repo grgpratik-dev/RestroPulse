@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -134,36 +133,6 @@ class MenuPerformanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.unitsSold == 0) {
-      return AppCard(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.spaceLg),
-          child: Center(
-            child: Column(
-              children: [
-                SvgPicture.asset(
-                  AppIcons.bar_chart_rounded,
-                  width: 38,
-                  height: 38,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.primary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                SizedBox(height: AppSpacing.spaceSm),
-                Text(
-                  'No sales recorded yet',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-                ),
-                SizedBox(height: 4),
-                Text('Performance will appear after this item is sold.'),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
     final currency = NumberFormat.decimalPattern();
     return AppCard(
       child: Column(
@@ -239,23 +208,16 @@ class MenuPerformanceCard extends StatelessWidget {
             label: 'Orders containing item',
             value: '${item.ordersContainingItem}',
           ),
-          const SizedBox(height: AppSpacing.spaceLg),
-          const SizedBox(height: 150, child: _PerformanceChart()),
-          const SizedBox(height: AppSpacing.spaceSm),
-          const Text(
-            '↑ 8.4% units sold compared with last month',
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w700,
+          if (item.unitsSold > 0) ...[
+            const SizedBox(height: AppSpacing.spaceMd),
+            const Text(
+              '↑ 8.4% units sold vs previous period',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Calculated from prices and costs saved on each order item.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
+          ],
         ],
       ),
     );
@@ -291,13 +253,6 @@ class MenuClassificationCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.spaceMd),
           MenuPerformanceChip(status: status),
           const SizedBox(height: AppSpacing.spaceSm),
-          Text(
-            status.title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 4),
           Text(status.description),
           const SizedBox(height: AppSpacing.spaceMd),
           Container(
@@ -361,50 +316,6 @@ class DetailMetric extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PerformanceChart extends StatelessWidget {
-  const _PerformanceChart();
-
-  static const _values = [24.0, 31.0, 28.0, 43.0];
-
-  @override
-  Widget build(BuildContext context) {
-    final values = _values;
-    final maximum = values.reduce((a, b) => a > b ? a : b) * 1.25;
-    return BarChart(
-      BarChartData(
-        maxY: maximum,
-        alignment: BarChartAlignment.spaceAround,
-        gridData: const FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        titlesData: const FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        barTouchData: BarTouchData(enabled: false),
-        barGroups: [
-          for (var index = 0; index < values.length; index++)
-            BarChartGroupData(
-              x: index,
-              barRods: [
-                BarChartRodData(
-                  toY: values[index],
-                  width: values.length > 8 ? 9 : 16,
-                  color: AppColors.primary,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(5),
-                  ),
-                ),
-              ],
-            ),
-        ],
-      ),
-      duration: const Duration(milliseconds: 300),
     );
   }
 }

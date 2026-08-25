@@ -44,9 +44,9 @@ class RevenueExpensesChart extends StatelessWidget {
               _Legend(color: AppColors.amber, label: 'Expenses'),
             ],
           ),
-          const SizedBox(height: AppSpacing.spaceLg),
+          const SizedBox(height: AppSpacing.spaceMd),
           SizedBox(
-            height: 210,
+            height: 180,
             child: BarChart(
               BarChartData(
                 maxY: maxY,

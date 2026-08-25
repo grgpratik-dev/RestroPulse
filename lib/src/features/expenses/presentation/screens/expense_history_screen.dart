@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 
 import '../../../../app/router/app_route.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../core/widgets/app_period_selector.dart';
 import '../../domain/models/expense.dart';
 import '../widgets/expense_filter_sheet.dart';
 import '../widgets/expense_history_widgets.dart';
 import 'expense_details_screen.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class ExpenseHistoryScreen extends StatefulWidget {
-  const ExpenseHistoryScreen({this.initialExpenses, super.key});
+  const ExpenseHistoryScreen({
+    this.initialExpenses,
+    this.initialCategory,
+    super.key,
+  });
 
   final List<Expense>? initialExpenses;
+  final String? initialCategory;
 
   @override
   State<ExpenseHistoryScreen> createState() => _ExpenseHistoryScreenState();
@@ -27,11 +33,21 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
   late final List<Expense> _expenses = [
     ...(widget.initialExpenses ?? ExpensesMockData.expenses),
   ];
-  late DateTimeRange _range = DateTimeRange(
-    start: DateTime(2026, 8),
-    end: _latestRecordedDate,
-  );
-  ExpenseFilterSelection _filters = const ExpenseFilterSelection();
+  ExpensePeriod _selectedPeriod = ExpensePeriod.month;
+  late ExpenseFilterSelection _filters;
+
+  DateTimeRange get _range => _rangeFor(_selectedPeriod);
+
+  @override
+  void initState() {
+    super.initState();
+    final initialCategory = widget.initialCategory;
+    _filters = ExpenseFilterSelection(
+      category: ExpenseCategories.defaults.contains(initialCategory)
+          ? initialCategory
+          : null,
+    );
+  }
 
   List<Expense> get _visibleExpenses {
     final inclusiveEnd = _range.end.add(const Duration(days: 1));
@@ -97,48 +113,51 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
             AppSpacing.spaceXl,
           ),
           children: [
+            AppPeriodSelector<ExpensePeriod>(
+              selected: _selectedPeriod,
+              options: const [
+                ExpensePeriod.week,
+                ExpensePeriod.month,
+                ExpensePeriod.quarter,
+                ExpensePeriod.sixMonths,
+                ExpensePeriod.year,
+              ],
+              labelOf: (period) => period.label,
+              descriptionOf: (period) => _formatRange(_rangeFor(period)),
+              onChanged: (period) {
+                setState(() => _selectedPeriod = period);
+              },
+              title: 'Expense history period',
+            ),
+            const SizedBox(height: AppSpacing.spaceMd),
             ExpenseHistorySummary(
               rangeLabel: _rangeLabel,
               total: total,
               transactions: expenses.length,
             ),
-            const SizedBox(height: AppSpacing.spaceMd),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    key: const ValueKey('expense-history-date-range'),
-                    onPressed: _chooseDateRange,
-                    icon: SvgPicture.asset(
-                      AppIcons.date_range_outlined,
-                      width: 18,
-                      height: 18,
-                    ),
-                    label: Text(_compactRangeLabel),
-                  ),
+            const SizedBox(height: AppSpacing.spaceSm),
+            Align(
+              alignment: Alignment.centerRight,
+              child: OutlinedButton.icon(
+                key: const ValueKey('expense-history-filter'),
+                onPressed: _showFilters,
+                style: OutlinedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: _filters.isActive
+                      ? AppColors.expenseSurface
+                      : null,
                 ),
-                const SizedBox(width: AppSpacing.spaceXs),
-                OutlinedButton.icon(
-                  key: const ValueKey('expense-history-filter'),
-                  onPressed: _showFilters,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 48),
-                    backgroundColor: _filters.isActive
-                        ? AppColors.expenseSurface
-                        : null,
-                  ),
-                  icon: SvgPicture.asset(
-                    _filters.isActive
-                        ? AppIcons.filter_alt_rounded
-                        : AppIcons.filter_alt_outlined,
-                    width: 18,
-                    height: 18,
-                  ),
-                  label: const Text('Filter'),
+                icon: SvgPicture.asset(
+                  _filters.isActive
+                      ? AppIcons.filter_alt_rounded
+                      : AppIcons.filter_alt_outlined,
+                  width: 18,
+                  height: 18,
                 ),
-              ],
+                label: const Text('Filter'),
+              ),
             ),
-            const SizedBox(height: AppSpacing.spaceLg),
+            const SizedBox(height: AppSpacing.spaceMd),
             if (expenses.isEmpty)
               ExpenseHistoryEmptyState(onChangeFilters: _showFilters)
             else
@@ -149,7 +168,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
                   onExpenseTap: _openExpense,
                 ),
                 if (index != _groupDates.length - 1)
-                  const SizedBox(height: AppSpacing.spaceLg),
+                  const SizedBox(height: AppSpacing.spaceMd),
               ],
           ],
         ),
@@ -157,18 +176,7 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
     );
   }
 
-  String get _rangeLabel {
-    if (_range.start.year == _range.end.year &&
-        _range.start.month == _range.end.month) {
-      return '${DateFormat('MMMM yyyy').format(_range.start)} · '
-          '${DateFormat('MMM d').format(_range.start)}–${DateFormat('d').format(_range.end)}';
-    }
-    return '${DateFormat('MMM d, yyyy').format(_range.start)}–'
-        '${DateFormat('MMM d, yyyy').format(_range.end)}';
-  }
-
-  String get _compactRangeLabel =>
-      '${DateFormat('MMM d').format(_range.start)}–${DateFormat('MMM d').format(_range.end)}';
+  String get _rangeLabel => _formatRange(_range);
 
   List<Expense> _expensesForDate(List<Expense> values, DateTime date) {
     final results = values.where((expense) {
@@ -188,16 +196,25 @@ class _ExpenseHistoryScreenState extends State<ExpenseHistoryScreen> {
     return results;
   }
 
-  Future<void> _chooseDateRange() async {
-    final selected = await showDateRangePicker(
-      context: context,
-      initialDateRange: _range,
-      firstDate: DateTime(2020),
-      lastDate: _latestRecordedDate,
-      helpText: 'Choose expense date range',
-    );
-    if (!mounted || selected == null) return;
-    setState(() => _range = selected);
+  DateTimeRange _rangeFor(ExpensePeriod period) {
+    final end = _latestRecordedDate;
+    final start = switch (period) {
+      ExpensePeriod.week => end.subtract(const Duration(days: 6)),
+      ExpensePeriod.month => DateTime(end.year, end.month),
+      ExpensePeriod.quarter => DateTime(end.year, end.month - 2),
+      ExpensePeriod.sixMonths => DateTime(end.year, end.month - 5),
+      ExpensePeriod.year => DateTime(end.year - 1, end.month + 1),
+    };
+    return DateTimeRange(start: start, end: end);
+  }
+
+  String _formatRange(DateTimeRange range) {
+    if (range.start.year == range.end.year) {
+      return '${DateFormat('MMM d').format(range.start)} – '
+          '${DateFormat('MMM d, y').format(range.end)}';
+    }
+    return '${DateFormat('MMM d, y').format(range.start)} – '
+        '${DateFormat('MMM d, y').format(range.end)}';
   }
 
   Future<void> _showFilters() async {

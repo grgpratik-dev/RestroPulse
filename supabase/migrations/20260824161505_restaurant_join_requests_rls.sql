@@ -2,20 +2,22 @@
 -- Restaurant Join Requests RLS
 --
 -- Access rules:
---   - A user who does not yet belong to a restaurant can
---     submit a join request.
 --   - Users can read their own join requests.
 --   - Restaurant owners can read requests sent to their
 --     restaurant.
 --   - Viewers cannot process join requests.
---   - Approval/decline will be handled later through a
---     controlled database function.
+--   - Join requests are created only through the
+--     request_restaurant_join_by_code() function.
+--   - Approval/decline are handled through controlled
+--     database functions.
 -- =========================================================
 
 
 -- Enable Row Level Security.
+
 alter table public.restaurant_join_requests
 enable row level security;
+
 
 
 -- =========================================================
@@ -27,10 +29,15 @@ enable row level security;
 -- =========================================================
 
 create policy "Users and owners can read relevant join requests"
+
 on public.restaurant_join_requests
+
 for select
+
 to authenticated
+
 using (
+
   -- Requester can see their own request.
   requester_profile_id = auth.uid()
 
@@ -42,34 +49,22 @@ using (
     restaurant_id = public.current_user_restaurant_id()
     and public.is_restaurant_owner()
   )
+
 );
 
 
 -- =========================================================
--- INSERT
+-- No direct INSERT / UPDATE / DELETE policies.
 --
--- A user can submit a join request only when:
---   - the request belongs to their own profile
---   - they do not already belong to a restaurant
---   - the request starts with status = pending
---   - review fields have not already been filled
+-- Join request creation:
+--   request_restaurant_join_by_code()
 --
--- Duplicate pending requests to the same restaurant are
--- already prevented by our partial unique index.
+-- Approval:
+--   approve_join_request()
+--
+-- Decline:
+--   decline_join_request()
+--
+-- This prevents Flutter from bypassing the join-code
+-- workflow by inserting a restaurant_id directly.
 -- =========================================================
-
-create policy "Users without restaurant can create join requests"
-on public.restaurant_join_requests
-for insert
-to authenticated
-with check (
-  requester_profile_id = auth.uid()
-
-  and public.current_user_restaurant_id() is null
-
-  and status = 'pending'
-
-  and reviewed_by_profile_id is null
-
-  and reviewed_at is null
-);

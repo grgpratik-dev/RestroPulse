@@ -87,25 +87,9 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () =>
                       context.pushNamed(AppRoute.personalInformation.name),
                 ),
-                SettingsTile(
-                  icon: AppIcons.lock_outline_rounded,
-                  title: 'Change Password',
-                  onTap: () => context.pushNamed(AppRoute.changePassword.name),
-                ),
               ],
             ),
-            const SizedBox(height: AppSpacing.spaceXl),
-            SettingsSection(
-              title: 'Preferences',
-              children: [
-                SettingsTile(
-                  icon: AppIcons.notifications_none_rounded,
-                  title: 'Notifications',
-                  subtitle: 'Reports, reminders and alerts',
-                  onTap: () => _showPlaceholder(context, 'Notifications'),
-                ),
-              ],
-            ),
+
             const SizedBox(height: AppSpacing.spaceXl),
             SettingsSection(
               title: 'Support',

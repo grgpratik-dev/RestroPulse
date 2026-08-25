@@ -15,6 +15,7 @@ class AppPeriodSelector<T> extends StatelessWidget {
     required this.descriptionOf,
     required this.onChanged,
     this.title = 'Analysis period',
+    this.showDescription = true,
     super.key,
   });
 
@@ -24,6 +25,7 @@ class AppPeriodSelector<T> extends StatelessWidget {
   final String Function(T value) descriptionOf;
   final ValueChanged<T> onChanged;
   final String title;
+  final bool showDescription;
 
   @override
   Widget build(BuildContext context) {
@@ -74,27 +76,29 @@ class AppPeriodSelector<T> extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.spaceXs),
-          Row(
-            children: [
-              SvgPicture.asset(
-                AppIcons.calendar_today_outlined,
-                width: 18,
-                height: 18,
-              ),
-              const SizedBox(width: AppSpacing.space2xs),
-              Expanded(
-                child: Text(
-                  descriptionOf(selected),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+          if (showDescription) ...[
+            const SizedBox(height: AppSpacing.spaceXs),
+            Row(
+              children: [
+                SvgPicture.asset(
+                  AppIcons.calendar_today_outlined,
+                  width: 18,
+                  height: 18,
+                ),
+                const SizedBox(width: AppSpacing.space2xs),
+                Expanded(
+                  child: Text(
+                    descriptionOf(selected),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ],
       ),
     );

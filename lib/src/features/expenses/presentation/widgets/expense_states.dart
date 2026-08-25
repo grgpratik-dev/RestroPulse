@@ -33,8 +33,8 @@ class ExpensesNoPeriodState extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppStateMessage(
     icon: AppIcons.event_busy_outlined,
-    title: 'No expenses in this period',
-    message: 'Try another time range or add a new expense.',
+    title: 'No expenses this month',
+    message: 'Add an expense to start tracking this month’s spending.',
     iconBackgroundColor: AppColors.expenseSurface,
     iconColor: AppColors.expenseForeground,
     actions: [

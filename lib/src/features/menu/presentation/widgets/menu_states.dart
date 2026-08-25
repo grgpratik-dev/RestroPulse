@@ -52,7 +52,7 @@ class MenuLoadingSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(3, (index) => const AppSkeleton(height: 188))
+      children: List.generate(3, (index) => const AppSkeleton(height: 132))
           .expand(
             (widget) => [widget, const SizedBox(height: AppSpacing.spaceSm)],
           )
