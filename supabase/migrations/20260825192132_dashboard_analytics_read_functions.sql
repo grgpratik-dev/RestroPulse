@@ -1,76 +1,40 @@
 -- =========================================================
 -- Dashboard Analytics Read Functions
 --
--- Contains ONLY aggregated Dashboard analytics.
+-- Aggregated Dashboard analytics only.
 --
--- Flutter handles:
+-- Flutter handles presentation:
 --   - alert wording
 --   - icons
 --   - colors
 --   - navigation
 --
--- PostgreSQL returns analytical values / status codes.
+-- IMPORTANT:
+--
+-- Flutter sends restaurant BUSINESS DATES.
+--
+-- The RPC:
+--   1. resolves the current restaurant
+--   2. reads restaurants.timezone
+--   3. converts DATE boundaries to timestamptz for
+--      orders / expenses
+--   4. uses DATE boundaries directly for wastage
+--
+-- This keeps Dashboard analytics aligned with the
+-- restaurant's local calendar.
 -- =========================================================
 
-
--- =========================================================
--- Get Dashboard Snapshot
---
--- TODAY:
---
---   p_today_start
---   p_today_end
---   p_yesterday_start
---
--- Example:
---
---   yesterday:
---     [p_yesterday_start, p_today_start)
---
---   today:
---     [p_today_start, p_today_end)
---
---
--- RESTAURANT PULSE:
---
--- Flutter should supply THREE equal-length periods.
---
---   previous-previous:
---     [p_previous_previous_pulse_start,
---      p_previous_pulse_start)
---
---   previous:
---     [p_previous_pulse_start,
---      p_pulse_start)
---
---   current:
---     [p_pulse_start,
---      p_today_end)
---
--- Recommended:
---   rolling 7-day periods.
---
--- This allows:
---
---   Current Pulse
---   Previous Pulse
---   Pulse change vs previous period
---
--- without comparing partial weeks against full weeks.
--- =========================================================
 
 create or replace function public.get_dashboard_snapshot(
-  p_today_start timestamptz,
-  p_today_end timestamptz,
-  p_yesterday_start timestamptz,
+  p_today_start_date date,
+  p_today_end_date date,
+  p_yesterday_start_date date,
 
-  p_pulse_start timestamptz,
-  p_previous_pulse_start timestamptz,
-  p_previous_previous_pulse_start timestamptz
+  p_pulse_start_date date,
+  p_previous_pulse_start_date date,
+  p_previous_previous_pulse_start_date date
 )
 returns table (
-
-  -- Restaurant Pulse
   pulse_score integer,
   pulse_health text,
   pulse_change integer,
@@ -79,7 +43,6 @@ returns table (
   sales_status text,
   profitability_status text,
 
-  -- Today's KPIs
   today_revenue numeric,
   revenue_change_percent numeric,
 
@@ -95,7 +58,6 @@ returns table (
   food_cost_percent numeric,
   cost_data_complete boolean,
 
-  -- Highest-priority Dashboard signal
   alert_code text,
   alert_value numeric
 )
@@ -107,6 +69,16 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  -- Timestamp boundaries used for timestamptz columns.
+  v_today_start_at timestamptz;
+  v_today_end_at timestamptz;
+  v_yesterday_start_at timestamptz;
+
+  v_pulse_start_at timestamptz;
+  v_previous_pulse_start_at timestamptz;
+  v_previous_previous_pulse_start_at timestamptz;
 
 begin
 
@@ -122,13 +94,20 @@ begin
 
 
   -- =======================================================
-  -- Resolve current restaurant
+  -- Resolve restaurant + permanent timezone
   -- =======================================================
 
-  select rm.restaurant_id
-  into v_restaurant_id
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
 
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
 
   where rm.profile_id = v_user_id;
 
@@ -139,49 +118,80 @@ begin
 
 
   -- =======================================================
-  -- Validate boundaries
+  -- Validate required inputs
   -- =======================================================
 
-  if p_today_start is null
-     or p_today_end is null
-     or p_yesterday_start is null
-     or p_pulse_start is null
-     or p_previous_pulse_start is null
-     or p_previous_previous_pulse_start is null then
+  if p_today_start_date is null
+     or p_today_end_date is null
+     or p_yesterday_start_date is null
+     or p_pulse_start_date is null
+     or p_previous_pulse_start_date is null
+     or p_previous_previous_pulse_start_date is null then
 
     raise exception 'Dashboard period boundaries are required';
 
   end if;
 
 
-  if p_yesterday_start >= p_today_start
-     or p_today_start >= p_today_end then
+  -- =======================================================
+  -- Validate daily periods
+  -- =======================================================
+
+  if p_yesterday_start_date >= p_today_start_date
+     or p_today_start_date >= p_today_end_date then
 
     raise exception 'Invalid daily period boundaries';
 
   end if;
 
 
-  if p_previous_previous_pulse_start >= p_previous_pulse_start
-     or p_previous_pulse_start >= p_pulse_start
-     or p_pulse_start >= p_today_end then
+  -- =======================================================
+  -- Validate Pulse periods
+  -- =======================================================
+
+  if p_previous_previous_pulse_start_date
+        >= p_previous_pulse_start_date
+
+     or p_previous_pulse_start_date
+        >= p_pulse_start_date
+
+     or p_pulse_start_date
+        >= p_today_end_date then
 
     raise exception 'Invalid Pulse period boundaries';
 
   end if;
 
 
-  -- Require equal Pulse periods.
+  -- =======================================================
+  -- Pulse periods must contain the same number of
+  -- restaurant calendar days.
+  --
+  -- DATE subtraction returns number of days.
+  -- =======================================================
+
   if
-    (p_previous_pulse_start - p_previous_previous_pulse_start)
-      <>
-    (p_pulse_start - p_previous_pulse_start)
+    (
+      p_previous_pulse_start_date
+      - p_previous_previous_pulse_start_date
+    )
+    <>
+    (
+      p_pulse_start_date
+      - p_previous_pulse_start_date
+    )
 
     or
 
-    (p_pulse_start - p_previous_pulse_start)
-      <>
-    (p_today_end - p_pulse_start)
+    (
+      p_pulse_start_date
+      - p_previous_pulse_start_date
+    )
+    <>
+    (
+      p_today_end_date
+      - p_pulse_start_date
+    )
   then
 
     raise exception 'Pulse comparison periods must have equal duration';
@@ -190,7 +200,48 @@ begin
 
 
   -- =======================================================
-  -- Build the Dashboard snapshot.
+  -- Convert restaurant-local business dates into exact
+  -- timestamptz boundaries.
+  --
+  -- Example:
+  --
+  -- 2026-08-25 00:00 Asia/Kathmandu
+  --
+  -- becomes:
+  --
+  -- 2026-08-24 18:15 UTC
+  --
+  -- PostgreSQL also handles DST-aware zones correctly.
+  -- =======================================================
+
+  v_today_start_at :=
+    p_today_start_date::timestamp
+    at time zone v_timezone;
+
+  v_today_end_at :=
+    p_today_end_date::timestamp
+    at time zone v_timezone;
+
+  v_yesterday_start_at :=
+    p_yesterday_start_date::timestamp
+    at time zone v_timezone;
+
+
+  v_pulse_start_at :=
+    p_pulse_start_date::timestamp
+    at time zone v_timezone;
+
+  v_previous_pulse_start_at :=
+    p_previous_pulse_start_date::timestamp
+    at time zone v_timezone;
+
+  v_previous_previous_pulse_start_at :=
+    p_previous_previous_pulse_start_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Build Dashboard snapshot
   -- =======================================================
 
   return query
@@ -198,34 +249,52 @@ begin
   with
 
   -- =======================================================
-  -- TODAY
+  -- TODAY: Orders
   -- =======================================================
 
-  today_orders as (
+  today_orders_data as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue,
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue,
+
       count(*)::bigint as orders,
-      coalesce(avg(o.total_amount), 0)::numeric as average_order
+
+      coalesce(
+        avg(o.total_amount),
+        0
+      )::numeric as average_order
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_today_start
-      and o.ordered_at < p_today_end
+      and o.ordered_at >= v_today_start_at
+      and o.ordered_at < v_today_end_at
   ),
 
+
+  -- =======================================================
+  -- TODAY: Food Cost
+  -- =======================================================
 
   today_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
 
-      count(oi.unit_cost)::bigint as rows_with_cost
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -233,64 +302,99 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_today_start
-      and o.ordered_at < p_today_end
+      and o.ordered_at >= v_today_start_at
+      and o.ordered_at < v_today_end_at
   ),
 
 
+  -- =======================================================
+  -- TODAY: Expenses
+  -- =======================================================
+
   today_expenses as (
     select
-      coalesce(sum(e.amount), 0)::numeric as expenses
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
 
     from public.expenses e
 
     where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_today_start
-      and e.expense_at < p_today_end
+      and e.expense_at >= v_today_start_at
+      and e.expense_at < v_today_end_at
   ),
 
 
+  -- =======================================================
+  -- TODAY: Wastage
+  --
+  -- wastage_date is already a restaurant business DATE.
+  -- No timezone conversion is required.
+  -- =======================================================
+
   today_wastage as (
     select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
 
     from public.wastage_entries w
 
     where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_today_start::date
-      and w.wastage_date < p_today_end::date
+      and w.wastage_date >= p_today_start_date
+      and w.wastage_date < p_today_end_date
   ),
 
 
   -- =======================================================
-  -- YESTERDAY
+  -- YESTERDAY: Orders
   -- =======================================================
 
-  yesterday_orders as (
+  yesterday_orders_data as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue,
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue,
+
       count(*)::bigint as orders,
-      coalesce(avg(o.total_amount), 0)::numeric as average_order
+
+      coalesce(
+        avg(o.total_amount),
+        0
+      )::numeric as average_order
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_yesterday_start
-      and o.ordered_at < p_today_start
+      and o.ordered_at >= v_yesterday_start_at
+      and o.ordered_at < v_today_start_at
   ),
 
+
+  -- =======================================================
+  -- YESTERDAY: Food Cost
+  -- =======================================================
 
   yesterday_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
 
-      count(oi.unit_cost)::bigint as rows_with_cost
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -298,62 +402,89 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_yesterday_start
-      and o.ordered_at < p_today_start
-  ),
-
-
-  yesterday_expenses as (
-    select
-      coalesce(sum(e.amount), 0)::numeric as expenses
-
-    from public.expenses e
-
-    where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_yesterday_start
-      and e.expense_at < p_today_start
-  ),
-
-
-  yesterday_wastage as (
-    select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
-
-    from public.wastage_entries w
-
-    where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_yesterday_start::date
-      and w.wastage_date < p_today_start::date
+      and o.ordered_at >= v_yesterday_start_at
+      and o.ordered_at < v_today_start_at
   ),
 
 
   -- =======================================================
-  -- CURRENT PULSE PERIOD
+  -- YESTERDAY: Expenses
+  -- =======================================================
+
+  yesterday_expenses as (
+    select
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
+
+    from public.expenses e
+
+    where e.restaurant_id = v_restaurant_id
+      and e.expense_at >= v_yesterday_start_at
+      and e.expense_at < v_today_start_at
+  ),
+
+
+  -- =======================================================
+  -- YESTERDAY: Wastage
+  -- =======================================================
+
+  yesterday_wastage as (
+    select
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
+
+    from public.wastage_entries w
+
+    where w.restaurant_id = v_restaurant_id
+      and w.wastage_date >= p_yesterday_start_date
+      and w.wastage_date < p_today_start_date
+  ),
+
+
+  -- =======================================================
+  -- CURRENT PULSE: Revenue
   -- =======================================================
 
   current_pulse_orders as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_pulse_start
-      and o.ordered_at < p_today_end
+      and o.ordered_at >= v_pulse_start_at
+      and o.ordered_at < v_today_end_at
   ),
 
+
+  -- =======================================================
+  -- CURRENT PULSE: Food Cost
+  -- =======================================================
 
   current_pulse_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
 
-      count(oi.unit_cost)::bigint as rows_with_cost
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -361,62 +492,89 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_pulse_start
-      and o.ordered_at < p_today_end
-  ),
-
-
-  current_pulse_expenses as (
-    select
-      coalesce(sum(e.amount), 0)::numeric as expenses
-
-    from public.expenses e
-
-    where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_pulse_start
-      and e.expense_at < p_today_end
-  ),
-
-
-  current_pulse_wastage as (
-    select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
-
-    from public.wastage_entries w
-
-    where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_pulse_start::date
-      and w.wastage_date < p_today_end::date
+      and o.ordered_at >= v_pulse_start_at
+      and o.ordered_at < v_today_end_at
   ),
 
 
   -- =======================================================
-  -- PREVIOUS PULSE PERIOD
+  -- CURRENT PULSE: Expenses
+  -- =======================================================
+
+  current_pulse_expenses as (
+    select
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
+
+    from public.expenses e
+
+    where e.restaurant_id = v_restaurant_id
+      and e.expense_at >= v_pulse_start_at
+      and e.expense_at < v_today_end_at
+  ),
+
+
+  -- =======================================================
+  -- CURRENT PULSE: Wastage
+  -- =======================================================
+
+  current_pulse_wastage as (
+    select
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
+
+    from public.wastage_entries w
+
+    where w.restaurant_id = v_restaurant_id
+      and w.wastage_date >= p_pulse_start_date
+      and w.wastage_date < p_today_end_date
+  ),
+
+
+  -- =======================================================
+  -- PREVIOUS PULSE: Revenue
   -- =======================================================
 
   previous_pulse_orders as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_previous_pulse_start
-      and o.ordered_at < p_pulse_start
+      and o.ordered_at >= v_previous_pulse_start_at
+      and o.ordered_at < v_pulse_start_at
   ),
 
+
+  -- =======================================================
+  -- PREVIOUS PULSE: Food Cost
+  -- =======================================================
 
   previous_pulse_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
 
-      count(oi.unit_cost)::bigint as rows_with_cost
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -424,61 +582,74 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_previous_pulse_start
-      and o.ordered_at < p_pulse_start
+      and o.ordered_at >= v_previous_pulse_start_at
+      and o.ordered_at < v_pulse_start_at
   ),
 
 
+  -- =======================================================
+  -- PREVIOUS PULSE: Expenses
+  -- =======================================================
+
   previous_pulse_expenses as (
     select
-      coalesce(sum(e.amount), 0)::numeric as expenses
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
 
     from public.expenses e
 
     where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_previous_pulse_start
-      and e.expense_at < p_pulse_start
+      and e.expense_at >= v_previous_pulse_start_at
+      and e.expense_at < v_pulse_start_at
   ),
 
 
+  -- =======================================================
+  -- PREVIOUS PULSE: Wastage
+  -- =======================================================
+
   previous_pulse_wastage as (
     select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
 
     from public.wastage_entries w
 
     where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_previous_pulse_start::date
-      and w.wastage_date < p_pulse_start::date
+      and w.wastage_date >= p_previous_pulse_start_date
+      and w.wastage_date < p_pulse_start_date
   ),
 
 
   -- =======================================================
-  -- PREVIOUS-PREVIOUS SALES
-  --
-  -- Needed only to calculate the previous period's
-  -- Sales component of Restaurant Pulse.
+  -- PREVIOUS-PREVIOUS PULSE SALES
   -- =======================================================
 
   previous_previous_pulse_orders as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_previous_previous_pulse_start
-      and o.ordered_at < p_previous_pulse_start
+      and o.ordered_at >= v_previous_previous_pulse_start_at
+      and o.ordered_at < v_previous_pulse_start_at
   ),
 
 
   -- =======================================================
-  -- Daily derived metrics
+  -- DAILY VALUES
   -- =======================================================
 
   daily as (
     select
-
       t.revenue as today_revenue,
       t.orders as today_orders,
       t.average_order,
@@ -488,6 +659,7 @@ begin
       y.average_order as yesterday_average_order,
 
       tc.food_cost as today_food_cost,
+      yc.food_cost as yesterday_food_cost,
 
       (
         tc.total_rows = tc.rows_with_cost
@@ -503,8 +675,9 @@ begin
       tw.wastage as today_wastage,
       yw.wastage as yesterday_wastage
 
-    from today_orders t
-    cross join yesterday_orders y
+    from today_orders_data t
+
+    cross join yesterday_orders_data y
     cross join today_cost tc
     cross join yesterday_cost yc
     cross join today_expenses te
@@ -513,6 +686,10 @@ begin
     cross join yesterday_wastage yw
   ),
 
+
+  -- =======================================================
+  -- DAILY CALCULATIONS
+  -- =======================================================
 
   daily_calculated as (
     select
@@ -525,21 +702,22 @@ begin
           - d.today_food_cost
           - d.today_expenses
           - d.today_wastage
+
         else null
       end as today_profit,
+
 
       case
         when d.yesterday_cost_complete
         then
           d.yesterday_revenue
-          - (
-              select yc.food_cost
-              from yesterday_cost yc
-            )
+          - d.yesterday_food_cost
           - d.yesterday_expenses
           - d.yesterday_wastage
+
         else null
       end as yesterday_profit,
+
 
       case
         when d.today_revenue > 0
@@ -549,8 +727,10 @@ begin
             d.today_food_cost
             / d.today_revenue
           ) * 100
+
         else null
       end as today_food_cost_percent,
+
 
       case
         when d.today_revenue > 0
@@ -559,8 +739,10 @@ begin
             d.today_wastage
             / d.today_revenue
           ) * 100
+
         else 0
       end as today_wastage_percent,
+
 
       case
         when d.yesterday_revenue = 0
@@ -576,6 +758,7 @@ begin
           ) * 100
       end as revenue_change,
 
+
       case
         when d.yesterday_orders = 0
         then null
@@ -589,6 +772,7 @@ begin
             / d.yesterday_orders
           ) * 100
       end as orders_change,
+
 
       case
         when d.yesterday_average_order = 0
@@ -614,8 +798,8 @@ begin
 
       case
         when dc.yesterday_profit is null
-             or dc.yesterday_profit = 0
-             or dc.today_profit is null
+          or dc.yesterday_profit = 0
+          or dc.today_profit is null
         then null
 
         else
@@ -633,12 +817,11 @@ begin
 
 
   -- =======================================================
-  -- Pulse period calculations
+  -- PULSE VALUES
   -- =======================================================
 
   pulse_raw as (
     select
-
       cpo.revenue as current_revenue,
       ppo.revenue as previous_revenue,
       pppo.revenue as previous_previous_revenue,
@@ -661,6 +844,7 @@ begin
       ppw.wastage as previous_wastage
 
     from current_pulse_orders cpo
+
     cross join previous_pulse_orders ppo
     cross join previous_previous_pulse_orders pppo
 
@@ -675,6 +859,10 @@ begin
   ),
 
 
+  -- =======================================================
+  -- PULSE DERIVED METRICS
+  -- =======================================================
+
   pulse_metrics as (
     select
       pr.*,
@@ -686,8 +874,10 @@ begin
           - pr.current_food_cost
           - pr.current_expenses
           - pr.current_wastage
+
         else null
       end as current_profit,
+
 
       case
         when pr.previous_cost_complete
@@ -696,8 +886,10 @@ begin
           - pr.previous_food_cost
           - pr.previous_expenses
           - pr.previous_wastage
+
         else null
       end as previous_profit,
+
 
       case
         when pr.current_revenue > 0
@@ -712,8 +904,10 @@ begin
             )
             / pr.current_revenue
           ) * 100
+
         else null
       end as current_margin,
+
 
       case
         when pr.previous_revenue > 0
@@ -728,8 +922,10 @@ begin
             )
             / pr.previous_revenue
           ) * 100
+
         else null
       end as previous_margin,
+
 
       case
         when pr.current_revenue > 0
@@ -739,8 +935,10 @@ begin
             pr.current_food_cost
             / pr.current_revenue
           ) * 100
+
         else null
       end as current_food_cost_percent,
+
 
       case
         when pr.previous_revenue > 0
@@ -750,8 +948,10 @@ begin
             pr.previous_food_cost
             / pr.previous_revenue
           ) * 100
+
         else null
       end as previous_food_cost_percent,
+
 
       case
         when pr.current_revenue > 0
@@ -760,8 +960,10 @@ begin
             pr.current_wastage
             / pr.current_revenue
           ) * 100
+
         else 0
       end as current_wastage_percent,
+
 
       case
         when pr.previous_revenue > 0
@@ -770,8 +972,10 @@ begin
             pr.previous_wastage
             / pr.previous_revenue
           ) * 100
+
         else 0
       end as previous_wastage_percent,
+
 
       case
         when pr.previous_revenue = 0
@@ -786,6 +990,7 @@ begin
             / pr.previous_revenue
           ) * 100
       end as current_sales_change,
+
 
       case
         when pr.previous_previous_revenue = 0
@@ -806,7 +1011,7 @@ begin
 
 
   -- =======================================================
-  -- Current + Previous Pulse scores
+  -- PULSE SCORING
   -- =======================================================
 
   pulse_scores as (
@@ -822,6 +1027,7 @@ begin
         when pm.current_sales_change >= -20 then 10
         else 4
       end as current_sales_score,
+
 
       case
         when pm.previous_sales_change is null then 15
@@ -843,6 +1049,7 @@ begin
         else 0
       end as current_profit_score,
 
+
       case
         when pm.previous_margin >= 25 then 30
         when pm.previous_margin >= 20 then 25
@@ -853,7 +1060,7 @@ begin
       end as previous_profit_score,
 
 
-      -- Food cost / 25
+      -- Food Cost / 25
       case
         when pm.current_food_cost_percent <= 25 then 25
         when pm.current_food_cost_percent <= 30 then 22
@@ -861,6 +1068,7 @@ begin
         when pm.current_food_cost_percent <= 40 then 9
         else 3
       end as current_food_score,
+
 
       case
         when pm.previous_food_cost_percent <= 25 then 25
@@ -880,6 +1088,7 @@ begin
         else 1
       end as current_wastage_score,
 
+
       case
         when pm.previous_wastage_percent <= 1 then 15
         when pm.previous_wastage_percent <= 2 then 12
@@ -891,6 +1100,10 @@ begin
     from pulse_metrics pm
   ),
 
+
+  -- =======================================================
+  -- FINAL PULSE VALUES
+  -- =======================================================
 
   pulse_final as (
     select
@@ -909,6 +1122,7 @@ begin
           + ps.current_food_score
           + ps.current_wastage_score
       end as current_pulse,
+
 
       case
         when ps.previous_revenue = 0
@@ -929,37 +1143,27 @@ begin
 
 
   -- =======================================================
-  -- Final Dashboard response
+  -- FINAL RESPONSE
   -- =======================================================
 
   select
 
-    -- Pulse score
+    -- Pulse Score
     pf.current_pulse::integer,
 
 
-    -- Pulse health
+    -- Pulse Health
     case
-      when pf.current_pulse is null
-      then 'insufficient_data'
-
-      when pf.current_pulse >= 90
-      then 'excellent'
-
-      when pf.current_pulse >= 75
-      then 'good'
-
-      when pf.current_pulse >= 60
-      then 'average'
-
-      when pf.current_pulse >= 40
-      then 'weak'
-
+      when pf.current_pulse is null then 'insufficient_data'
+      when pf.current_pulse >= 90 then 'excellent'
+      when pf.current_pulse >= 75 then 'good'
+      when pf.current_pulse >= 60 then 'average'
+      when pf.current_pulse >= 40 then 'weak'
       else 'critical'
     end,
 
 
-    -- Pulse change
+    -- Pulse Change
     case
       when pf.current_pulse is null
         or pf.previous_pulse is null
@@ -973,7 +1177,7 @@ begin
     end,
 
 
-    -- Pulse data status
+    -- Pulse Data Status
     case
       when pf.current_revenue = 0
       then 'insufficient_sales'
@@ -985,30 +1189,20 @@ begin
     end,
 
 
-    -- Sales status
+    -- Sales Status
     case
-      when df.revenue_change is null
-      then 'neutral'
-
-      when df.revenue_change >= 10
-      then 'strong'
-
-      when df.revenue_change >= 0
-      then 'stable'
-
-      when df.revenue_change >= -10
-      then 'soft'
-
+      when df.revenue_change is null then 'neutral'
+      when df.revenue_change >= 10 then 'strong'
+      when df.revenue_change >= 0 then 'stable'
+      when df.revenue_change >= -10 then 'soft'
       else 'weak'
     end,
 
 
-    -- Profitability status
+    -- Profitability Status
     case
       when df.today_profit is null
-      then 'unknown'
-
-      when df.today_revenue = 0
+        or df.today_revenue = 0
       then 'unknown'
 
       when (
@@ -1030,13 +1224,20 @@ begin
     end,
 
 
-    -- Today revenue
-    round(df.today_revenue, 2),
+    -- Revenue
+    round(
+      df.today_revenue,
+      2
+    ),
 
     case
       when df.revenue_change is null
       then null
-      else round(df.revenue_change, 1)
+
+      else round(
+        df.revenue_change,
+        1
+      )
     end,
 
 
@@ -1046,53 +1247,74 @@ begin
     case
       when df.orders_change is null
       then null
-      else round(df.orders_change, 1)
+
+      else round(
+        df.orders_change,
+        1
+      )
     end,
 
 
-    -- Average order
-    round(df.average_order, 2),
+    -- Average Order
+    round(
+      df.average_order,
+      2
+    ),
 
     case
       when df.average_order_change is null
       then null
-      else round(df.average_order_change, 1)
+
+      else round(
+        df.average_order_change,
+        1
+      )
     end,
 
 
-    -- Estimated profit
+    -- Estimated Profit
     case
       when df.today_profit is null
       then null
-      else round(df.today_profit, 2)
+
+      else round(
+        df.today_profit,
+        2
+      )
     end,
 
     case
       when df.profit_change is null
       then null
-      else round(df.profit_change, 1)
+
+      else round(
+        df.profit_change,
+        1
+      )
     end,
 
 
-    -- Food cost %
+    -- Food Cost %
     case
       when df.today_food_cost_percent is null
       then null
-      else round(df.today_food_cost_percent, 1)
+
+      else round(
+        df.today_food_cost_percent,
+        1
+      )
     end,
 
 
+    -- Cost completeness
     df.today_cost_complete,
 
 
     -- =====================================================
-    -- Highest-priority alert CODE
-    --
-    -- Flutter maps these codes to final UI text.
+    -- Highest-priority alert
     -- =====================================================
 
     case
-
       when not df.today_cost_complete
       then 'missing_cost_data'
 
@@ -1112,36 +1334,49 @@ begin
       then 'food_cost_warning'
 
       else null
-
     end,
 
 
-    -- Alert numeric value
+    -- Alert Value
     case
+      when not df.today_cost_complete
+      then null
 
-      when not df.today_cost_complete then
-        null
+      when df.today_profit < 0
+      then round(
+        df.today_profit,
+        2
+      )
 
-      when df.today_profit < 0 then
-        round(df.today_profit, 2)
+      when df.today_food_cost_percent > 40
+      then round(
+        df.today_food_cost_percent,
+        1
+      )
 
-      when df.today_food_cost_percent > 40 then
-        round(df.today_food_cost_percent, 1)
+      when df.today_wastage_percent > 5
+      then round(
+        df.today_wastage_percent,
+        1
+      )
 
-      when df.today_wastage_percent > 5 then
-        round(df.today_wastage_percent, 1)
+      when df.revenue_change <= -20
+      then round(
+        df.revenue_change,
+        1
+      )
 
-      when df.revenue_change <= -20 then
-        round(df.revenue_change, 1)
-
-      when df.today_food_cost_percent >= 28 then
-        round(df.today_food_cost_percent, 1)
+      when df.today_food_cost_percent >= 28
+      then round(
+        df.today_food_cost_percent,
+        1
+      )
 
       else null
-
     end
 
   from daily_final df
+
   cross join pulse_final pf;
 
 end;
@@ -1154,23 +1389,23 @@ $$;
 
 revoke all
 on function public.get_dashboard_snapshot(
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date,
+  date,
+  date,
+  date
 )
 from public;
 
 
 grant execute
 on function public.get_dashboard_snapshot(
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date,
+  date,
+  date,
+  date
 )
 to authenticated;

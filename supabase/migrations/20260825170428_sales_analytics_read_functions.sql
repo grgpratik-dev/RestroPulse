@@ -5,39 +5,48 @@
 --
 -- Raw order lists and order details should be queried
 -- directly from Flutter through Supabase + RLS.
+--
+-- IMPORTANT:
+-- Flutter supplies restaurant BUSINESS DATES.
+--
+-- The RPC:
+--   1. resolves the user's restaurant
+--   2. reads restaurants.timezone
+--   3. converts local business dates into timestamptz
+--      boundaries
+--   4. filters orders.ordered_at using those boundaries
+--
+-- This keeps all sales analytics aligned with the
+-- restaurant's actual local calendar.
 -- =========================================================
 
 
 -- =========================================================
 -- 1. Get Sales Summary
 --
--- Reusable by:
---   - Sales Main
---   - Sales History
---
--- Flutter supplies the period boundaries.
---
--- Example: Today
---   p_start_at          = start of today
---   p_end_at            = start of tomorrow
---   p_previous_start_at = start of yesterday
---
--- Example: 1 Month
---   p_start_at          = start of selected month
---   p_end_at            = end of selected month
---   p_previous_start_at = start of previous equivalent period
---
 -- Current period:
---   [p_start_at, p_end_at)
+--   [p_start_date, p_end_date)
 --
 -- Previous period:
---   [p_previous_start_at, p_start_at)
+--   [p_previous_start_date, p_start_date)
+--
+-- Example:
+--
+-- Today:
+--   p_start_date          = 2026-08-25
+--   p_end_date            = 2026-08-26
+--   p_previous_start_date = 2026-08-24
+--
+-- If restaurant timezone is Asia/Kathmandu:
+--
+-- 2026-08-25 00:00 local
+-- becomes the correct timestamptz boundary internally.
 -- =========================================================
 
 create or replace function public.get_sales_summary(
-  p_start_at timestamptz,
-  p_end_at timestamptz,
-  p_previous_start_at timestamptz
+  p_start_date date,
+  p_end_date date,
+  p_previous_start_date date
 )
 returns table (
   total_sales numeric,
@@ -54,19 +63,23 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+  v_previous_start_at timestamptz;
 
   v_total_sales numeric := 0;
   v_total_orders bigint := 0;
   v_average_order numeric := 0;
-
   v_previous_sales numeric := 0;
   v_sales_change numeric;
 
 begin
 
-  -- -------------------------------------------------------
+  -- =======================================================
   -- Authentication
-  -- -------------------------------------------------------
+  -- =======================================================
 
   v_user_id := auth.uid();
 
@@ -75,44 +88,82 @@ begin
   end if;
 
 
-  -- -------------------------------------------------------
-  -- Resolve current user's restaurant
-  -- -------------------------------------------------------
+  -- =======================================================
+  -- Resolve restaurant + permanent restaurant timezone
+  -- =======================================================
 
-  select rm.restaurant_id
-  into v_restaurant_id
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
-  -- -------------------------------------------------------
+  -- =======================================================
   -- Validate period
-  -- -------------------------------------------------------
+  -- =======================================================
 
-  if p_start_at is null
-     or p_end_at is null
-     or p_previous_start_at is null then
+  if p_start_date is null
+     or p_end_date is null
+     or p_previous_start_date is null then
 
     raise exception 'Sales period boundaries are required';
 
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
-  if p_previous_start_at >= p_start_at then
+
+  if p_previous_start_date >= p_start_date then
     raise exception 'Previous period must begin before current period';
   end if;
 
 
-  -- -------------------------------------------------------
+  -- =======================================================
+  -- Convert restaurant-local calendar dates into exact
+  -- timestamptz boundaries.
+  --
+  -- Example:
+  --
+  -- 2026-08-25 00:00 Asia/Kathmandu
+  --
+  -- becomes:
+  --
+  -- 2026-08-24 18:15 UTC
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+  v_previous_start_at :=
+    p_previous_start_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
   -- Current-period sales
-  -- -------------------------------------------------------
+  -- =======================================================
 
   select
     coalesce(sum(o.total_amount), 0),
@@ -127,13 +178,13 @@ begin
   from public.orders o
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at;
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at;
 
 
-  -- -------------------------------------------------------
+  -- =======================================================
   -- Previous-period sales
-  -- -------------------------------------------------------
+  -- =======================================================
 
   select
     coalesce(sum(o.total_amount), 0)
@@ -143,23 +194,18 @@ begin
   from public.orders o
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_previous_start_at
-    and o.ordered_at < p_start_at;
+    and o.ordered_at >= v_previous_start_at
+    and o.ordered_at < v_start_at;
 
 
-  -- -------------------------------------------------------
+  -- =======================================================
   -- Comparison
-  --
-  -- NULL when previous period had no sales.
-  -- This avoids misleading/infinite percentage increases.
-  -- -------------------------------------------------------
+  -- =======================================================
 
   if v_previous_sales = 0 then
-
     v_sales_change := null;
 
   else
-
     v_sales_change :=
       round(
         (
@@ -168,7 +214,6 @@ begin
         ) * 100,
         1
       );
-
   end if;
 
 
@@ -186,32 +231,30 @@ $$;
 
 revoke all
 on function public.get_sales_summary(
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 from public;
 
+
 grant execute
 on function public.get_sales_summary(
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 to authenticated;
+
 
 
 -- =========================================================
 -- 2. Get Sales By Channel
 --
--- Reusable by:
---   - Sales Main
---   - Sales History
---
 -- Returns every order-channel enum value, including
 -- channels with zero sales.
 --
--- This allows Flutter to consistently display:
+-- Flutter can consistently display:
 --
 --   Dine-in
 --   Takeaway
@@ -219,8 +262,8 @@ to authenticated;
 -- =========================================================
 
 create or replace function public.get_sales_by_channel(
-  p_start_at timestamptz,
-  p_end_at timestamptz
+  p_start_date date,
+  p_end_date date
 )
 returns table (
   channel public.order_channel,
@@ -236,11 +279,19 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+
   v_period_total numeric := 0;
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -248,35 +299,79 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
+  -- =======================================================
   -- Validate period
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Sales period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
 
-  -- Total revenue used to calculate percentage share.
-  select coalesce(sum(o.total_amount), 0)
-  into v_period_total
-  from public.orders o
-  where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at;
+  -- =======================================================
+  -- Convert restaurant-local dates to timestamp boundaries
+  -- =======================================================
 
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Total period revenue
+  -- =======================================================
+
+  select
+    coalesce(sum(o.total_amount), 0)
+
+  into v_period_total
+
+  from public.orders o
+
+  where o.restaurant_id = v_restaurant_id
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at;
+
+
+  -- =======================================================
+  -- Channel breakdown
+  -- =======================================================
 
   return query
 
@@ -298,8 +393,8 @@ begin
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
 
     group by o.channel
   )
@@ -318,7 +413,8 @@ begin
     )::bigint,
 
     case
-      when v_period_total = 0 then 0
+      when v_period_total = 0
+      then 0
 
       else round(
         (
@@ -348,23 +444,25 @@ $$;
 
 revoke all
 on function public.get_sales_by_channel(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 from public;
 
+
 grant execute
 on function public.get_sales_by_channel(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 to authenticated;
+
 
 
 -- =========================================================
 -- 3. Get Sales Trend
 --
--- Used only by Sales History chart.
+-- Used by Sales History chart.
 --
 -- Supported grouping:
 --
@@ -380,20 +478,19 @@ to authenticated;
 --   6M → month
 --   1Y → month
 --
--- p_timezone controls local calendar grouping.
+-- IMPORTANT:
+-- Grouping is based on the restaurant's stored timezone.
 --
--- Example:
---   Asia/Kathmandu
+-- Flutter does NOT provide timezone.
 --
--- Zero-sales periods are also returned so charts do not
--- have missing dates/buckets.
+-- Zero-sales periods are returned so charts do not have
+-- missing buckets.
 -- =========================================================
 
 create or replace function public.get_sales_trend(
-  p_start_at timestamptz,
-  p_end_at timestamptz,
-  p_group_by text,
-  p_timezone text default 'UTC'
+  p_start_date date,
+  p_end_date date,
+  p_group_by text
 )
 returns table (
   period_start date,
@@ -408,11 +505,22 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+
+  v_bucket_start timestamp;
+  v_bucket_end timestamp;
+
   v_step interval;
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -420,28 +528,51 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
+  -- =======================================================
   -- Validate period
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Sales period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
 
-  -- Determine bucket interval.
+  -- =======================================================
+  -- Determine bucket interval
+  -- =======================================================
+
   case p_group_by
 
     when 'day' then
@@ -459,67 +590,76 @@ begin
   end case;
 
 
-  -- Validate timezone.
-  --
-  -- PostgreSQL raises an error if timezone() receives an
-  -- invalid timezone name. This check produces a clearer
-  -- application error instead.
-  if not exists (
-    select 1
-    from pg_timezone_names
-    where name = p_timezone
-  ) then
-    raise exception 'Invalid timezone';
-  end if;
+  -- =======================================================
+  -- Convert requested restaurant-local date range into
+  -- timestamptz boundaries for indexed filtering.
+  -- =======================================================
 
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Determine local calendar bucket range
+  --
+  -- These remain timestamp WITHOUT time zone because they
+  -- represent restaurant-local calendar bucket labels.
+  -- =======================================================
+
+  v_bucket_start :=
+    date_trunc(
+      p_group_by,
+      p_start_date::timestamp
+    );
+
+  v_bucket_end :=
+    date_trunc(
+      p_group_by,
+      (p_end_date - 1)::timestamp
+    );
+
+
+  -- =======================================================
+  -- Trend
+  -- =======================================================
 
   return query
 
-  with bounds as (
-    select
-      date_trunc(
-        p_group_by,
-        p_start_at at time zone p_timezone
-      ) as bucket_start,
-
-      date_trunc(
-        p_group_by,
-        (p_end_at - interval '1 microsecond')
-          at time zone p_timezone
-      ) as bucket_end
-  ),
-
-  buckets as (
+  with buckets as (
     select
       generate_series(
-        b.bucket_start,
-        b.bucket_end,
+        v_bucket_start,
+        v_bucket_end,
         v_step
       ) as bucket
-
-    from bounds b
   ),
 
   sales as (
     select
       date_trunc(
         p_group_by,
-        o.ordered_at at time zone p_timezone
+        o.ordered_at at time zone v_timezone
       ) as bucket,
 
       sum(o.total_amount) as total_sales,
+
       count(*) as total_orders
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
 
     group by
       date_trunc(
         p_group_by,
-        o.ordered_at at time zone p_timezone
+        o.ordered_at at time zone v_timezone
       )
   )
 
@@ -541,8 +681,7 @@ begin
   left join sales s
     on s.bucket = b.bucket
 
-  order by
-    b.bucket asc;
+  order by b.bucket asc;
 
 end;
 $$;
@@ -550,18 +689,17 @@ $$;
 
 revoke all
 on function public.get_sales_trend(
-  timestamptz,
-  timestamptz,
-  text,
+  date,
+  date,
   text
 )
 from public;
 
+
 grant execute
 on function public.get_sales_trend(
-  timestamptz,
-  timestamptz,
-  text,
+  date,
+  date,
   text
 )
 to authenticated;

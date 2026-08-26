@@ -5,14 +5,22 @@
 --
 -- Normal menu CRUD and category reads should use
 -- standard Supabase queries + RLS.
+--
+-- IMPORTANT:
+-- Flutter supplies restaurant BUSINESS DATES.
+--
+-- The RPC:
+--   1. resolves the user's restaurant
+--   2. reads restaurants.timezone
+--   3. converts local business dates into timestamptz
+--      boundaries
+--   4. filters orders.ordered_at using those boundaries
 -- =========================================================
+
 
 
 -- =========================================================
 -- 1. Get Menu Performance Summary
---
--- Reusable for selected periods:
---   1M / 3M / 6M / 1Y
 --
 -- Best Seller:
 --   highest units sold
@@ -21,13 +29,13 @@
 --   highest margin percentage
 --
 -- IMPORTANT:
---   "Most profitable" here means highest margin %, exactly
---   as defined by the product.
+-- "Most profitable" means highest margin %, as defined
+-- by the product.
 -- =========================================================
 
 create or replace function public.get_menu_performance_summary(
-  p_start_at timestamptz,
-  p_end_at timestamptz
+  p_start_date date,
+  p_end_date date
 )
 returns table (
   best_seller_item_id uuid,
@@ -46,6 +54,10 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
 
   v_best_seller_item_id uuid;
   v_best_seller_item_name varchar;
@@ -57,7 +69,10 @@ declare
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -65,25 +80,59 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
+  -- =======================================================
   -- Validate period
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Menu period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
+
+
+  -- =======================================================
+  -- Convert restaurant-local dates to exact timestamp
+  -- boundaries.
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
 
 
   -- =======================================================
@@ -93,7 +142,7 @@ begin
   select
     mi.id,
     mi.name,
-    sum(oi.quantity)
+    sum(oi.quantity)::numeric
 
   into
     v_best_seller_item_id,
@@ -109,8 +158,8 @@ begin
     on mi.id = oi.menu_item_id
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at
     and mi.is_active = true
 
   group by
@@ -134,11 +183,10 @@ begin
   -- =======================================================
   -- Most profitable by margin %
   --
-  -- We exclude any item whose sold rows contain missing
-  -- historical unit-cost snapshots.
+  -- Exclude items whose historical sold rows contain
+  -- missing unit_cost values.
   --
-  -- This avoids falsely inflating margin by treating
-  -- unknown cost as zero.
+  -- This prevents unknown cost from being treated as zero.
   -- =======================================================
 
   select
@@ -170,8 +218,8 @@ begin
     on mi.id = oi.menu_item_id
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at
     and mi.is_active = true
 
   group by
@@ -190,6 +238,7 @@ begin
       )
       / nullif(sum(oi.line_total), 0)
     ) desc,
+
     mi.name asc
 
   limit 1;
@@ -201,6 +250,10 @@ begin
     v_profitable_margin := null;
   end if;
 
+
+  -- =======================================================
+  -- Return
+  -- =======================================================
 
   return query
   select
@@ -217,15 +270,16 @@ $$;
 
 revoke all
 on function public.get_menu_performance_summary(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 from public;
 
+
 grant execute
 on function public.get_menu_performance_summary(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 to authenticated;
 
@@ -239,20 +293,19 @@ to authenticated;
 -- Optional:
 --   p_category_id
 --
--- Returns current pricing info plus selected-period
--- performance analytics for every active menu item.
+-- Returns current pricing information plus selected-period
+-- performance for every active menu item.
 -- =========================================================
 
 create or replace function public.get_menu_items_performance(
-  p_start_at timestamptz,
-  p_end_at timestamptz,
+  p_start_date date,
+  p_end_date date,
   p_category_id uuid default null
 )
 returns table (
   item_id uuid,
   item_name varchar,
   image_path varchar,
-
   category_id uuid,
   category_name varchar,
 
@@ -272,11 +325,19 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+
   v_average_units numeric := 0;
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -284,32 +345,70 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
+  -- =======================================================
   -- Validate period
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Menu period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
 
-  -- Validate optional category belongs to restaurant.
+  -- =======================================================
+  -- Convert restaurant-local dates to timestamptz
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Validate optional category
+  -- =======================================================
+
   if p_category_id is not null
      and not exists (
        select 1
+
        from public.menu_categories mc
+
        where mc.id = p_category_id
          and mc.restaurant_id = v_restaurant_id
          and mc.is_active = true
@@ -323,7 +422,7 @@ begin
   -- =======================================================
   -- Average units among SOLD active items.
   --
-  -- Used only for a lightweight status signal.
+  -- Used for the lightweight demand status.
   -- =======================================================
 
   select
@@ -334,7 +433,7 @@ begin
   from (
     select
       mi.id,
-      sum(oi.quantity) as item_units
+      sum(oi.quantity)::numeric as item_units
 
     from public.menu_items mi
 
@@ -346,40 +445,48 @@ begin
 
     where mi.restaurant_id = v_restaurant_id
       and mi.is_active = true
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
 
     group by mi.id
   ) sold_items;
 
 
   -- =======================================================
-  -- Return active menu items, including zero-sale items.
+  -- Return active menu items including zero-sale items.
+  --
+  -- Aggregate qualifying order data first, then LEFT JOIN
+  -- onto menu_items.
   -- =======================================================
 
   return query
 
   with performance as (
     select
-      mi.id as item_id,
-      coalesce(sum(oi.quantity), 0) as units_sold,
-      coalesce(sum(oi.line_total), 0) as revenue
+      oi.menu_item_id as item_id,
 
-    from public.menu_items mi
+      coalesce(
+        sum(oi.quantity),
+        0
+      )::numeric as units_sold,
 
-    left join public.order_items oi
-      on oi.menu_item_id = mi.id
+      coalesce(
+        sum(oi.line_total),
+        0
+      )::numeric as revenue
 
-    left join public.orders o
+    from public.order_items oi
+
+    join public.orders o
       on o.id = oi.order_id
-      and o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
 
-    where mi.restaurant_id = v_restaurant_id
-      and mi.is_active = true
+    where o.restaurant_id = v_restaurant_id
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
+      and oi.menu_item_id is not null
 
-    group by mi.id
+    group by
+      oi.menu_item_id
   )
 
   select
@@ -390,7 +497,10 @@ begin
     mc.id,
     mc.name,
 
-    round(mi.selling_price, 2),
+    round(
+      mi.selling_price,
+      2
+    ),
 
     case
       when mi.cost_price is null
@@ -398,39 +508,59 @@ begin
       then null
 
       else round(
-        (mi.cost_price / mi.selling_price) * 100,
+        (
+          mi.cost_price
+          / mi.selling_price
+        ) * 100,
         1
       )
     end,
 
-    p.units_sold,
-    round(p.revenue, 2),
+    coalesce(
+      p.units_sold,
+      0
+    )::numeric,
+
+    round(
+      coalesce(
+        p.revenue,
+        0
+      ),
+      2
+    ),
+
+    -- =====================================================
+    -- Status priority:
+    --
+    -- 1. review_cost
+    -- 2. high_demand
+    -- 3. healthy_margin
+    -- 4. otherwise NULL
+    -- =====================================================
 
     case
-
       when mi.cost_price is not null
-           and mi.selling_price > 0
-           and (
-             mi.cost_price
-             / mi.selling_price
-           ) * 100 >= 40
+       and mi.selling_price > 0
+       and (
+         mi.cost_price
+         / mi.selling_price
+       ) * 100 >= 40
       then 'review_cost'
 
-      when p.units_sold > 0
-           and v_average_units > 0
-           and p.units_sold >= v_average_units
+      when coalesce(p.units_sold, 0) > 0
+       and v_average_units > 0
+       and coalesce(p.units_sold, 0) >= v_average_units
       then 'high_demand'
 
       when mi.cost_price is not null
-           and mi.selling_price > 0
-           and (
-             mi.cost_price
-             / mi.selling_price
-           ) * 100 <= 30
+       and mi.selling_price > 0
+       and (
+         mi.cost_price
+         / mi.selling_price
+       ) * 100 <= 30
       then 'healthy_margin'
 
       else null
-
     end as status
 
   from public.menu_items mi
@@ -438,19 +568,20 @@ begin
   left join public.menu_categories mc
     on mc.id = mi.category_id
 
-  join performance p
+  left join performance p
     on p.item_id = mi.id
 
   where mi.restaurant_id = v_restaurant_id
     and mi.is_active = true
+
     and (
       p_category_id is null
       or mi.category_id = p_category_id
     )
 
   order by
-    p.units_sold desc,
-    p.revenue desc,
+    coalesce(p.units_sold, 0) desc,
+    coalesce(p.revenue, 0) desc,
     mi.name asc;
 
 end;
@@ -459,16 +590,17 @@ $$;
 
 revoke all
 on function public.get_menu_items_performance(
-  timestamptz,
-  timestamptz,
+  date,
+  date,
   uuid
 )
 from public;
 
+
 grant execute
 on function public.get_menu_items_performance(
-  timestamptz,
-  timestamptz,
+  date,
+  date,
   uuid
 )
 to authenticated;
@@ -478,36 +610,33 @@ to authenticated;
 -- =========================================================
 -- 3. Get Menu Item Performance Detail
 --
--- Powers Menu Item Detail analytics.
---
--- Returns:
---
--- Current pricing
+-- Current pricing:
 --   selling price
---   estimated cost per unit
+--   estimated cost
 --   food cost %
 --   contribution per unit
 --
--- Selected-period performance
+-- Current-period performance:
 --   units sold
 --   revenue
 --   estimated total cost
 --   total contribution
 --   orders containing item
 --
--- Previous-period comparison
+-- Previous-period comparison:
 --   previous units sold
 --   units sold change %
 --
 -- Historical cost totals become NULL if any sold row in
--- the selected period is missing its unit_cost snapshot.
+-- the selected period is missing unit_cost.
 -- =========================================================
 
 create or replace function public.get_menu_item_performance_detail(
   p_item_id uuid,
-  p_start_at timestamptz,
-  p_end_at timestamptz,
-  p_previous_start_at timestamptz
+
+  p_start_date date,
+  p_end_date date,
+  p_previous_start_date date
 )
 returns table (
   item_id uuid,
@@ -524,8 +653,10 @@ returns table (
 
   units_sold numeric,
   revenue numeric,
+
   estimated_total_cost numeric,
   total_contribution numeric,
+
   orders_containing_item bigint,
 
   previous_units_sold numeric,
@@ -541,6 +672,11 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+  v_previous_start_at timestamptz;
 
   v_item_name varchar;
   v_image_path varchar;
@@ -553,8 +689,10 @@ declare
 
   v_units_sold numeric := 0;
   v_revenue numeric := 0;
+
   v_total_cost numeric;
   v_total_contribution numeric;
+
   v_orders_containing bigint := 0;
 
   v_previous_units numeric := 0;
@@ -564,11 +702,15 @@ declare
   v_total_rows bigint := 0;
 
   v_average_units numeric := 0;
+
   v_status text;
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -576,37 +718,73 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
+  -- =======================================================
   -- Validate inputs
+  -- =======================================================
+
   if p_item_id is null then
     raise exception 'Menu item ID is required';
   end if;
 
-  if p_start_at is null
-     or p_end_at is null
-     or p_previous_start_at is null then
+
+  if p_start_date is null
+     or p_end_date is null
+     or p_previous_start_date is null then
 
     raise exception 'Menu period boundaries are required';
 
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
-  if p_previous_start_at >= p_start_at then
+
+  if p_previous_start_date >= p_start_date then
     raise exception 'Previous period must begin before current period';
   end if;
+
+
+  -- =======================================================
+  -- Convert restaurant-local dates to timestamptz
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+  v_previous_start_at :=
+    p_previous_start_date::timestamp
+    at time zone v_timezone;
 
 
   -- =======================================================
@@ -616,16 +794,20 @@ begin
   select
     mi.name,
     mi.image_path,
+
     mc.id,
     mc.name,
+
     mi.selling_price,
     mi.cost_price
 
   into
     v_item_name,
     v_image_path,
+
     v_category_id,
     v_category_name,
+
     v_selling_price,
     v_cost_price
 
@@ -649,19 +831,29 @@ begin
   -- =======================================================
 
   select
-    coalesce(sum(oi.quantity), 0),
-    coalesce(sum(oi.line_total), 0),
+    coalesce(
+      sum(oi.quantity),
+      0
+    )::numeric,
 
-    count(*),
-    count(oi.unit_cost),
+    coalesce(
+      sum(oi.line_total),
+      0
+    )::numeric,
 
-    count(distinct o.id)
+    count(*)::bigint,
+
+    count(oi.unit_cost)::bigint,
+
+    count(distinct o.id)::bigint
 
   into
     v_units_sold,
     v_revenue,
+
     v_total_rows,
     v_cost_rows,
+
     v_orders_containing
 
   from public.order_items oi
@@ -671,21 +863,32 @@ begin
 
   where oi.menu_item_id = p_item_id
     and o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at;
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at;
 
 
-  -- Only calculate historical cost/contribution when every
-  -- sold row has a cost snapshot.
+  -- =======================================================
+  -- Historical total cost / contribution
+  --
+  -- Only calculate when every sold row has unit_cost.
+  -- =======================================================
+
   if v_total_rows = 0 then
 
     v_total_cost := 0;
     v_total_contribution := 0;
 
+
   elsif v_total_rows = v_cost_rows then
 
     select
-      coalesce(sum(oi.quantity * oi.unit_cost), 0)
+      coalesce(
+        sum(
+          oi.quantity
+          * oi.unit_cost
+        ),
+        0
+      )
 
     into v_total_cost
 
@@ -696,17 +899,17 @@ begin
 
     where oi.menu_item_id = p_item_id
       and o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at;
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at;
 
 
     v_total_contribution :=
       v_revenue - v_total_cost;
 
+
   else
 
-    -- Unknown cost history should remain unknown rather
-    -- than being treated as zero.
+    -- Unknown historical cost must remain unknown.
     v_total_cost := null;
     v_total_contribution := null;
 
@@ -718,7 +921,10 @@ begin
   -- =======================================================
 
   select
-    coalesce(sum(oi.quantity), 0)
+    coalesce(
+      sum(oi.quantity),
+      0
+    )::numeric
 
   into v_previous_units
 
@@ -729,8 +935,8 @@ begin
 
   where oi.menu_item_id = p_item_id
     and o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_previous_start_at
-    and o.ordered_at < p_start_at;
+    and o.ordered_at >= v_previous_start_at
+    and o.ordered_at < v_start_at;
 
 
   if v_previous_units = 0 then
@@ -752,18 +958,24 @@ begin
 
 
   -- =======================================================
-  -- Average units among sold items for status signal
+  -- Average units among sold items
   -- =======================================================
 
   select
-    coalesce(avg(item_units), 0)
+    coalesce(
+      avg(item_units),
+      0
+    )
 
   into v_average_units
 
   from (
     select
       oi.menu_item_id,
-      sum(oi.quantity) as item_units
+
+      sum(
+        oi.quantity
+      )::numeric as item_units
 
     from public.order_items oi
 
@@ -771,11 +983,12 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
       and oi.menu_item_id is not null
 
-    group by oi.menu_item_id
+    group by
+      oi.menu_item_id
   ) item_sales;
 
 
@@ -786,28 +999,34 @@ begin
   if v_cost_price is not null
      and v_selling_price > 0
      and (
-       v_cost_price / v_selling_price
+       v_cost_price
+       / v_selling_price
      ) * 100 >= 40 then
 
     v_status := 'review_cost';
 
+
   elsif v_units_sold > 0
-        and v_average_units > 0
-        and v_units_sold >= v_average_units then
+     and v_average_units > 0
+     and v_units_sold >= v_average_units then
 
     v_status := 'high_demand';
 
+
   elsif v_cost_price is not null
-        and v_selling_price > 0
-        and (
-          v_cost_price / v_selling_price
-        ) * 100 <= 30 then
+     and v_selling_price > 0
+     and (
+       v_cost_price
+       / v_selling_price
+     ) * 100 <= 30 then
 
     v_status := 'healthy_margin';
+
 
   elsif v_units_sold = 0 then
 
     v_status := 'low_demand';
+
 
   else
 
@@ -817,24 +1036,33 @@ begin
 
 
   -- =======================================================
-  -- Return detail
+  -- Return
   -- =======================================================
 
   return query
+
   select
     p_item_id,
+
     v_item_name,
     v_image_path,
 
     v_category_id,
     v_category_name,
 
-    round(v_selling_price, 2),
+    round(
+      v_selling_price,
+      2
+    ),
 
     case
       when v_cost_price is null
       then null
-      else round(v_cost_price, 2)
+
+      else round(
+        v_cost_price,
+        2
+      )
     end,
 
     case
@@ -843,7 +1071,10 @@ begin
       then null
 
       else round(
-        (v_cost_price / v_selling_price) * 100,
+        (
+          v_cost_price
+          / v_selling_price
+        ) * 100,
         1
       )
     end,
@@ -851,6 +1082,7 @@ begin
     case
       when v_cost_price is null
       then null
+
       else round(
         v_selling_price - v_cost_price,
         2
@@ -858,23 +1090,36 @@ begin
     end,
 
     v_units_sold,
-    round(v_revenue, 2),
+
+    round(
+      v_revenue,
+      2
+    ),
 
     case
       when v_total_cost is null
       then null
-      else round(v_total_cost, 2)
+
+      else round(
+        v_total_cost,
+        2
+      )
     end,
 
     case
       when v_total_contribution is null
       then null
-      else round(v_total_contribution, 2)
+
+      else round(
+        v_total_contribution,
+        2
+      )
     end,
 
     v_orders_containing,
 
     v_previous_units,
+
     v_units_change,
 
     v_status;
@@ -886,17 +1131,18 @@ $$;
 revoke all
 on function public.get_menu_item_performance_detail(
   uuid,
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 from public;
+
 
 grant execute
 on function public.get_menu_item_performance_detail(
   uuid,
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 to authenticated;

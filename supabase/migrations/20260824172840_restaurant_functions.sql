@@ -24,6 +24,8 @@
 
 create or replace function public.create_restaurant(
   p_name varchar,
+  p_timezone varchar,
+
   p_description text default null,
   p_phone varchar default null,
   p_email varchar default null,
@@ -38,7 +40,9 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+
 begin
+
   -- Get the currently authenticated user's UUID.
   v_user_id := auth.uid();
 
@@ -46,6 +50,7 @@ begin
   if v_user_id is null then
     raise exception 'Authentication required';
   end if;
+
 
   -- A user can belong to only one restaurant.
   if exists (
@@ -56,14 +61,39 @@ begin
     raise exception 'User already belongs to a restaurant';
   end if;
 
+
   -- Restaurant name is required.
   if p_name is null or btrim(p_name) = '' then
     raise exception 'Restaurant name is required';
   end if;
 
+
+  -- Restaurant timezone is required.
+  if p_timezone is null or btrim(p_timezone) = '' then
+    raise exception 'Restaurant timezone is required';
+  end if;
+
+
+  -- Validate that the supplied timezone is a real
+  -- PostgreSQL/IANA timezone name.
+  --
+  -- Examples:
+  --   Asia/Kathmandu
+  --   Europe/London
+  --   America/Toronto
+  if not exists (
+    select 1
+    from pg_timezone_names
+    where name = btrim(p_timezone)
+  ) then
+    raise exception 'Invalid restaurant timezone';
+  end if;
+
+
   -- Create the restaurant.
   insert into public.restaurants (
     name,
+    timezone,
     description,
     phone,
     email,
@@ -72,6 +102,7 @@ begin
   )
   values (
     btrim(p_name),
+    btrim(p_timezone),
     p_description,
     p_phone,
     p_email,
@@ -79,6 +110,7 @@ begin
     p_logo_path
   )
   returning id into v_restaurant_id;
+
 
   -- Automatically create the owner membership.
   insert into public.restaurant_memberships (
@@ -92,8 +124,10 @@ begin
     'owner'
   );
 
+
   -- Return the new restaurant ID to the caller.
   return v_restaurant_id;
+
 end;
 $$;
 
@@ -108,6 +142,7 @@ $$;
 revoke all
 on function public.create_restaurant(
   varchar,
+  varchar,
   text,
   varchar,
   varchar,
@@ -116,8 +151,10 @@ on function public.create_restaurant(
 )
 from public;
 
+
 grant execute
 on function public.create_restaurant(
+  varchar,
   varchar,
   text,
   varchar,
@@ -125,7 +162,7 @@ on function public.create_restaurant(
   text,
   varchar
 )
-to authenticated; 
+to authenticated;
 
 
 

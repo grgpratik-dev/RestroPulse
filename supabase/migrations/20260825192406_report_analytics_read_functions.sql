@@ -5,7 +5,20 @@
 --
 -- Raw rows, detail screens, and normal CRUD should use
 -- standard Supabase queries + RLS.
+--
+-- IMPORTANT:
+--
+-- Flutter supplies restaurant BUSINESS DATES.
+--
+-- The RPC:
+--   1. resolves the user's restaurant
+--   2. reads restaurants.timezone
+--   3. converts DATE boundaries to timestamptz for
+--      orders / expenses
+--   4. uses DATE boundaries directly for wastage
+--   5. performs calendar grouping in restaurant local time
 -- =========================================================
+
 
 
 -- =========================================================
@@ -15,25 +28,19 @@
 --   1M / 3M / 6M / 1Y
 --
 -- Current period:
---   [p_start_at, p_end_at)
+--   [p_start_date, p_end_date)
 --
 -- Previous period:
---   [p_previous_start_at, p_start_at)
+--   [p_previous_start_date, p_start_date)
 --
--- Returns the metrics required by:
---   Performance Overview
---   Financial Breakdown
---
--- IMPORTANT:
--- Historical food-cost calculations are considered valid
--- only when every sold order-item row has a unit_cost
--- snapshot.
+-- Historical food-cost calculations are valid only when
+-- every sold order-item row contains unit_cost.
 -- =========================================================
 
 create or replace function public.get_report_overview(
-  p_start_at timestamptz,
-  p_end_at timestamptz,
-  p_previous_start_at timestamptz
+  p_start_date date,
+  p_end_date date,
+  p_previous_start_date date
 )
 returns table (
   revenue numeric,
@@ -44,6 +51,7 @@ returns table (
 
   estimated_food_cost numeric,
   food_cost_percent numeric,
+  previous_food_cost_percent numeric,
   cost_data_complete boolean,
 
   gross_profit numeric,
@@ -69,6 +77,11 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+  v_previous_start_at timestamptz;
 
 begin
 
@@ -84,13 +97,23 @@ begin
 
 
   -- =======================================================
-  -- Resolve restaurant
+  -- Resolve restaurant + permanent timezone
   -- =======================================================
 
-  select rm.restaurant_id
-  into v_restaurant_id
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
@@ -101,21 +124,41 @@ begin
   -- Validate period
   -- =======================================================
 
-  if p_start_at is null
-     or p_end_at is null
-     or p_previous_start_at is null then
+  if p_start_date is null
+     or p_end_date is null
+     or p_previous_start_date is null then
 
     raise exception 'Report period boundaries are required';
 
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
-  if p_previous_start_at >= p_start_at then
+
+  if p_previous_start_date >= p_start_date then
     raise exception 'Previous period must begin before current period';
   end if;
+
+
+  -- =======================================================
+  -- Convert restaurant-local dates into exact timestamptz
+  -- boundaries for orders and expenses.
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+  v_previous_start_at :=
+    p_previous_start_date::timestamp
+    at time zone v_timezone;
 
 
   -- =======================================================
@@ -126,44 +169,79 @@ begin
 
   with
 
+  -- =======================================================
+  -- Current Orders
+  -- =======================================================
+
   current_orders as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue,
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue,
+
       count(*)::bigint as total_orders,
-      coalesce(avg(o.total_amount), 0)::numeric as average_order
+
+      coalesce(
+        avg(o.total_amount),
+        0
+      )::numeric as average_order
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
   ),
 
+
+  -- =======================================================
+  -- Previous Orders
+  -- =======================================================
 
   previous_orders as (
     select
-      coalesce(sum(o.total_amount), 0)::numeric as revenue,
+      coalesce(
+        sum(o.total_amount),
+        0
+      )::numeric as revenue,
+
       count(*)::bigint as total_orders,
-      coalesce(avg(o.total_amount), 0)::numeric as average_order
+
+      coalesce(
+        avg(o.total_amount),
+        0
+      )::numeric as average_order
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_previous_start_at
-      and o.ordered_at < p_start_at
+      and o.ordered_at >= v_previous_start_at
+      and o.ordered_at < v_start_at
   ),
 
+
+  -- =======================================================
+  -- Current Food Cost
+  -- =======================================================
 
   current_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
-      count(oi.unit_cost)::bigint as rows_with_cost
+
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -171,21 +249,32 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
   ),
 
+
+  -- =======================================================
+  -- Previous Food Cost
+  -- =======================================================
 
   previous_cost as (
     select
       coalesce(
-        sum(oi.quantity * oi.unit_cost)
-          filter (where oi.unit_cost is not null),
+        sum(
+          oi.quantity * oi.unit_cost
+        )
+        filter (
+          where oi.unit_cost is not null
+        ),
         0
       )::numeric as food_cost,
 
       count(*)::bigint as total_rows,
-      count(oi.unit_cost)::bigint as rows_with_cost
+
+      count(
+        oi.unit_cost
+      )::bigint as rows_with_cost
 
     from public.order_items oi
 
@@ -193,75 +282,113 @@ begin
       on o.id = oi.order_id
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_previous_start_at
-      and o.ordered_at < p_start_at
+      and o.ordered_at >= v_previous_start_at
+      and o.ordered_at < v_start_at
   ),
 
+
+  -- =======================================================
+  -- Current Expenses
+  -- =======================================================
 
   current_expenses as (
     select
-      coalesce(sum(e.amount), 0)::numeric as expenses
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
 
     from public.expenses e
 
     where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_start_at
-      and e.expense_at < p_end_at
+      and e.expense_at >= v_start_at
+      and e.expense_at < v_end_at
   ),
 
+
+  -- =======================================================
+  -- Previous Expenses
+  -- =======================================================
 
   previous_expenses as (
     select
-      coalesce(sum(e.amount), 0)::numeric as expenses
+      coalesce(
+        sum(e.amount),
+        0
+      )::numeric as expenses
 
     from public.expenses e
 
     where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_previous_start_at
-      and e.expense_at < p_start_at
+      and e.expense_at >= v_previous_start_at
+      and e.expense_at < v_start_at
   ),
 
+
+  -- =======================================================
+  -- Current Wastage
+  --
+  -- wastage_date is already a business DATE.
+  -- =======================================================
 
   current_wastage as (
     select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
 
     from public.wastage_entries w
 
     where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_start_at::date
-      and w.wastage_date < p_end_at::date
+      and w.wastage_date >= p_start_date
+      and w.wastage_date < p_end_date
   ),
 
+
+  -- =======================================================
+  -- Previous Wastage
+  -- =======================================================
 
   previous_wastage as (
     select
-      coalesce(sum(w.estimated_loss), 0)::numeric as wastage
+      coalesce(
+        sum(w.estimated_loss),
+        0
+      )::numeric as wastage
 
     from public.wastage_entries w
 
     where w.restaurant_id = v_restaurant_id
-      and w.wastage_date >= p_previous_start_at::date
-      and w.wastage_date < p_start_at::date
+      and w.wastage_date >= p_previous_start_date
+      and w.wastage_date < p_start_date
   ),
 
 
+  -- =======================================================
+  -- Combine Raw Metrics
+  -- =======================================================
+
   metrics as (
     select
-
-      co.revenue as revenue,
+      co.revenue,
       po.revenue as previous_revenue,
 
-      ce.expenses as expenses,
+      ce.expenses,
       pe.expenses as previous_expenses,
 
-      cc.food_cost as food_cost,
+      cc.food_cost,
       pc.food_cost as previous_food_cost,
 
-      (cc.total_rows = cc.rows_with_cost) as cost_complete,
-      (pc.total_rows = pc.rows_with_cost) as previous_cost_complete,
+      (
+        cc.total_rows = cc.rows_with_cost
+      ) as cost_complete,
 
-      cw.wastage as wastage,
+      (
+        pc.total_rows = pc.rows_with_cost
+      ) as previous_cost_complete,
+
+      cw.wastage,
       pw.wastage as previous_wastage,
 
       co.total_orders,
@@ -271,6 +398,7 @@ begin
       po.average_order as previous_average_order
 
     from current_orders co
+
     cross join previous_orders po
     cross join current_cost cc
     cross join previous_cost pc
@@ -281,15 +409,23 @@ begin
   ),
 
 
+  -- =======================================================
+  -- Derived Financial Values
+  -- =======================================================
+
   calculated as (
     select
       m.*,
 
       case
         when m.cost_complete
-        then m.revenue - m.food_cost
+        then
+          m.revenue
+          - m.food_cost
+
         else null
       end as gross_profit,
+
 
       case
         when m.cost_complete
@@ -298,8 +434,10 @@ begin
           - m.food_cost
           - m.expenses
           - m.wastage
+
         else null
       end as net_profit,
+
 
       case
         when m.previous_cost_complete
@@ -308,84 +446,162 @@ begin
           - m.previous_food_cost
           - m.previous_expenses
           - m.previous_wastage
+
         else null
       end as previous_net_profit
 
     from metrics m
   )
 
+
+  -- =======================================================
+  -- Final Overview
+  -- =======================================================
+
   select
 
     -- Revenue
-    round(c.revenue, 2),
+    round(
+      c.revenue,
+      2
+    ),
 
     case
-      when c.previous_revenue = 0 then null
+      when c.previous_revenue = 0
+      then null
+
       else round(
-        ((c.revenue - c.previous_revenue) / c.previous_revenue) * 100,
+        (
+          (
+            c.revenue
+            - c.previous_revenue
+          )
+          / c.previous_revenue
+        ) * 100,
         1
       )
     end,
 
 
     -- Expenses
-    round(c.expenses, 2),
+    round(
+      c.expenses,
+      2
+    ),
 
     case
-      when c.previous_expenses = 0 then null
+      when c.previous_expenses = 0
+      then null
+
       else round(
-        ((c.expenses - c.previous_expenses) / c.previous_expenses) * 100,
+        (
+          (
+            c.expenses
+            - c.previous_expenses
+          )
+          / c.previous_expenses
+        ) * 100,
         1
       )
     end,
 
 
-    -- Food cost
+    -- Food Cost
     case
       when c.cost_complete
-      then round(c.food_cost, 2)
+      then round(
+        c.food_cost,
+        2
+      )
+
       else null
     end,
 
+
+    -- Food Cost %
     case
       when not c.cost_complete
         or c.revenue = 0
       then null
 
       else round(
-        (c.food_cost / c.revenue) * 100,
+        (
+          c.food_cost
+          / c.revenue
+        ) * 100,
         1
       )
     end,
 
+
+    -- Previous Food Cost %
+    case
+      when not c.previous_cost_complete
+        or c.previous_revenue = 0
+      then null
+
+      else round(
+        (
+          c.previous_food_cost
+          / c.previous_revenue
+        ) * 100,
+        1
+      )
+    end,
+
+
+    -- Cost completeness
     c.cost_complete,
 
 
-    -- Gross profit
+    -- Gross Profit
     case
-      when c.gross_profit is null then null
-      else round(c.gross_profit, 2)
+      when c.gross_profit is null
+      then null
+
+      else round(
+        c.gross_profit,
+        2
+      )
     end,
 
 
     -- Wastage
-    round(c.wastage, 2),
+    round(
+      c.wastage,
+      2
+    ),
 
     case
-      when c.previous_wastage = 0 then null
+      when c.previous_wastage = 0
+      then null
+
       else round(
-        ((c.wastage - c.previous_wastage) / c.previous_wastage) * 100,
+        (
+          (
+            c.wastage
+            - c.previous_wastage
+          )
+          / c.previous_wastage
+        ) * 100,
         1
       )
     end,
 
 
-    -- Estimated net profit
+    -- Estimated Net Profit
     case
-      when c.net_profit is null then null
-      else round(c.net_profit, 2)
+      when c.net_profit is null
+      then null
+
+      else round(
+        c.net_profit,
+        2
+      )
     end,
 
+
+    -- Profit Change %
     case
       when c.net_profit is null
         or c.previous_net_profit is null
@@ -394,20 +610,28 @@ begin
 
       else round(
         (
-          (c.net_profit - c.previous_net_profit)
+          (
+            c.net_profit
+            - c.previous_net_profit
+          )
           / abs(c.previous_net_profit)
         ) * 100,
         1
       )
     end,
 
+
+    -- Profit Margin %
     case
       when c.net_profit is null
         or c.revenue = 0
       then null
 
       else round(
-        (c.net_profit / c.revenue) * 100,
+        (
+          c.net_profit
+          / c.revenue
+        ) * 100,
         1
       )
     end,
@@ -417,10 +641,15 @@ begin
     c.total_orders,
 
     case
-      when c.previous_orders = 0 then null
+      when c.previous_orders = 0
+      then null
+
       else round(
         (
-          (c.total_orders - c.previous_orders)::numeric
+          (
+            c.total_orders
+            - c.previous_orders
+          )::numeric
           / c.previous_orders
         ) * 100,
         1
@@ -428,14 +657,22 @@ begin
     end,
 
 
-    -- Average order
-    round(c.average_order, 2),
+    -- Average Order
+    round(
+      c.average_order,
+      2
+    ),
 
     case
-      when c.previous_average_order = 0 then null
+      when c.previous_average_order = 0
+      then null
+
       else round(
         (
-          (c.average_order - c.previous_average_order)
+          (
+            c.average_order
+            - c.previous_average_order
+          )
           / c.previous_average_order
         ) * 100,
         1
@@ -450,17 +687,18 @@ $$;
 
 revoke all
 on function public.get_report_overview(
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 from public;
 
+
 grant execute
 on function public.get_report_overview(
-  timestamptz,
-  timestamptz,
-  timestamptz
+  date,
+  date,
+  date
 )
 to authenticated;
 
@@ -476,22 +714,21 @@ to authenticated;
 --   month
 --
 -- Suggested:
---   1M -> week
---   3M -> week
---   6M -> month
---   1Y -> month
+--   1M → week
+--   3M → week
+--   6M → month
+--   1Y → month
 --
 -- Zero-value buckets are returned.
 --
--- p_timezone ensures calendar grouping matches the
--- restaurant/user's local timezone.
+-- Calendar grouping uses restaurants.timezone.
+-- Flutter does NOT supply timezone.
 -- =========================================================
 
 create or replace function public.get_report_revenue_expense_trend(
-  p_start_at timestamptz,
-  p_end_at timestamptz,
-  p_group_by text,
-  p_timezone text default 'UTC'
+  p_start_date date,
+  p_end_date date,
+  p_group_by text
 )
 returns table (
   period_start date,
@@ -506,11 +743,22 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
+
+  v_bucket_start timestamp;
+  v_bucket_end timestamp;
+
   v_step interval;
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -518,26 +766,50 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
-  -- Validate
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+  -- Validate period
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Report period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
+
+  -- =======================================================
+  -- Determine bucket interval
+  -- =======================================================
 
   case p_group_by
 
@@ -553,41 +825,52 @@ begin
   end case;
 
 
-  if not exists (
-    select 1
-    from pg_timezone_names
-    where name = p_timezone
-  ) then
-    raise exception 'Invalid timezone';
-  end if;
+  -- =======================================================
+  -- Convert restaurant-local dates into timestamptz
+  -- boundaries for indexed filtering.
+  -- =======================================================
 
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Local calendar bucket boundaries
+  -- =======================================================
+
+  v_bucket_start :=
+    date_trunc(
+      p_group_by,
+      p_start_date::timestamp
+    );
+
+  v_bucket_end :=
+    date_trunc(
+      p_group_by,
+      (p_end_date - 1)::timestamp
+    );
+
+
+  -- =======================================================
+  -- Revenue / Expense Trend
+  -- =======================================================
 
   return query
 
-  with bounds as (
-    select
-      date_trunc(
-        p_group_by,
-        p_start_at at time zone p_timezone
-      ) as bucket_start,
-
-      date_trunc(
-        p_group_by,
-        (p_end_at - interval '1 microsecond')
-          at time zone p_timezone
-      ) as bucket_end
-  ),
-
+  with
 
   buckets as (
     select
       generate_series(
-        b.bucket_start,
-        b.bucket_end,
+        v_bucket_start,
+        v_bucket_end,
         v_step
       ) as bucket
-
-    from bounds b
   ),
 
 
@@ -595,21 +878,23 @@ begin
     select
       date_trunc(
         p_group_by,
-        o.ordered_at at time zone p_timezone
+        o.ordered_at at time zone v_timezone
       ) as bucket,
 
-      sum(o.total_amount)::numeric as revenue
+      sum(
+        o.total_amount
+      )::numeric as revenue
 
     from public.orders o
 
     where o.restaurant_id = v_restaurant_id
-      and o.ordered_at >= p_start_at
-      and o.ordered_at < p_end_at
+      and o.ordered_at >= v_start_at
+      and o.ordered_at < v_end_at
 
     group by
       date_trunc(
         p_group_by,
-        o.ordered_at at time zone p_timezone
+        o.ordered_at at time zone v_timezone
       )
   ),
 
@@ -618,21 +903,23 @@ begin
     select
       date_trunc(
         p_group_by,
-        e.expense_at at time zone p_timezone
+        e.expense_at at time zone v_timezone
       ) as bucket,
 
-      sum(e.amount)::numeric as expenses
+      sum(
+        e.amount
+      )::numeric as expenses
 
     from public.expenses e
 
     where e.restaurant_id = v_restaurant_id
-      and e.expense_at >= p_start_at
-      and e.expense_at < p_end_at
+      and e.expense_at >= v_start_at
+      and e.expense_at < v_end_at
 
     group by
       date_trunc(
         p_group_by,
-        e.expense_at at time zone p_timezone
+        e.expense_at at time zone v_timezone
       )
   )
 
@@ -641,12 +928,18 @@ begin
     b.bucket::date,
 
     round(
-      coalesce(s.revenue, 0),
+      coalesce(
+        s.revenue,
+        0
+      ),
       2
     ),
 
     round(
-      coalesce(e.expenses, 0),
+      coalesce(
+        e.expenses,
+        0
+      ),
       2
     )
 
@@ -667,18 +960,17 @@ $$;
 
 revoke all
 on function public.get_report_revenue_expense_trend(
-  timestamptz,
-  timestamptz,
-  text,
+  date,
+  date,
   text
 )
 from public;
 
+
 grant execute
 on function public.get_report_revenue_expense_trend(
-  timestamptz,
-  timestamptz,
-  text,
+  date,
+  date,
   text
 )
 to authenticated;
@@ -688,26 +980,25 @@ to authenticated;
 -- =========================================================
 -- 3. Get Report Drivers
 --
--- Returns ONLY analytics that are unique to the
--- "Drivers & Impact" section.
+-- Returns analytics unique to the "Drivers & Impact"
+-- section.
 --
--- We intentionally do NOT return:
+-- get_report_overview() already provides:
 --   food cost
 --   wastage
 --   average order
 --
--- because get_report_overview() already provides those.
---
--- Returns:
+-- This RPC returns:
 --   - leading sales channel
---   - leading channel revenue/share
+--   - leading channel revenue
+--   - leading channel share
 --   - top revenue menu item
 --   - top menu item revenue
 -- =========================================================
 
 create or replace function public.get_report_drivers(
-  p_start_at timestamptz,
-  p_end_at timestamptz
+  p_start_date date,
+  p_end_date date
 )
 returns table (
   leading_channel public.order_channel,
@@ -726,6 +1017,10 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
+  v_timezone text;
+
+  v_start_at timestamptz;
+  v_end_at timestamptz;
 
   v_total_revenue numeric := 0;
 
@@ -738,7 +1033,10 @@ declare
 
 begin
 
+  -- =======================================================
   -- Authentication
+  -- =======================================================
+
   v_user_id := auth.uid();
 
   if v_user_id is null then
@@ -746,45 +1044,81 @@ begin
   end if;
 
 
-  -- Resolve restaurant
-  select rm.restaurant_id
-  into v_restaurant_id
+  -- =======================================================
+  -- Resolve restaurant + timezone
+  -- =======================================================
+
+  select
+    rm.restaurant_id,
+    r.timezone
+  into
+    v_restaurant_id,
+    v_timezone
+
   from public.restaurant_memberships rm
+
+  join public.restaurants r
+    on r.id = rm.restaurant_id
+
   where rm.profile_id = v_user_id;
+
 
   if not found then
     raise exception 'User does not belong to a restaurant';
   end if;
 
 
-  -- Validate
-  if p_start_at is null or p_end_at is null then
+  -- =======================================================
+  -- Validate period
+  -- =======================================================
+
+  if p_start_date is null
+     or p_end_date is null then
+
     raise exception 'Report period boundaries are required';
+
   end if;
 
-  if p_start_at >= p_end_at then
+
+  if p_start_date >= p_end_date then
     raise exception 'Start must be before end';
   end if;
 
 
   -- =======================================================
-  -- Total revenue
+  -- Convert restaurant-local dates to timestamptz
+  -- =======================================================
+
+  v_start_at :=
+    p_start_date::timestamp
+    at time zone v_timezone;
+
+  v_end_at :=
+    p_end_date::timestamp
+    at time zone v_timezone;
+
+
+  -- =======================================================
+  -- Total Revenue
   -- =======================================================
 
   select
-    coalesce(sum(o.total_amount), 0)
+    coalesce(
+      sum(o.total_amount),
+      0
+    )
 
   into v_total_revenue
 
   from public.orders o
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at;
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at;
 
 
   -- =======================================================
-  -- Leading sales channel
+  -- Leading Sales Channel
   -- =======================================================
 
   select
@@ -798,10 +1132,11 @@ begin
   from public.orders o
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at
 
-  group by o.channel
+  group by
+    o.channel
 
   order by
     sum(o.total_amount) desc,
@@ -817,13 +1152,10 @@ begin
 
 
   -- =======================================================
-  -- Top revenue menu item
+  -- Top Revenue Menu Item
   --
-  -- Historical item_name is intentionally used.
-  --
-  -- This allows historical reports to remain meaningful
-  -- even if the current menu item was later renamed,
-  -- deactivated, or deleted.
+  -- Historical item_name is intentionally used so old
+  -- reports remain meaningful after a menu rename/delete.
   -- =======================================================
 
   select
@@ -842,8 +1174,8 @@ begin
     on o.id = oi.order_id
 
   where o.restaurant_id = v_restaurant_id
-    and o.ordered_at >= p_start_at
-    and o.ordered_at < p_end_at
+    and o.ordered_at >= v_start_at
+    and o.ordered_at < v_end_at
 
   group by
     oi.menu_item_id,
@@ -864,12 +1196,12 @@ begin
 
 
   -- =======================================================
-  -- Return unique Report drivers
+  -- Return
   -- =======================================================
 
   return query
-  select
 
+  select
     v_leading_channel,
 
     round(
@@ -878,7 +1210,9 @@ begin
     ),
 
     case
-      when v_total_revenue = 0 then 0
+      when v_total_revenue = 0
+      then 0
+
       else round(
         (
           v_leading_channel_revenue
@@ -902,14 +1236,15 @@ $$;
 
 revoke all
 on function public.get_report_drivers(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 from public;
 
+
 grant execute
 on function public.get_report_drivers(
-  timestamptz,
-  timestamptz
+  date,
+  date
 )
 to authenticated;
