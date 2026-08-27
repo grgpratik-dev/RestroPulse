@@ -6,7 +6,9 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class AccessRequestPendingView extends StatelessWidget {
-  const AccessRequestPendingView({super.key});
+  const AccessRequestPendingView({this.onRefresh, super.key});
+
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class AccessRequestPendingView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spaceXs),
               Text(
-                'The owner of Boys to Serve needs to approve your viewer access.',
+                'The restaurant owner needs to approve your viewer access before you can continue.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.neutral700,
@@ -100,6 +102,21 @@ class AccessRequestPendingView extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
+              if (onRefresh != null) ...[
+                const SizedBox(height: AppSpacing.spaceLg),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: onRefresh,
+                    icon: SvgPicture.asset(
+                      AppIcons.refresh_rounded,
+                      width: 18,
+                      height: 18,
+                    ),
+                    label: const Text('Check Again'),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

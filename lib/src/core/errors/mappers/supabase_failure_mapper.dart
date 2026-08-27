@@ -29,6 +29,17 @@ final class SupabaseFailureMapper {
     );
   }
 
+  static SupabaseFailure mapPostgrest(PostgrestException exception) {
+    final message = switch (exception.code) {
+      '42501' => 'You do not have permission to check restaurant access.',
+      'PGRST301' => 'Your session has expired. Please sign in again.',
+      '57014' => 'The request timed out. Please try again.',
+      _ => 'Restaurant access could not be checked. Please try again.',
+    };
+
+    return SupabaseFailure(message, supabaseCode: exception.code);
+  }
+
   static String _messageFromCode(String? code, String? statusCode) {
     return switch (code) {
       'invalid_credentials' => 'The email or password is incorrect.',

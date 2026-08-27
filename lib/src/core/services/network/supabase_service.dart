@@ -33,4 +33,6 @@ final class SupabaseService {
   User? get currentUser => _supabase.auth.currentUser;
 
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
+
+  SupabaseClient get supabaseClient => _supabase;
 }

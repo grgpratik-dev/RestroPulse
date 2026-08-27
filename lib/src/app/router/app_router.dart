@@ -49,16 +49,21 @@ import '../../features/splash/presentation/screens/splash_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
-GoRouter createAppRouter(AppSessionController appScessionController) {
+GoRouter createAppRouter(AppSessionController appSessionController) {
   return GoRouter(
     debugLogDiagnostics: kDebugMode,
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoute.splash.path,
-    refreshListenable: appScessionController,
+    refreshListenable: appSessionController,
     redirect: (context, state) {
-      final status = appScessionController.status;
+      final status = appSessionController.status;
       final location = state.matchedLocation;
       final publicRoutes = {AppRoute.auth.path, AppRoute.verifyOTP.path};
+      final restaurantSetupRoutes = {
+        AppRoute.restaurantAccess.path,
+        AppRoute.createRestaurant.path,
+        AppRoute.joinRestaurant.path,
+      };
 
       final entryRoutes = {
         AppRoute.splash.path,
@@ -68,6 +73,7 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
       };
       switch (status) {
         case AppStatus.initializing:
+        case AppStatus.checkingRestaurantAccess:
           if (location != AppRoute.splash.path) {
             return AppRoute.splash.path;
           }
@@ -87,8 +93,22 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
           }
           return AppRoute.auth.path;
 
-        case AppStatus.authenticated:
-          if (entryRoutes.contains(location)) {
+        case AppStatus.noRestaurantAccess:
+          if (restaurantSetupRoutes.contains(location)) {
+            return null;
+          }
+          return AppRoute.restaurantAccess.path;
+
+        case AppStatus.restaurantAccessPending:
+        case AppStatus.restaurantAccessFailure:
+          if (location == AppRoute.restaurantAccess.path) {
+            return null;
+          }
+          return AppRoute.restaurantAccess.path;
+
+        case AppStatus.hasRestaurantAccess:
+          if (entryRoutes.contains(location) ||
+              restaurantSetupRoutes.contains(location)) {
             return AppRoute.dashboard.path;
           }
           return null;
@@ -173,11 +193,18 @@ GoRouter createAppRouter(AppSessionController appScessionController) {
       GoRoute(
         path: AppRoute.restaurantAccess.path,
         name: AppRoute.restaurantAccess.name,
-        builder: (context, state) => RestaurantAccessScreen(
-          onCreateRestaurant: () =>
-              context.pushNamed(AppRoute.createRestaurant.name),
-          onJoinRestaurant: () =>
-              context.pushNamed(AppRoute.joinRestaurant.name),
+        builder: (context, state) => ListenableBuilder(
+          listenable: appSessionController,
+          builder: (context, _) => RestaurantAccessScreen(
+            appStatus: appSessionController.status,
+            failureMessage:
+                appSessionController.restaurantAccessFailure?.message,
+            onRetry: appSessionController.refreshRestaurantAccess,
+            onCreateRestaurant: () =>
+                context.pushNamed(AppRoute.createRestaurant.name),
+            onJoinRestaurant: () =>
+                context.pushNamed(AppRoute.joinRestaurant.name),
+          ),
         ),
       ),
       GoRoute(

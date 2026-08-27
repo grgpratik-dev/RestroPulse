@@ -19,4 +19,13 @@ enum ApiErrorType {
 }
 
 // global application status
-enum AppStatus { initializing, onboarding, unauthenticated, authenticated }
+enum AppStatus {
+  initializing,
+  onboarding,
+  unauthenticated,
+  checkingRestaurantAccess,
+  noRestaurantAccess,
+  restaurantAccessPending,
+  hasRestaurantAccess,
+  restaurantAccessFailure,
+}

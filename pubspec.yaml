@@ -54,6 +54,7 @@ dependencies:
   google_sign_in: ^7.2.0
   flutter_dotenv: ^6.0.1
   freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
   lottie: ^3.3.3
 
 dev_dependencies:
@@ -69,6 +70,7 @@ dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: 2.11.1
   freezed: ^3.2.3
+  json_serializable: ^6.9.0
   flutter_gen: ^5.14.1
 
 # For information on the generic Dart part of this file, see the

@@ -14,6 +14,10 @@ import 'package:restropulse/src/features/auth/domain/usecases/verify_otp_usecase
 import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_cubit.dart';
 import 'package:restropulse/src/features/onboarding/data/datasources/onboarding_local_datasource.dart';
+import 'package:restropulse/src/features/restaurant_access/data/datasources/restaurant_access_remote_datasource.dart';
+import 'package:restropulse/src/features/restaurant_access/data/repositories/restaurant_access_repository_impl.dart';
+import 'package:restropulse/src/features/restaurant_access/domain/repositories/restaurant_access_repository.dart';
+import 'package:restropulse/src/features/restaurant_access/domain/usecases/get_current_restaurant_access_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/bloc/image_picker/image_picker_bloc.dart';
@@ -47,6 +51,7 @@ void serviceDependencies() {
     () => AppSessionController(
       supabaseService: sl(),
       onboardingLocalDataSource: sl(),
+      getCurrentRestaurantAccess: sl(),
     ),
   );
 
@@ -69,11 +74,17 @@ void datasourceDependencies() {
   sl.registerLazySingleton<OnboardingLocalDataSource>(
     () => OnboardingLocalDataSourceImpl(sl()),
   );
+  sl.registerLazySingleton<RestaurantAccessRemoteDatasource>(
+    () => RestaurantAccessRemoteDatasourceImpl(sl()),
+  );
 }
 
 void repositoryDependencies() {
   // Register your repository dependencies here
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<RestaurantAccessRepository>(
+    () => RestaurantAccessRepositoryImpl(sl()),
+  );
 }
 
 void usecaseDependencies() {
@@ -84,6 +95,9 @@ void usecaseDependencies() {
   sl.registerLazySingleton<SignOutUsecase>(() => SignOutUsecase(sl()));
   sl.registerLazySingleton<SignInWithGoogleUsecase>(
     () => SignInWithGoogleUsecase(sl()),
+  );
+  sl.registerLazySingleton<GetCurrentRestaurantAccessUsecase>(
+    () => GetCurrentRestaurantAccessUsecase(sl()),
   );
 }
 

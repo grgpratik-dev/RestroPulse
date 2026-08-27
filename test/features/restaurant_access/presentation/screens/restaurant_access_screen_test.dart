@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
+import 'package:restropulse/src/core/enums/enums.dart';
 import 'package:restropulse/src/core/widgets/app_bottom_navigation_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
 
@@ -42,4 +43,37 @@ void main() {
     expect(joinSelected, isTrue);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'shows only the pending request state while approval is pending',
+    (tester) async {
+      var refreshRequested = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: RestaurantAccessScreen(
+            appStatus: AppStatus.restaurantAccessPending,
+            onRetry: () => refreshRequested = true,
+          ),
+        ),
+      );
+
+      expect(find.text('Request sent'), findsOneWidget);
+      expect(find.text('Waiting for owner approval'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('create-restaurant-option')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('join-restaurant-option')),
+        findsNothing,
+      );
+
+      await tester.tap(find.text('Check Again'));
+
+      expect(refreshRequested, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
