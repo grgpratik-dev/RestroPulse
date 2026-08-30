@@ -8,6 +8,7 @@ enum AppRoute {
   auth('/auth'),
   verifyOTP('/verify-otp'),
   restaurantAccess('/restaurant-access'),
+  chooseCountry('/choose-country'),
   createRestaurant('/restaurant/create'),
   joinRestaurant('/restaurant/join'),
   main('/main'),

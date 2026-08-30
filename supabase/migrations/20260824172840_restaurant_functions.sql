@@ -25,8 +25,6 @@
 create or replace function public.create_restaurant(
   p_name varchar,
   p_timezone varchar,
-
-  p_description text default null,
   p_phone varchar default null,
   p_email varchar default null,
   p_address text default null,
@@ -94,7 +92,6 @@ begin
   insert into public.restaurants (
     name,
     timezone,
-    description,
     phone,
     email,
     address,
@@ -103,7 +100,6 @@ begin
   values (
     btrim(p_name),
     btrim(p_timezone),
-    p_description,
     p_phone,
     p_email,
     p_address,
@@ -143,7 +139,6 @@ revoke all
 on function public.create_restaurant(
   varchar,
   varchar,
-  text,
   varchar,
   varchar,
   text,
@@ -156,7 +151,6 @@ grant execute
 on function public.create_restaurant(
   varchar,
   varchar,
-  text,
   varchar,
   varchar,
   text,

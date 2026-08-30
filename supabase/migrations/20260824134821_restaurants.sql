@@ -14,9 +14,6 @@ create table public.restaurants (
   -- Restaurant/business display name.
   name varchar not null,
 
-  -- Optional descriptive information shown in the app.
-  description text,
-
   -- Contact details for the restaurant.
   phone varchar,
   email varchar,

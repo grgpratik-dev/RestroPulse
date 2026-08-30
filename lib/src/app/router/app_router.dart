@@ -30,6 +30,7 @@ import 'package:restropulse/src/features/profile/presentation/screen/members_acc
 import 'package:restropulse/src/features/profile/presentation/screen/personal_informatin/personal_information_screen.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:restropulse/src/features/reports/presentation/screen/reports_screen.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/screens/choose_country_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/create_restaurant_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/join_restaurant_screen.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/screens/restaurant_access_screen.dart';
@@ -91,7 +92,8 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
           if (publicRoutes.contains(location)) {
             return null;
           }
-          return AppRoute.auth.path;
+          // return AppRoute.auth.path;
+          return AppRoute.chooseCountry.path;
 
         case AppStatus.noRestaurantAccess:
           if (restaurantSetupRoutes.contains(location)) {
@@ -206,6 +208,11 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
                 context.pushNamed(AppRoute.joinRestaurant.name),
           ),
         ),
+      ),
+      GoRoute(
+        path: AppRoute.chooseCountry.path,
+        name: AppRoute.chooseCountry.name,
+        builder: (context, state) => const ChooseCountryScreen(),
       ),
       GoRoute(
         path: AppRoute.createRestaurant.path,

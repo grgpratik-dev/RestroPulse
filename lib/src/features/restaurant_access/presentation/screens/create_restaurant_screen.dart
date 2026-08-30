@@ -1,33 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/bloc/image_picker/image_picker_bloc.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_image_picker_bottom_sheet.dart';
 import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_logo_selector.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
-class CreateRestaurantScreen extends StatefulWidget {
+class CreateRestaurantScreen extends StatelessWidget {
   const CreateRestaurantScreen({this.onCreated, super.key});
 
   final VoidCallback? onCreated;
 
   @override
-  State<CreateRestaurantScreen> createState() => _CreateRestaurantScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ImagePickerBloc>(),
+      child: _CreateRestaurantForm(onCreated: onCreated),
+    );
+  }
 }
 
-class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
+class _CreateRestaurantForm extends StatefulWidget {
+  const _CreateRestaurantForm({this.onCreated});
+
+  final VoidCallback? onCreated;
+
+  @override
+  State<_CreateRestaurantForm> createState() => _CreateRestaurantFormState();
+}
+
+class _CreateRestaurantFormState extends State<_CreateRestaurantForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _locationController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
-    _locationController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
+
     super.dispose();
   }
 
@@ -44,12 +65,7 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
           key: _formKey,
           child: ListView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.spaceLg,
-              AppSpacing.spaceMd,
-              AppSpacing.spaceLg,
-              AppSpacing.space2xl,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.spaceMd),
             children: [
               Center(
                 child: ConstrainedBox(
@@ -110,8 +126,12 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       ),
                       const SizedBox(height: AppSpacing.spaceLg),
                       RestaurantLogoSelector(
-                        key: const ValueKey('restaurant-logo-selector'),
-                        onTap: () => _showLogoOptions(context),
+                        onTap: () => showAppImagePickerBottomSheet(
+                          context,
+                          title: 'Add restaurant logo',
+                          maxWidth: 1200,
+                          imageQuality: 85,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.spaceLg),
                       Text(
@@ -123,16 +143,15 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       ),
                       const SizedBox(height: AppSpacing.spaceXs),
                       AppTextFormField(
-                        key: const ValueKey('restaurant-name-field'),
                         controller: _nameController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.organizationName],
+                        hintText: "Enter your restaurant name",
                         prefixIcon: SvgPicture.asset(
-                            AppIcons.storefront_outlined,
-                            width: 22,
-                            height: 22,
-                          ),
+                          AppIcons.storefront_outlined,
+                          width: 22,
+                          height: 22,
+                        ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Enter your restaurant name';
@@ -142,7 +161,7 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       ),
                       const SizedBox(height: AppSpacing.spaceMd),
                       Text(
-                        'Location',
+                        'Address',
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: AppColors.ink,
                           fontWeight: FontWeight.w600,
@@ -150,15 +169,41 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       ),
                       const SizedBox(height: AppSpacing.spaceXs),
                       AppTextFormField(
-                        key: const ValueKey('restaurant-location-field'),
-                        controller: _locationController,
+                        controller: _addressController,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,
-                      prefixIcon: SvgPicture.asset(
-                            AppIcons.location_on_outlined,
-                            width: 22,
-                            height: 22,
-                          ),
+                        hintText: "Enter the restaurant location",
+                        prefixIcon: SvgPicture.asset(
+                          AppIcons.location_on_outlined,
+                          width: 22,
+                          height: 22,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Enter the restaurant location';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.spaceMd),
+                      Text(
+                        'Phone number',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: AppColors.ink,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.spaceXs),
+                      AppTextFormField(
+                        controller: _phoneController,
+                        textCapitalization: TextCapitalization.words,
+                        textInputAction: TextInputAction.done,
+                        hintText: "Business phone number (optional)",
+                        prefixIcon: SvgPicture.asset(
+                          AppIcons.location_on_outlined,
+                          width: 22,
+                          height: 22,
+                        ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Enter the restaurant location';
@@ -178,16 +223,16 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
                       AppTextFormField(
                         initialValue: 'NPR (Rs)',
                         readOnly: true,
-                          prefixIcon: SvgPicture.asset(
-                            AppIcons.currency,
-                            width: 22,
-                            height: 22,
-                          ),
-                          suffixIcon: SvgPicture.asset(
-                            AppIcons.lock_outline_rounded,
-                            width: 20,
-                            height: 20,
-                          ),
+                        prefixIcon: SvgPicture.asset(
+                          AppIcons.currency,
+                          width: 22,
+                          height: 22,
+                        ),
+                        suffixIcon: SvgPicture.asset(
+                          AppIcons.lock_outline_rounded,
+                          width: 20,
+                          height: 20,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.spaceXl),
                       SizedBox(
@@ -217,53 +262,5 @@ class _CreateRestaurantScreenState extends State<CreateRestaurantScreen> {
       return;
     }
     context.goNamed(AppRoute.dashboard.name);
-  }
-
-  Future<void> _showLogoOptions(BuildContext context) {
-    return showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.spaceLg,
-            AppSpacing.spaceXs,
-            AppSpacing.spaceLg,
-            AppSpacing.spaceLg,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Add restaurant logo',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: AppSpacing.spaceSm),
-              ListTile(
-                leading: SvgPicture.asset(
-                  AppIcons.photo_library_outlined,
-                  width: 24,
-                  height: 24,
-                ),
-                title: const Text('Choose from gallery'),
-                onTap: () => Navigator.of(sheetContext).pop(),
-              ),
-              ListTile(
-                leading: SvgPicture.asset(
-                  AppIcons.camera_alt_outlined,
-                  width: 24,
-                  height: 24,
-                ),
-                title: const Text('Take a photo'),
-                onTap: () => Navigator.of(sheetContext).pop(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

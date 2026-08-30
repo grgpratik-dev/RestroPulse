@@ -1,20 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
+import 'package:restropulse/src/core/bloc/image_picker/image_picker_bloc.dart';
+import 'package:restropulse/src/core/widgets/app_image_picker_bottom_sheet.dart';
 import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../../app/theme/app_colors.dart';
 import '../../../../../app/theme/app_spacing.dart';
 import '../../widgets/profile_form_widgets.dart';
 
-class EditRestaurantScreen extends StatefulWidget {
+class EditRestaurantScreen extends StatelessWidget {
   const EditRestaurantScreen({this.onSaved, super.key});
 
   final VoidCallback? onSaved;
 
   @override
-  State<EditRestaurantScreen> createState() => _EditRestaurantScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ImagePickerBloc>(),
+      child: _EditRestaurantForm(onSaved: onSaved),
+    );
+  }
 }
 
-class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
+class _EditRestaurantForm extends StatefulWidget {
+  const _EditRestaurantForm({this.onSaved});
+
+  final VoidCallback? onSaved;
+
+  @override
+  State<_EditRestaurantForm> createState() => _EditRestaurantFormState();
+}
+
+class _EditRestaurantFormState extends State<_EditRestaurantForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _phoneController;
@@ -73,9 +91,11 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
               ProfileImageEditor(
                 label: 'Change restaurant logo',
                 isRestaurant: true,
-                onTap: () => showProfileImageOptions(
+                onTap: () => showAppImagePickerBottomSheet(
                   context,
                   title: 'Change restaurant logo',
+                  maxWidth: 1200,
+                  imageQuality: 85,
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceXl),

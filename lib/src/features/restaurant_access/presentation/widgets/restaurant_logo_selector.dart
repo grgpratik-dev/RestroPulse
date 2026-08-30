@@ -68,15 +68,6 @@ class RestaurantLogoSelector extends StatelessWidget {
                   ],
                 ),
               ),
-              SvgPicture.asset(
-                AppIcons.chevron_right_rounded,
-                width: 20,
-                height: 20,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.neutral600,
-                  BlendMode.srcIn,
-                ),
-              ),
             ],
           ),
         ),

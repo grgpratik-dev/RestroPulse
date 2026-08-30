@@ -9,7 +9,6 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_dialogs.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
-import 'package:restropulse/src/features/auth/presentation/screens/widgets/ambient_glow_widget.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
@@ -59,16 +58,6 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         backgroundColor: AppColors.authBackground,
         body: Stack(
           children: [
-            const Positioned(
-              top: -120,
-              right: -90,
-              child: AmbientGlow(size: 300, opacity: 0.8),
-            ),
-            const Positioned(
-              bottom: -170,
-              left: -140,
-              child: AmbientGlow(size: 360, opacity: 0.5),
-            ),
             SafeArea(
               child: Stack(
                 children: [

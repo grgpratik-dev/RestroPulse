@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
+import 'package:restropulse/src/core/bloc/image_picker/image_picker_bloc.dart';
+import 'package:restropulse/src/core/widgets/app_image_picker_bottom_sheet.dart';
 import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 
 import '../../../../../app/theme/app_colors.dart';
@@ -7,17 +11,31 @@ import '../../../../../app/theme/app_spacing.dart';
 import '../../widgets/profile_form_widgets.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
-class PersonalInformationScreen extends StatefulWidget {
+class PersonalInformationScreen extends StatelessWidget {
   const PersonalInformationScreen({this.onSaved, super.key});
 
   final VoidCallback? onSaved;
 
   @override
-  State<PersonalInformationScreen> createState() =>
-      _PersonalInformationScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ImagePickerBloc>(),
+      child: _PersonalInformationForm(onSaved: onSaved),
+    );
+  }
 }
 
-class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+class _PersonalInformationForm extends StatefulWidget {
+  const _PersonalInformationForm({this.onSaved});
+
+  final VoidCallback? onSaved;
+
+  @override
+  State<_PersonalInformationForm> createState() =>
+      _PersonalInformationFormState();
+}
+
+class _PersonalInformationFormState extends State<_PersonalInformationForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -69,9 +87,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             children: [
               ProfileImageEditor(
                 label: 'Change profile photo',
-                onTap: () => showProfileImageOptions(
+                onTap: () => showAppImagePickerBottomSheet(
                   context,
                   title: 'Change profile photo',
+                  maxWidth: 1200,
+                  imageQuality: 85,
                 ),
               ),
               const SizedBox(height: AppSpacing.spaceXl),

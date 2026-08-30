@@ -24,6 +24,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>RestroPulse uses the camera to capture restaurant logos, profile photos, menu items, and expense receipts.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>RestroPulse uses your photo library to select restaurant logos, profile photos, menu items, and expense receipts.</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>UILaunchStoryboardName</key>
@@ -55,8 +59,6 @@
 		<string>Editor</string>
 		<key>CFBundleURLSchemes</key>
 		<array>
-			<!-- TODO Replace this value: -->
-			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
 			<string>com.googleusercontent.apps.652669163830-8lnkggemvth05j29qjktl9m2grdphsso</string>
 		</array>
 	</dict>
