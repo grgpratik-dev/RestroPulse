@@ -9,11 +9,13 @@ class MembersSummaryCard extends StatelessWidget {
   const MembersSummaryCard({
     required this.totalMembers,
     required this.viewerCount,
+    required this.restaurantName,
     super.key,
   });
 
   final int totalMembers;
   final int viewerCount;
+  final String restaurantName;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class MembersSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.space2xs),
           Text(
-            'People with access to Boys to Serve',
+            'People with access to $restaurantName',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: AppColors.surface.withValues(alpha: 0.76),
             ),
@@ -94,9 +96,9 @@ class RestaurantJoinCodeCard extends StatelessWidget {
   });
 
   final String? code;
-  final VoidCallback onCopy;
-  final VoidCallback onRegenerate;
-  final VoidCallback onToggle;
+  final VoidCallback? onCopy;
+  final VoidCallback? onRegenerate;
+  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -245,8 +247,8 @@ class PendingAccessRequestCard extends StatelessWidget {
 
   final String name;
   final String email;
-  final VoidCallback onApprove;
-  final VoidCallback onDecline;
+  final VoidCallback? onApprove;
+  final VoidCallback? onDecline;
 
   @override
   Widget build(BuildContext context) {

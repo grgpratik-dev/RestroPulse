@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
@@ -15,8 +16,10 @@ import '../widgets/logout_confirmation_dialog.dart';
 import '../widgets/logout_tile.dart';
 import '../widgets/profile_header_card.dart';
 import '../widgets/settings_section.dart';
+import '../cubits/members_access/members_access_cubit.dart';
 
 part '../widgets/settings_tile.dart';
+part '../widgets/members_access_settings_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onLogout});
@@ -46,35 +49,46 @@ class ProfileScreen extends StatelessWidget {
               onEdit: () => context.pushNamed(AppRoute.editRestaurant.name),
             ),
             const SizedBox(height: AppSpacing.spaceXl),
-            SettingsSection(
-              title: 'Restaurant',
-              children: [
-                SettingsTile(
-                  icon: AppIcons.group_outlined,
-                  title: 'Members & Access',
-                  subtitle: '2 members · 1 pending request',
-                  onTap: () => context.pushNamed(AppRoute.membersAccess.name),
-                ),
-                SettingsTile(
-                  icon: AppIcons.currency,
-                  title: 'Currency',
-                  subtitle: 'NPR (Rs)',
-                  onTap: () => _showCurrencySheet(context),
-                ),
-                SettingsTile(
-                  icon: AppIcons.restaurant_menu_rounded,
-                  title: 'Menu Categories',
-                  subtitle: 'Manage food and drink categories',
-                  onTap: () => context.pushNamed(AppRoute.menuCategories.name),
-                ),
-                SettingsTile(
-                  icon: AppIcons.expenseCategories,
-                  title: 'Expense Categories',
-                  subtitle: 'Manage expense classifications',
-                  onTap: () =>
-                      context.pushNamed(AppRoute.expenseCategories.name),
-                ),
-              ],
+            BlocProvider(
+              create: (_) => sl<MembersAccessCubit>()..load(),
+              child: SettingsSection(
+                title: 'Restaurant',
+                children: [
+                  const _MembersAccessSettingsTile(),
+                  BlocBuilder<MembersAccessCubit, MembersAccessState>(
+                    builder: (context, state) => SettingsTile(
+                      icon: AppIcons.currency,
+                      title: 'Currency',
+                      subtitle: state.loading
+                          ? 'Loading currency…'
+                          : state.data?.currencyCode ??
+                                'Currency unavailable · Tap to retry',
+                      onTap: () {
+                        final currency = state.data?.currencyCode;
+                        if (currency != null) {
+                          _showCurrencySheet(context, currency);
+                        } else {
+                          context.read<MembersAccessCubit>().load();
+                        }
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    icon: AppIcons.restaurant_menu_rounded,
+                    title: 'Menu Categories',
+                    subtitle: 'Manage food and drink categories',
+                    onTap: () =>
+                        context.pushNamed(AppRoute.menuCategories.name),
+                  ),
+                  SettingsTile(
+                    icon: AppIcons.expenseCategories,
+                    title: 'Expense Categories',
+                    subtitle: 'Manage expense classifications',
+                    onTap: () =>
+                        context.pushNamed(AppRoute.expenseCategories.name),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: AppSpacing.spaceXl),
             SettingsSection(
@@ -150,7 +164,7 @@ class ProfileScreen extends StatelessWidget {
       );
   }
 
-  Future<void> _showCurrencySheet(BuildContext context) {
+  Future<void> _showCurrencySheet(BuildContext context, String currencyCode) {
     final theme = Theme.of(context);
 
     return showModalBottomSheet<void>(
@@ -171,7 +185,7 @@ class ProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Select currency',
+                  'Restaurant currency',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -194,16 +208,18 @@ class ProfileScreen extends StatelessWidget {
                         color: AppColors.surface,
                         shape: BoxShape.circle,
                       ),
-                      child: const Text(
-                        'Rs',
+                      child: Text(
+                        currencyCode,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                    title: const Text('NPR (Rs)'),
-                    subtitle: const Text('Nepalese Rupee'),
+                    title: Text(currencyCode),
+                    subtitle: const Text(
+                      'Set when your restaurant was created',
+                    ),
                     trailing: SvgPicture.asset(
                       AppIcons.check_circle_rounded,
                       width: 20,

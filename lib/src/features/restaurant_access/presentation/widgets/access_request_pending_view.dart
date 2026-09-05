@@ -95,7 +95,7 @@ class AccessRequestPendingView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               Text(
-                'We’ll notify you when the owner approves or declines your request.',
+                'Tap Check Again to see whether the owner has approved your request.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: AppColors.neutral600,

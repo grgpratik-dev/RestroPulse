@@ -1,280 +1,221 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
-import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_confirmation_dialog.dart';
-import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/features/profile/presentation/widgets/members_access_widgets.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
+import '../../cubits/members_access/members_access_cubit.dart';
 
-class MembersAccessScreen extends StatefulWidget {
+class MembersAccessScreen extends StatelessWidget {
   const MembersAccessScreen({super.key});
 
   @override
-  State<MembersAccessScreen> createState() => _MembersAccessScreenState();
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) => sl<MembersAccessCubit>()..load(),
+    child: const _MembersAccessView(),
+  );
 }
 
-class _MembersAccessScreenState extends State<MembersAccessScreen> {
-  String? _joinCode = 'RP-7K9M2';
-  int _codeVersion = 0;
-  final List<_RestaurantMember> _members = [
-    const _RestaurantMember(
-      name: 'Pratik Gurung',
-      email: 'pratik@boystoserve.com',
-      role: 'Owner',
-    ),
-    const _RestaurantMember(
-      name: 'Suman Gurung',
-      email: 'suman@example.com',
-      role: 'Viewer',
-    ),
-  ];
-  final List<_AccessRequest> _pendingRequests = [
-    const _AccessRequest(name: 'Nisha Thapa', email: 'nisha@example.com'),
-  ];
-
-  int get _viewerCount =>
-      _members.where((member) => member.role == 'Viewer').length;
+class _MembersAccessView extends StatelessWidget {
+  const _MembersAccessView();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(
-          'Members & Access',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        backgroundColor: AppColors.background,
-        scrolledUnderElevation: 0,
-      ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.spaceMd,
-            AppSpacing.spaceSm,
-            AppSpacing.spaceMd,
-            AppSpacing.space2xl,
-          ),
-          children: [
-            MembersSummaryCard(
-              totalMembers: _members.length,
-              viewerCount: _viewerCount,
-            ),
-            const SizedBox(height: AppSpacing.spaceXl),
-            const _SectionTitle(
-              title: 'Invite viewers',
-              subtitle: 'One active code per restaurant',
-            ),
-            const SizedBox(height: AppSpacing.spaceSm),
-            RestaurantJoinCodeCard(
-              code: _joinCode,
-              onCopy: _copyCode,
-              onRegenerate: _confirmRegenerateCode,
-              onToggle: _toggleCode,
-            ),
-            const SizedBox(height: AppSpacing.spaceXl),
-            _SectionTitle(
-              title: 'Pending requests',
-              trailing: '${_pendingRequests.length}',
-            ),
-            const SizedBox(height: AppSpacing.spaceSm),
-            if (_pendingRequests.isEmpty)
-              const _EmptyRequests()
-            else
-              for (final request in _pendingRequests)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.spaceSm),
-                  child: PendingAccessRequestCard(
-                    name: request.name,
-                    email: request.email,
-                    onApprove: () => _approveRequest(request),
-                    onDecline: () => _declineRequest(request),
-                  ),
-                ),
-            const SizedBox(height: AppSpacing.spaceLg),
-            _SectionTitle(
-              title: 'Restaurant members',
-              trailing: '${_members.length}',
-            ),
-            const SizedBox(height: AppSpacing.spaceSm),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-                border: Border.all(color: AppColors.neutral300),
+    return BlocBuilder<MembersAccessCubit, MembersAccessState>(
+      builder: (context, state) {
+        final cubit = context.read<MembersAccessCubit>();
+        final data = state.data;
+        final busy = state.loading || state.saving;
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            title: const Text('Members & Access'),
+            actions: [
+              IconButton(
+                tooltip: 'Refresh members and requests',
+                onPressed: busy ? null : cubit.load,
+                icon: const Icon(Icons.refresh),
               ),
-              child: Column(
+            ],
+          ),
+          body: SafeArea(
+            child: RefreshIndicator(
+              onRefresh: cubit.load,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(AppSpacing.spaceMd),
                 children: [
-                  for (var index = 0; index < _members.length; index++) ...[
-                    RestaurantMemberTile(
-                      name: _members[index].name,
-                      email: _members[index].email,
-                      role: _members[index].role,
-                      onRemove: _members[index].role == 'Viewer'
-                          ? () => _removeMember(_members[index])
-                          : null,
+                  if (busy) const LinearProgressIndicator(),
+                  if (state.message != null) ...[
+                    Text(
+                      state.message!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
-                    if (index != _members.length - 1)
-                      const AppDivider(height: 1, indent: 72),
+                    TextButton(
+                      onPressed: busy ? null : cubit.load,
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                  if (data != null) ...[
+                    MembersSummaryCard(
+                      restaurantName: data.restaurantName,
+                      totalMembers: data.members.length,
+                      viewerCount: data.members
+                          .where((member) => member.role == 'viewer')
+                          .length,
+                    ),
+                    if (data.isOwner) ...[
+                      const _SectionTitle('Invite viewers'),
+                      RestaurantJoinCodeCard(
+                        code: data.joinCode,
+                        onCopy: busy || data.joinCode == null
+                            ? null
+                            : () => _copyCode(context, data.joinCode!),
+                        onRegenerate: busy
+                            ? null
+                            : () => _confirm(
+                                context,
+                                title: 'Regenerate join code?',
+                                message:
+                                    'The current code will stop working immediately. Existing pending requests will not be affected.',
+                                label: 'Regenerate',
+                                action: cubit.generateCode,
+                              ),
+                        onToggle: busy
+                            ? null
+                            : () {
+                                if (data.joinCode == null) {
+                                  cubit.generateCode();
+                                } else {
+                                  _confirm(
+                                    context,
+                                    title: 'Disable join code?',
+                                    message:
+                                        'New viewers will not be able to request access with this code. Pending requests will remain.',
+                                    label: 'Disable',
+                                    action: cubit.disableCode,
+                                  );
+                                }
+                              },
+                      ),
+                      _SectionTitle(
+                        'Pending requests (${data.requests.length})',
+                      ),
+                      if (data.requests.isEmpty)
+                        const Text('No pending access requests'),
+                      for (final request in data.requests)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: AppSpacing.spaceSm,
+                          ),
+                          child: PendingAccessRequestCard(
+                            key: ValueKey(request.id),
+                            name: request.name,
+                            email: request.email ?? 'Requesting viewer access',
+                            onApprove: busy
+                                ? null
+                                : () => cubit.approve(request.id),
+                            onDecline: busy
+                                ? null
+                                : () => _confirm(
+                                    context,
+                                    title: 'Decline request?',
+                                    message:
+                                        'Decline the access request from ${request.name}?',
+                                    label: 'Decline',
+                                    action: () => cubit.decline(request.id),
+                                  ),
+                          ),
+                        ),
+                    ],
+                    _SectionTitle(
+                      'Restaurant members (${data.members.length})',
+                    ),
+                    for (final member in data.members)
+                      RestaurantMemberTile(
+                        key: ValueKey(member.id),
+                        name: member.name,
+                        email:
+                            member.email ??
+                            (member.role == 'owner'
+                                ? 'Manages restaurant access'
+                                : 'Read-only access'),
+                        role: member.role == 'owner' ? 'Owner' : 'Viewer',
+                        onRemove:
+                            !busy && data.isOwner && member.role == 'viewer'
+                            ? () => _confirm(
+                                context,
+                                title: 'Remove viewer access?',
+                                message:
+                                    '${member.name} will lose access to this restaurant.',
+                                label: 'Remove',
+                                destructive: true,
+                                action: () => cubit.removeViewer(member.id),
+                              )
+                            : null,
+                      ),
                   ],
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Future<void> _copyCode() async {
-    final code = _joinCode;
-    if (code == null) return;
-    await Clipboard.setData(ClipboardData(text: code));
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Join code copied')));
-  }
-
-  Future<void> _confirmRegenerateCode() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => const AppConfirmationDialog(
-        title: 'Regenerate join code?',
-        message:
-            'The current code will stop working immediately. Existing pending requests will not be affected.',
-        confirmLabel: 'Regenerate',
-        icon: AppIcons.refresh_rounded,
-        confirmButtonKey: ValueKey('confirm-regenerate-code-button'),
-      ),
-    );
-    if (confirmed != true) return;
-
-    const replacementCodes = ['RP-4N8Q6', 'RP-2M7X5', 'RP-9T3K8'];
-    setState(() {
-      _joinCode = replacementCodes[_codeVersion % replacementCodes.length];
-      _codeVersion++;
-    });
-  }
-
-  void _toggleCode() {
-    setState(() => _joinCode = _joinCode == null ? 'RP-7K9M2' : null);
-  }
-
-  void _approveRequest(_AccessRequest request) {
-    setState(() {
-      _pendingRequests.remove(request);
-      _members.add(
-        _RestaurantMember(
-          name: request.name,
-          email: request.email,
-          role: 'Viewer',
+  Future<void> _copyCode(BuildContext context, String code) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: code));
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Join code copied')));
+    } on PlatformException {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not copy the code. Please try again.'),
         ),
       );
-    });
+    }
   }
 
-  void _declineRequest(_AccessRequest request) {
-    setState(() => _pendingRequests.remove(request));
-  }
-
-  void _removeMember(_RestaurantMember member) {
-    setState(() => _members.remove(member));
+  Future<void> _confirm(
+    BuildContext context, {
+    required String title,
+    required String message,
+    required String label,
+    required Future<void> Function() action,
+    bool destructive = false,
+  }) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AppConfirmationDialog(
+        title: title,
+        message: message,
+        confirmLabel: label,
+        isDestructive: destructive,
+        confirmButtonKey: const ValueKey('confirm-access-action'),
+      ),
+    );
+    if (confirmed == true && context.mounted) await action();
   }
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title, this.subtitle, this.trailing});
-
+  const _SectionTitle(this.title);
   final String title;
-  final String? subtitle;
-  final String? trailing;
-
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.ink,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(height: AppSpacing.space2xs),
-                Text(
-                  subtitle!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.neutral600),
-                ),
-              ],
-            ],
-          ),
-        ),
-        if (trailing != null)
-          Text(
-            trailing!,
-            style: const TextStyle(
-              color: AppColors.neutral600,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _EmptyRequests extends StatelessWidget {
-  const _EmptyRequests();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.spaceMd),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.neutral300),
-      ),
-      child: const Text(
-        'No pending access requests',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.neutral600),
-      ),
-    );
-  }
-}
-
-class _RestaurantMember {
-  const _RestaurantMember({
-    required this.name,
-    required this.email,
-    required this.role,
-  });
-
-  final String name;
-  final String email;
-  final String role;
-}
-
-class _AccessRequest {
-  const _AccessRequest({required this.name, required this.email});
-
-  final String name;
-  final String email;
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(
+      top: AppSpacing.spaceXl,
+      bottom: AppSpacing.spaceSm,
+    ),
+    child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+  );
 }

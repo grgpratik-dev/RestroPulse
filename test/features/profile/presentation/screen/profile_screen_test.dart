@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
+import 'package:restropulse/src/features/profile/presentation/cubits/members_access/members_access_cubit.dart';
+import '../../../../support/fake_access_management_repository.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/profile_screen.dart';
 
 void main() {
+  setUp(
+    () => sl.registerFactory<MembersAccessCubit>(
+      () => MembersAccessCubit(FakeAccessManagementRepository()),
+    ),
+  );
+  tearDown(() => sl.reset());
   testWidgets('shows restaurant identity and opens the currency sheet', (
     tester,
   ) async {

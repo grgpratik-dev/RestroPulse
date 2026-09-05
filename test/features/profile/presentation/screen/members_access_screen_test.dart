@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:restropulse/src/app/di/dependency_injection.dart';
+import 'package:restropulse/src/features/profile/presentation/cubits/members_access/members_access_cubit.dart';
+import '../../../../support/fake_access_management_repository.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/features/profile/presentation/screen/members_access/members_access_screen.dart';
 
 void main() {
+  setUp(
+    () => sl.registerFactory<MembersAccessCubit>(
+      () => MembersAccessCubit(FakeAccessManagementRepository()),
+    ),
+  );
+  tearDown(() => sl.reset());
   testWidgets('manages one join code and pending viewer requests', (
     tester,
   ) async {
@@ -17,9 +26,10 @@ void main() {
       MaterialApp(theme: AppTheme.light, home: const MembersAccessScreen()),
     );
 
-    expect(find.text('2 members'), findsOneWidget);
-    expect(find.text('RP-7K9M2'), findsOneWidget);
-    expect(find.text('Nisha Thapa'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('1 members'), findsOneWidget);
+    expect(find.text('RP-ABC123'), findsOneWidget);
+    expect(find.text('Applicant'), findsOneWidget);
 
     final regenerate = find.byKey(
       const ValueKey('regenerate-join-code-button'),
@@ -27,11 +37,9 @@ void main() {
     await tester.ensureVisible(regenerate);
     await tester.tap(regenerate);
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const ValueKey('confirm-regenerate-code-button')),
-    );
+    await tester.tap(find.byKey(const ValueKey('confirm-access-action')));
     await tester.pumpAndSettle();
-    expect(find.text('RP-4N8Q6'), findsOneWidget);
+    expect(find.text('RP-NEW123'), findsOneWidget);
 
     final approve = find.byKey(const ValueKey('approve-access-request-button'));
     await tester.ensureVisible(approve);
@@ -42,11 +50,11 @@ void main() {
     expect(find.text('No pending access requests'), findsOneWidget);
     await tester.fling(find.byType(ListView), const Offset(0, 1200), 2000);
     await tester.pumpAndSettle();
-    expect(find.text('3 members'), findsOneWidget);
+    expect(find.text('2 members'), findsOneWidget);
 
     await tester.fling(find.byType(ListView), const Offset(0, -1600), 2000);
     await tester.pumpAndSettle();
-    expect(find.text('Nisha Thapa'), findsOneWidget);
+    expect(find.text('Applicant'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

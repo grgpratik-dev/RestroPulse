@@ -1,3 +1,8 @@
+import 'package:restropulse/src/features/restaurant_access/data/datasources/access_management_datasource.dart';
+import 'package:restropulse/src/features/restaurant_access/data/repositories/access_management_repository_impl.dart';
+import 'package:restropulse/src/features/restaurant_access/domain/repositories/access_management_repository.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/join_restaurant/join_restaurant_cubit.dart';
+import 'package:restropulse/src/features/profile/presentation/cubits/members_access/members_access_cubit.dart';
 import 'package:restropulse/src/features/restaurant_access/data/datasources/create_restaurant_datasource.dart';
 import 'package:restropulse/src/features/restaurant_access/data/repositories/create_restaurant_repository_impl.dart';
 import 'package:restropulse/src/features/restaurant_access/domain/repositories/create_restaurant_repository.dart';
@@ -76,6 +81,9 @@ void serviceDependencies() {
 }
 
 void datasourceDependencies() {
+  sl.registerLazySingleton<AccessManagementDatasource>(
+    () => AccessManagementDatasource(sl()),
+  );
   sl.registerLazySingleton<CreateRestaurantDatasource>(
     () => CreateRestaurantDatasource(sl()),
   );
@@ -92,6 +100,9 @@ void datasourceDependencies() {
 }
 
 void repositoryDependencies() {
+  sl.registerLazySingleton<AccessManagementRepository>(
+    () => AccessManagementRepositoryImpl(sl()),
+  );
   sl.registerLazySingleton<CreateRestaurantRepository>(
     () => CreateRestaurantRepositoryImpl(sl()),
   );
@@ -120,6 +131,8 @@ void usecaseDependencies() {
 }
 
 void blocDependencies() {
+  sl.registerFactory<JoinRestaurantCubit>(() => JoinRestaurantCubit(sl()));
+  sl.registerFactory<MembersAccessCubit>(() => MembersAccessCubit(sl()));
   sl.registerFactory<CreateRestaurantCubit>(() => CreateRestaurantCubit(sl()));
   sl.registerFactory<ChooseCountryCubit>(() => ChooseCountryCubit(sl()));
   // Register your bloc dependencies here

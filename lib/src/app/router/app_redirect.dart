@@ -19,7 +19,18 @@ String? appRedirect(AppStatus status, String location) {
   };
   switch (status) {
     case AppStatus.initializing:
+      if (location != AppRoute.splash.path) {
+        return AppRoute.splash.path;
+      }
+      return null;
+
     case AppStatus.checkingRestaurantAccess:
+      // Access refreshes happen from restaurant setup screens (for example,
+      // "Check Again" on a pending join request). Keep that screen mounted
+      // while the request runs instead of showing the startup splash.
+      if (restaurantSetupRoutes.contains(location)) {
+        return null;
+      }
       if (location != AppRoute.splash.path) {
         return AppRoute.splash.path;
       }
@@ -47,7 +58,7 @@ String? appRedirect(AppStatus status, String location) {
 
     case AppStatus.restaurantAccessPending:
     case AppStatus.restaurantAccessFailure:
-      if (location == AppRoute.restaurantAccess.path) {
+      if (restaurantSetupRoutes.contains(location)) {
         return null;
       }
       return AppRoute.restaurantAccess.path;

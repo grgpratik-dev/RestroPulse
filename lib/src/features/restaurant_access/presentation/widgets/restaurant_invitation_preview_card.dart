@@ -7,9 +7,16 @@ import 'package:restropulse/src/core/widgets/app_divider.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class RestaurantInvitationPreviewCard extends StatelessWidget {
-  const RestaurantInvitationPreviewCard({required this.onRequest, super.key});
+  const RestaurantInvitationPreviewCard({
+    required this.onRequest,
+    required this.restaurantName,
+    this.address,
+    super.key,
+  });
 
-  final VoidCallback onRequest;
+  final VoidCallback? onRequest;
+  final String restaurantName;
+  final String? address;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +66,7 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Boys to Serve',
+                      restaurantName,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: AppColors.ink,
                         fontWeight: FontWeight.w700,
@@ -67,7 +74,7 @@ class RestaurantInvitationPreviewCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.space2xs),
                     Text(
-                      'Pokhara, Nepal',
+                      address ?? 'Address not provided',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: AppColors.neutral600,
                       ),

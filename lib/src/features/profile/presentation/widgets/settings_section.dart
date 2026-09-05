@@ -4,8 +4,6 @@ import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/widgets/app_divider.dart';
 
-import '../screen/profile_screen.dart';
-
 class SettingsSection extends StatelessWidget {
   const SettingsSection({
     required this.title,
@@ -14,7 +12,7 @@ class SettingsSection extends StatelessWidget {
   });
 
   final String title;
-  final List<SettingsTile> children;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {

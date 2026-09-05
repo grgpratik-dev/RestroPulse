@@ -169,7 +169,9 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
       GoRoute(
         path: AppRoute.joinRestaurant.path,
         name: AppRoute.joinRestaurant.name,
-        builder: (context, state) => const JoinRestaurantScreen(),
+        builder: (context, state) => JoinRestaurantScreen(
+          onJoined: appSessionController.refreshRestaurantAccess,
+        ),
       ),
 
       GoRoute(
