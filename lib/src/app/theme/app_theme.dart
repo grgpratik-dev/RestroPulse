@@ -37,10 +37,10 @@ abstract final class AppTheme {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       appBarTheme: AppBarTheme(
         elevation: 0,
-        centerTitle: false,
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
-        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        backgroundColor: AppColors.background,
+        surfaceTintColor: AppColors.background,
+
         titleTextStyle: AppTypography.headlineSmall.copyWith(
           color: colorScheme.onSurface,
         ),

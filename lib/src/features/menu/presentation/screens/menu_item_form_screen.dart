@@ -129,7 +129,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                 AppTextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
-             
+
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Enter an item name'
                       : null,
@@ -176,7 +176,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                             RegExp(r'^\d*\.?\d{0,2}'),
                           ),
                         ],
-                    
+
                         onChanged: (_) => setState(() {}),
                         validator: (value) =>
                             (double.tryParse(value ?? '') ?? 0) <= 0
@@ -196,7 +196,7 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                             RegExp(r'^\d*\.?\d{0,2}'),
                           ),
                         ],
-                      
+
                         onChanged: (_) => setState(() {}),
                         validator: (value) {
                           final cost = double.tryParse(value ?? '');
@@ -218,7 +218,6 @@ class _MenuItemFormState extends State<_MenuItemForm> {
                   controller: _notesController,
                   minLines: 3,
                   maxLines: 5,
-              
                 ),
                 if (_isEditing) ...[
                   const SizedBox(height: AppSpacing.spaceMd),

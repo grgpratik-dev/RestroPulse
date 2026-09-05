@@ -4,11 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_radius.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
+import 'package:restropulse/src/core/icons/app_icons.dart';
 import 'package:restropulse/src/core/widgets/app_text_form_field.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/access_request_pending_view.dart';
-import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_invitation_preview_card.dart';
-import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class JoinRestaurantScreen extends StatefulWidget {
   const JoinRestaurantScreen({this.onJoined, super.key});
@@ -37,7 +36,7 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.authBackground,
-      appBar: RestaurantAccessAppBar(showBackButton: !_requestSent),
+      appBar: AppBar(),
       body: SafeArea(
         top: false,
         child: _requestSent
@@ -178,20 +177,20 @@ class _JoinRestaurantScreenState extends State<JoinRestaurantScreen> {
                                     }
                                   },
                                   onFieldSubmitted: (_) => _findRestaurant(),
-                                   prefixIcon: SvgPicture.asset(
-                                      AppIcons.vpn_key_outlined,
+                                  prefixIcon: SvgPicture.asset(
+                                    AppIcons.vpn_key_outlined,
+                                    width: 22,
+                                    height: 22,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    tooltip: 'Paste invitation code',
+                                    onPressed: _pasteCode,
+                                    icon: SvgPicture.asset(
+                                      AppIcons.content_paste_rounded,
                                       width: 22,
                                       height: 22,
                                     ),
-                                    suffixIcon: IconButton(
-                                      tooltip: 'Paste invitation code',
-                                      onPressed: _pasteCode,
-                                      icon: SvgPicture.asset(
-                                        AppIcons.content_paste_rounded,
-                                        width: 22,
-                                        height: 22,
-                                      ),
-                                    ),
+                                  ),
                                   validator: (value) {
                                     final code = value?.trim() ?? '';
                                     if (code.isEmpty) {

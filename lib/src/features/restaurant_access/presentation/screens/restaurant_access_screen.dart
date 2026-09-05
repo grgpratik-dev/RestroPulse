@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/enums/enums.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
+import 'package:restropulse/src/core/widgets/app_name.dart';
 import 'package:restropulse/src/core/widgets/app_state_message.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/access_request_pending_view.dart';
-import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_app_bar.dart';
 import 'package:restropulse/src/features/restaurant_access/presentation/widgets/restaurant_access_option_card.dart';
 
 class RestaurantAccessScreen extends StatelessWidget {
@@ -13,22 +15,22 @@ class RestaurantAccessScreen extends StatelessWidget {
     this.appStatus = AppStatus.noRestaurantAccess,
     this.failureMessage,
     this.onRetry,
-    this.onCreateRestaurant,
-    this.onJoinRestaurant,
+
     super.key,
   });
 
   final AppStatus appStatus;
   final String? failureMessage;
   final VoidCallback? onRetry;
-  final VoidCallback? onCreateRestaurant;
-  final VoidCallback? onJoinRestaurant;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.authBackground,
-      appBar: const RestaurantAccessAppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: appName(context: context, withIcon: true),
+      ),
       body: SafeArea(top: false, child: _buildContent()),
     );
   }
@@ -51,22 +53,13 @@ class RestaurantAccessScreen extends StatelessWidget {
           FilledButton(onPressed: onRetry, child: const Text('Try Again')),
         ],
       ),
-      _ => _RestaurantAccessOptions(
-        onCreateRestaurant: onCreateRestaurant,
-        onJoinRestaurant: onJoinRestaurant,
-      ),
+      _ => _RestaurantAccessOptions(),
     };
   }
 }
 
 class _RestaurantAccessOptions extends StatelessWidget {
-  const _RestaurantAccessOptions({
-    required this.onCreateRestaurant,
-    required this.onJoinRestaurant,
-  });
-
-  final VoidCallback? onCreateRestaurant;
-  final VoidCallback? onJoinRestaurant;
+  const _RestaurantAccessOptions();
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +91,6 @@ class _RestaurantAccessOptions extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.spaceLg),
               RestaurantAccessOptionCard(
-                key: const ValueKey('create-restaurant-option'),
                 icon: AppIcons.add_business_rounded,
                 title: 'Create your restaurant',
                 roleLabel: 'Owner access',
@@ -107,11 +99,10 @@ class _RestaurantAccessOptions extends StatelessWidget {
                 permissionSummary:
                     'Full access to view and manage restaurant data',
                 actionLabel: 'Start restaurant setup',
-                onTap: onCreateRestaurant ?? () {},
+                onTap: () => context.pushNamed(AppRoute.chooseCountry.name),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               RestaurantAccessOptionCard(
-                key: const ValueKey('join-restaurant-option'),
                 icon: AppIcons.group_add_outlined,
                 title: 'Join a restaurant',
                 roleLabel: 'Viewer access',
@@ -121,7 +112,7 @@ class _RestaurantAccessOptions extends StatelessWidget {
                     'View only — you cannot add, edit, or delete data',
                 actionLabel: 'Enter invitation',
                 isViewer: true,
-                onTap: onJoinRestaurant ?? () {},
+                onTap: () => context.pushNamed(AppRoute.joinRestaurant.name),
               ),
               const SizedBox(height: AppSpacing.spaceMd),
               Center(

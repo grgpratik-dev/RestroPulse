@@ -1,39 +1,41 @@
-// ignore_for_file: invalid_annotation_target
-
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 import '../../domain/entities/restaurant_access.dart';
+import 'restaurant_join_request_model.dart';
+import 'restaurant_membership_model.dart';
 
-part 'restaurant_access_model.freezed.dart';
-part 'restaurant_access_model.g.dart';
+sealed class RestaurantAccessModel {
+  const RestaurantAccessModel();
 
-@freezed
-abstract class RestaurantAccessModel with _$RestaurantAccessModel {
-  const RestaurantAccessModel._();
+  const factory RestaurantAccessModel.hasRestaurant({
+    required RestaurantMembershipModel membership,
+  }) = HasRestaurantAccessModel;
 
-  const factory RestaurantAccessModel({
-    @JsonKey(name: 'restaurant_id') required String restaurantId,
-    RestaurantRole? role,
-    @JsonKey(name: 'status') String? requestStatus,
-  }) = _RestaurantAccessModel;
+  const factory RestaurantAccessModel.pendingJoinRequest({
+    required RestaurantJoinRequestModel request,
+  }) = PendingJoinRequestAccessModel;
 
-  factory RestaurantAccessModel.fromJson(Map<String, dynamic> json) =>
-      _$RestaurantAccessModelFromJson(json);
+  const factory RestaurantAccessModel.noRestaurant() = NoRestaurantAccessModel;
 
-  RestaurantAccess toEntity() {
-    if (role != null) {
-      return RestaurantAccess(
-        restaurantId: restaurantId,
-        type: RestaurantAccessType.active,
-        role: role,
-      );
-    }
-    if (requestStatus == 'pending') {
-      return RestaurantAccess(
-        restaurantId: restaurantId,
-        type: RestaurantAccessType.pending,
-      );
-    }
-    throw const FormatException('Unknown restaurant access response.');
-  }
+  RestaurantAccess toEntity() => switch (this) {
+    HasRestaurantAccessModel(:final membership) =>
+      RestaurantAccess.hasRestaurant(membership: membership.toEntity()),
+    PendingJoinRequestAccessModel(:final request) =>
+      RestaurantAccess.pendingJoinRequest(request: request.toEntity()),
+    NoRestaurantAccessModel() => const RestaurantAccess.noRestaurant(),
+  };
+}
+
+final class HasRestaurantAccessModel extends RestaurantAccessModel {
+  const HasRestaurantAccessModel({required this.membership});
+
+  final RestaurantMembershipModel membership;
+}
+
+final class PendingJoinRequestAccessModel extends RestaurantAccessModel {
+  const PendingJoinRequestAccessModel({required this.request});
+
+  final RestaurantJoinRequestModel request;
+}
+
+final class NoRestaurantAccessModel extends RestaurantAccessModel {
+  const NoRestaurantAccessModel();
 }

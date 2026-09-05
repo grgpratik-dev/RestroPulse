@@ -1,25 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'restaurant_access_model.dart';
+part of 'restaurant_membership_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_RestaurantAccessModel _$RestaurantAccessModelFromJson(
+_RestaurantMembershipModel _$RestaurantMembershipModelFromJson(
   Map<String, dynamic> json,
-) => _RestaurantAccessModel(
+) => _RestaurantMembershipModel(
   restaurantId: json['restaurant_id'] as String,
-  role: $enumDecodeNullable(_$RestaurantRoleEnumMap, json['role']),
-  requestStatus: json['status'] as String?,
+  role: $enumDecode(_$RestaurantRoleEnumMap, json['role']),
 );
 
-Map<String, dynamic> _$RestaurantAccessModelToJson(
-  _RestaurantAccessModel instance,
+Map<String, dynamic> _$RestaurantMembershipModelToJson(
+  _RestaurantMembershipModel instance,
 ) => <String, dynamic>{
   'restaurant_id': instance.restaurantId,
-  'role': _$RestaurantRoleEnumMap[instance.role],
-  'status': instance.requestStatus,
+  'role': _$RestaurantRoleEnumMap[instance.role]!,
 };
 
 const _$RestaurantRoleEnumMap = {

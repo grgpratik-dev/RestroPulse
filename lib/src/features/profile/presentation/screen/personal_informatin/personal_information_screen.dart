@@ -115,7 +115,7 @@ class _PersonalInformationFormState extends State<_PersonalInformationForm> {
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     autofillHints: const [AutofillHints.email],
-                
+
                     validator: _emailValidator,
                   ),
                   const SizedBox(height: AppSpacing.spaceMd),
@@ -124,7 +124,7 @@ class _PersonalInformationFormState extends State<_PersonalInformationForm> {
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.done,
                     autofillHints: const [AutofillHints.telephoneNumber],
-              
+
                     validator: _required('Enter your phone number'),
                     onFieldSubmitted: (_) => _save(),
                   ),
@@ -139,11 +139,11 @@ class _PersonalInformationFormState extends State<_PersonalInformationForm> {
                   AppTextFormField(
                     initialValue: 'Owner · Boys to Serve',
                     readOnly: true,
-                   suffixIcon: SvgPicture.asset(
-                        AppIcons.lock_outline_rounded,
-                        width: 20,
-                        height: 20,
-                      ),
+                    suffixIcon: SvgPicture.asset(
+                      AppIcons.lock_outline_rounded,
+                      width: 20,
+                      height: 20,
+                    ),
                   ),
                 ],
               ),

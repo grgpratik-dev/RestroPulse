@@ -1,4 +1,13 @@
+import 'package:restropulse/src/features/restaurant_access/data/datasources/create_restaurant_datasource.dart';
+import 'package:restropulse/src/features/restaurant_access/data/repositories/create_restaurant_repository_impl.dart';
+import 'package:restropulse/src/features/restaurant_access/domain/repositories/create_restaurant_repository.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/create_restaurant/create_restaurant_cubit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:restropulse/src/features/restaurant_access/data/repositories/country_repository_impl.dart';
+import 'package:restropulse/src/features/restaurant_access/domain/repositories/country_repository.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/choose_country/choose_country_cubit.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/restaurant_access/restaurant_access_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restropulse/src/app/session/app_session_controller.dart';
@@ -67,6 +76,9 @@ void serviceDependencies() {
 }
 
 void datasourceDependencies() {
+  sl.registerLazySingleton<CreateRestaurantDatasource>(
+    () => CreateRestaurantDatasource(sl()),
+  );
   // Register your datasource dependencies here
   sl.registerLazySingleton<AuthRemoteDatasource>(
     () => AuthRemoteDatasourceImpl(sl(), sl()),
@@ -80,6 +92,12 @@ void datasourceDependencies() {
 }
 
 void repositoryDependencies() {
+  sl.registerLazySingleton<CreateRestaurantRepository>(
+    () => CreateRestaurantRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<CountryRepository>(
+    () => CountryRepositoryImpl(rootBundle),
+  );
   // Register your repository dependencies here
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton<RestaurantAccessRepository>(
@@ -102,6 +120,8 @@ void usecaseDependencies() {
 }
 
 void blocDependencies() {
+  sl.registerFactory<CreateRestaurantCubit>(() => CreateRestaurantCubit(sl()));
+  sl.registerFactory<ChooseCountryCubit>(() => ChooseCountryCubit(sl()));
   // Register your bloc dependencies here
 
   sl.registerFactory<ImagePickerBloc>(
@@ -111,4 +131,5 @@ void blocDependencies() {
 
   sl.registerFactory<AuthCubit>(() => AuthCubit(sl(), sl(), sl()));
   sl.registerFactory<SignOutCubit>(() => SignOutCubit(sl()));
+  sl.registerFactory<RestaurantAccessCubit>(() => RestaurantAccessCubit(sl()));
 }

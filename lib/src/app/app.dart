@@ -7,6 +7,8 @@ import 'package:restropulse/src/app/session/app_session_controller.dart';
 import 'package:restropulse/src/app/theme/app_theme.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/auth/auth_cubit.dart';
 import 'package:restropulse/src/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/choose_country/choose_country_cubit.dart';
+import 'package:restropulse/src/features/restaurant_access/presentation/cubits/restaurant_access/restaurant_access_cubit.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -37,6 +39,8 @@ class _AppState extends State<App> {
       providers: [
         BlocProvider(create: (_) => sl<OnboardingBloc>()),
         BlocProvider(create: (_) => sl<AuthCubit>()),
+        BlocProvider(create: (_) => sl<ChooseCountryCubit>()..load()),
+        BlocProvider(create: (_) => sl<RestaurantAccessCubit>()),
       ],
       child: MaterialApp.router(
         title: 'Flutter Project Setup',

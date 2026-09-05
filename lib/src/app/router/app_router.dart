@@ -1,11 +1,14 @@
+import 'dart:convert';
+
+import 'package:restropulse/src/features/restaurant_access/domain/entities/country.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restropulse/src/app/di/dependency_injection.dart';
+import 'package:restropulse/src/app/router/app_redirect.dart';
 import 'package:restropulse/src/app/router/app_route.dart';
 import 'package:restropulse/src/app/session/app_session_controller.dart';
-import 'package:restropulse/src/core/enums/enums.dart';
 import 'package:restropulse/src/features/auth/presentation/cubits/sign_out/sign_out_cubit.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/auth_screen.dart';
 import 'package:restropulse/src/features/auth/presentation/screens/verify_otp_screen.dart';
@@ -56,66 +59,9 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoute.splash.path,
     refreshListenable: appSessionController,
-    redirect: (context, state) {
-      final status = appSessionController.status;
-      final location = state.matchedLocation;
-      final publicRoutes = {AppRoute.auth.path, AppRoute.verifyOTP.path};
-      final restaurantSetupRoutes = {
-        AppRoute.restaurantAccess.path,
-        AppRoute.createRestaurant.path,
-        AppRoute.joinRestaurant.path,
-      };
-
-      final entryRoutes = {
-        AppRoute.splash.path,
-        AppRoute.onboarding.path,
-        AppRoute.auth.path,
-        AppRoute.verifyOTP.path,
-      };
-      switch (status) {
-        case AppStatus.initializing:
-        case AppStatus.checkingRestaurantAccess:
-          if (location != AppRoute.splash.path) {
-            return AppRoute.splash.path;
-          }
-
-          return null;
-
-        case AppStatus.onboarding:
-          if (location != AppRoute.onboarding.path) {
-            return AppRoute.onboarding.path;
-          }
-
-          return null;
-
-        case AppStatus.unauthenticated:
-          if (publicRoutes.contains(location)) {
-            return null;
-          }
-          // return AppRoute.auth.path;
-          return AppRoute.chooseCountry.path;
-
-        case AppStatus.noRestaurantAccess:
-          if (restaurantSetupRoutes.contains(location)) {
-            return null;
-          }
-          return AppRoute.restaurantAccess.path;
-
-        case AppStatus.restaurantAccessPending:
-        case AppStatus.restaurantAccessFailure:
-          if (location == AppRoute.restaurantAccess.path) {
-            return null;
-          }
-          return AppRoute.restaurantAccess.path;
-
-        case AppStatus.hasRestaurantAccess:
-          if (entryRoutes.contains(location) ||
-              restaurantSetupRoutes.contains(location)) {
-            return AppRoute.dashboard.path;
-          }
-          return null;
-      }
-    },
+    extraCodec: const _CountryExtraCodec(),
+    redirect: (context, state) =>
+        appRedirect(appSessionController.status, state.matchedLocation),
     routes: [
       // Define your app routes here
       StatefulShellRoute.indexedStack(
@@ -202,10 +148,6 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
             failureMessage:
                 appSessionController.restaurantAccessFailure?.message,
             onRetry: appSessionController.refreshRestaurantAccess,
-            onCreateRestaurant: () =>
-                context.pushNamed(AppRoute.createRestaurant.name),
-            onJoinRestaurant: () =>
-                context.pushNamed(AppRoute.joinRestaurant.name),
           ),
         ),
       ),
@@ -217,7 +159,12 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
       GoRoute(
         path: AppRoute.createRestaurant.path,
         name: AppRoute.createRestaurant.name,
-        builder: (context, state) => const CreateRestaurantScreen(),
+        redirect: (context, state) =>
+            state.extra is Country ? null : AppRoute.chooseCountry.path,
+        builder: (context, state) => CreateRestaurantScreen(
+          country: state.extra as Country,
+          onCreated: appSessionController.refreshRestaurantAccess,
+        ),
       ),
       GoRoute(
         path: AppRoute.joinRestaurant.path,
@@ -377,4 +324,49 @@ GoRouter createAppRouter(AppSessionController appSessionController) {
       ),
     ],
   );
+}
+
+/// Keeps the selected country available when GoRouter serializes its state.
+/// Other extra values are passed through for routes that use simple values.
+final class _CountryExtraCodec extends Codec<Object?, Object?> {
+  const _CountryExtraCodec();
+
+  @override
+  Converter<Object?, Object?> get encoder => const _CountryExtraEncoder();
+
+  @override
+  Converter<Object?, Object?> get decoder => const _CountryExtraDecoder();
+}
+
+final class _CountryExtraEncoder extends Converter<Object?, Object?> {
+  const _CountryExtraEncoder();
+
+  @override
+  Object? convert(Object? input) {
+    if (input is! Country) return input;
+    return <String, Object?>{
+      r'$type': 'country',
+      'code': input.code,
+      'name': input.name,
+      'flag': input.flag,
+      'currencyCodes': input.currencyCodes,
+      'defaultCurrencyCode': input.defaultCurrencyCode,
+    };
+  }
+}
+
+final class _CountryExtraDecoder extends Converter<Object?, Object?> {
+  const _CountryExtraDecoder();
+
+  @override
+  Object? convert(Object? input) {
+    if (input is! Map || input[r'$type'] != 'country') return input;
+    return Country(
+      code: input['code'] as String,
+      name: input['name'] as String,
+      flag: input['flag'] as String,
+      currencyCodes: (input['currencyCodes'] as List).cast<String>(),
+      defaultCurrencyCode: input['defaultCurrencyCode'] as String?,
+    );
+  }
 }

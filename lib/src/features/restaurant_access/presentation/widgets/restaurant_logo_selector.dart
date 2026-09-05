@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restropulse/src/app/theme/app_colors.dart';
@@ -6,9 +7,14 @@ import 'package:restropulse/src/app/theme/app_spacing.dart';
 import 'package:restropulse/src/core/icons/app_icons.dart';
 
 class RestaurantLogoSelector extends StatelessWidget {
-  const RestaurantLogoSelector({required this.onTap, super.key});
+  const RestaurantLogoSelector({
+    required this.onTap,
+    this.imageBytes,
+    super.key,
+  });
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Uint8List? imageBytes;
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +42,25 @@ class RestaurantLogoSelector extends StatelessWidget {
                   color: AppColors.mintChip,
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: SvgPicture.asset(
-                  AppIcons.add_photo_alternate_outlined,
-                  width: 28,
-                  height: 28,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.primary,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                clipBehavior: Clip.antiAlias,
+                child: imageBytes != null
+                    ? Image.memory(
+                        imageBytes!,
+                        width: 52,
+                        height: 52,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) =>
+                            const Icon(Icons.broken_image_outlined),
+                      )
+                    : SvgPicture.asset(
+                        AppIcons.add_photo_alternate_outlined,
+                        width: 28,
+                        height: 28,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.primary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
               ),
               const SizedBox(width: AppSpacing.spaceSm),
               Expanded(
@@ -52,7 +68,9 @@ class RestaurantLogoSelector extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Add restaurant logo',
+                      imageBytes == null
+                          ? 'Add restaurant logo'
+                          : 'Change restaurant logo',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.ink,
                         fontWeight: FontWeight.w700,

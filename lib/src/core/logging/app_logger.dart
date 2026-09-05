@@ -6,7 +6,9 @@ enum LoggerLevel { debug, info, warning, error, fatal }
 final appLogger = AppLogger();
 
 final class AppLogger {
-  final _logger = Logger(printer: PrettyPrinter());
+  final _logger = Logger(
+    printer: PrettyPrinter(colors: false, methodCount: 0, errorMethodCount: 8),
+  );
 
   void log({
     required final String message,

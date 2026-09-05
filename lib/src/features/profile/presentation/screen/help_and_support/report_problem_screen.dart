@@ -109,10 +109,10 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             controller: _subjectController,
             textInputAction: TextInputAction.next,
             prefixIcon: SvgPicture.asset(
-                AppIcons.short_text_rounded,
-                width: 22,
-                height: 22,
-              ),
+              AppIcons.short_text_rounded,
+              width: 22,
+              height: 22,
+            ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a short subject.';
@@ -127,7 +127,7 @@ class _ReportProblemScreenState extends State<ReportProblemScreen> {
             minLines: 5,
             maxLines: 8,
             textCapitalization: TextCapitalization.sentences,
-         
+
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please describe what happened.';

@@ -14,11 +14,10 @@ final class RestaurantAccessRepositoryImpl
   final RestaurantAccessRemoteDatasource _remoteDatasource;
 
   @override
-  Future<Either<Failure, RestaurantAccess?>>
-  getCurrentRestaurantAccess() async {
+  Future<Either<Failure, RestaurantAccess>> getCurrentRestaurantAccess() async {
     try {
       final model = await _remoteDatasource.getCurrentRestaurantAccess();
-      return Right(model?.toEntity());
+      return Right(model.toEntity());
     } on AuthException catch (exception) {
       return Left(SupabaseFailureMapper.map(exception));
     } on PostgrestException catch (exception) {

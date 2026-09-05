@@ -128,10 +128,11 @@ final class AppSessionController extends ChangeNotifier {
       },
       (access) {
         _restaurantAccess = access;
-        _setStatus(switch (access?.type) {
-          RestaurantAccessType.active => AppStatus.hasRestaurantAccess,
-          RestaurantAccessType.pending => AppStatus.restaurantAccessPending,
-          null => AppStatus.noRestaurantAccess,
+        _setStatus(switch (access.status) {
+          RestaurantAccessStatus.hasRestaurant => AppStatus.hasRestaurantAccess,
+          RestaurantAccessStatus.pendingJoinRequest =>
+            AppStatus.restaurantAccessPending,
+          RestaurantAccessStatus.noRestaurant => AppStatus.noRestaurantAccess,
         });
       },
     );

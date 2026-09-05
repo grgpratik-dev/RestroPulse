@@ -205,7 +205,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                 AppTextFormField(
                   controller: _descriptionController,
                   textCapitalization: TextCapitalization.sentences,
-               
+
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Enter a short description'
                       : null,
@@ -251,7 +251,6 @@ class _ExpenseFormState extends State<_ExpenseForm> {
                   controller: _notesController,
                   minLines: 3,
                   maxLines: 5,
-                
                 ),
                 const SizedBox(height: AppSpacing.spaceMd),
                 ExpenseReceiptPicker(initialPath: widget.expense?.receiptPath),

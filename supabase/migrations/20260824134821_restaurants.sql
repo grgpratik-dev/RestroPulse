@@ -16,7 +16,6 @@ create table public.restaurants (
 
   -- Contact details for the restaurant.
   phone varchar,
-  email varchar,
 
   -- Restaurant address/location information.
   address text,

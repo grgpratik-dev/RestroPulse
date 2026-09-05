@@ -188,12 +188,12 @@ class _MenuCategoryEditorSheetState extends State<MenuCategoryEditorSheet> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.done,
-                  prefixIcon: SvgPicture.asset(
-                    AppIcons.category_outlined,
-                    width: 22,
-                    height: 22,
-                  ),
-              
+                prefixIcon: SvgPicture.asset(
+                  AppIcons.category_outlined,
+                  width: 22,
+                  height: 22,
+                ),
+
                 onFieldSubmitted: (_) => _submit(),
                 validator: (value) {
                   final name = value?.trim() ?? '';

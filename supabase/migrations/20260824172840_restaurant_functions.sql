@@ -24,9 +24,10 @@
 
 create or replace function public.create_restaurant(
   p_name varchar,
+  p_country_code varchar,
+  p_currency_code varchar,
   p_timezone varchar,
   p_phone varchar default null,
-  p_email varchar default null,
   p_address text default null,
   p_logo_path varchar default null
 )
@@ -38,77 +39,76 @@ as $$
 declare
   v_user_id uuid;
   v_restaurant_id uuid;
-
 begin
-
-  -- Get the currently authenticated user's UUID.
   v_user_id := auth.uid();
 
-  -- The function must only be called by an authenticated user.
   if v_user_id is null then
     raise exception 'Authentication required';
   end if;
 
+  if trim(coalesce(p_name, '')) = '' then
+    raise exception 'Restaurant name is required';
+  end if;
 
-  -- A user can belong to only one restaurant.
+  if trim(coalesce(p_country_code, '')) = '' then
+    raise exception 'Country code is required';
+  end if;
+
+  if trim(coalesce(p_currency_code, '')) = '' then
+    raise exception 'Currency code is required';
+  end if;
+
+  if trim(coalesce(p_timezone, '')) = '' then
+    raise exception 'Timezone is required';
+  end if;
+
+  -- User can belong to at most one restaurant.
   if exists (
     select 1
-    from public.restaurant_memberships rm
-    where rm.profile_id = v_user_id
+    from public.restaurant_memberships
+    where profile_id = v_user_id
   ) then
     raise exception 'User already belongs to a restaurant';
   end if;
 
-
-  -- Restaurant name is required.
-  if p_name is null or btrim(p_name) = '' then
-    raise exception 'Restaurant name is required';
-  end if;
-
-
-  -- Restaurant timezone is required.
-  if p_timezone is null or btrim(p_timezone) = '' then
-    raise exception 'Restaurant timezone is required';
-  end if;
-
-
-  -- Validate that the supplied timezone is a real
-  -- PostgreSQL/IANA timezone name.
-  --
-  -- Examples:
-  --   Asia/Kathmandu
-  --   Europe/London
-  --   America/Toronto
+  -- Validate IANA timezone.
   if not exists (
     select 1
     from pg_timezone_names
-    where name = btrim(p_timezone)
+    where name = p_timezone
   ) then
-    raise exception 'Invalid restaurant timezone';
+    raise exception 'Invalid timezone';
   end if;
 
+  -- Validate basic ISO-style formats.
+  if upper(p_country_code) !~ '^[A-Z]{2}$' then
+    raise exception 'Invalid country code';
+  end if;
 
-  -- Create the restaurant.
+  if upper(p_currency_code) !~ '^[A-Z]{3}$' then
+    raise exception 'Invalid currency code';
+  end if;
+
   insert into public.restaurants (
     name,
+    country_code,
+    currency_code,
     timezone,
     phone,
-    email,
     address,
     logo_path
   )
   values (
-    btrim(p_name),
-    btrim(p_timezone),
-    p_phone,
-    p_email,
-    p_address,
-    p_logo_path
+    trim(p_name),
+    upper(trim(p_country_code)),
+    upper(trim(p_currency_code)),
+    trim(p_timezone),
+    nullif(trim(p_phone), ''),
+    nullif(trim(p_address), ''),
+    nullif(trim(p_logo_path), '')
   )
   returning id into v_restaurant_id;
 
-
-  -- Automatically create the owner membership.
   insert into public.restaurant_memberships (
     restaurant_id,
     profile_id,
@@ -117,47 +117,32 @@ begin
   values (
     v_restaurant_id,
     v_user_id,
-    'owner'
+    'owner'::public.restaurant_role
   );
 
-
-  -- Return the new restaurant ID to the caller.
   return v_restaurant_id;
-
 end;
 $$;
 
-
--- =========================================================
--- Function permissions
---
--- Authenticated users may call the function.
--- The function itself performs the business-rule checks.
--- =========================================================
-
-revoke all
-on function public.create_restaurant(
+revoke all on function public.create_restaurant(
+  varchar,
   varchar,
   varchar,
   varchar,
   varchar,
   text,
   varchar
-)
-from public;
+) from public;
 
-
-grant execute
-on function public.create_restaurant(
+grant execute on function public.create_restaurant(
+  varchar,
   varchar,
   varchar,
   varchar,
   varchar,
   text,
   varchar
-)
-to authenticated;
-
+) to authenticated;
 
 
 -- =========================================================

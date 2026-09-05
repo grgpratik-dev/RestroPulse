@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/widgets.dart';
 import 'package:restropulse/gen/assets.gen.dart';
 import 'package:restropulse/src/app/theme/app_spacing.dart';
